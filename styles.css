@@ -21,28 +21,3 @@ body {
     margin: 0;
     padding: 0;
 }
-
-
-
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@700;900&display=swap');
-
-
-
-header{
-background-color: rgba(75, 75, 82, 0.3);
-border: 2px solid black;
-color: white;
-}
-h1, h2, h3, h4 { font-family: 'Merriweather', serif; font-weight: 700; color: #111111;}
-.headerH{text-align: center; font-size: 2rem; font-family: 'Lato', sans-serif;}
-
-
-body {
-    font-family: 'Lato', sans-serif;
-    font-size: 1rem;
-    line-height: 1.65;
-    color: #333333;
-    background-color: #91b5dd;
-    margin: 0;
-    padding: 0;
-}
