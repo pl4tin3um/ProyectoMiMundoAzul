@@ -1,16 +1,263 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Mi Mundo Azul</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Mundo Azul · Fácil de usar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1 class="headerH" id="title">Mi Mundo Azul Trinidad Flores</h1>
-    </header>
 
-    <script src="script.js"></script>
+<!-- ================= ENCABEZADO PÚBLICO ================= -->
+<header class="cabecera" id="cabeceraPublica">
+  <div class="marca">
+    <div class="marca__icono"></div>
+    <div class="marca__texto">Mi Mundo Azul<small>Asociación para la primera infancia</small></div>
+  </div>
+  <button class="boton boton--azul" id="btnIrLogin">
+    <span class="boton__icono">🔑</span> Entrar al panel del equipo
+  </button>
+</header>
+
+<!-- ================= SITIO PÚBLICO ================= -->
+<main id="vistaPublica">
+
+  <section class="hero" id="inicio">
+    <h1>Acompañamos a niñas y niños con autismo y a sus familias</h1>
+    <p>Elegí qué querés hacer. Todos los botones te llevan directo a lo que necesitás, sin vueltas.</p>
+    <div class="tarjetas-nav">
+      <a href="#noticias" class="tarjeta-nav nav-scroll">
+        <div class="tarjeta-nav__icono">📰</div>
+        <h3>Ver las noticias</h3>
+        <p>Novedades, talleres e historias de la asociación</p>
+      </a>
+      <a href="#nosotros" class="tarjeta-nav nav-scroll">
+        <div class="tarjeta-nav__icono">💙</div>
+        <h3>Conocer la asociación</h3>
+        <p>Qué hacemos y cómo acompañamos a las familias</p>
+      </a>
+      <a href="#contacto" class="tarjeta-nav nav-scroll">
+        <div class="tarjeta-nav__icono">✉️</div>
+        <h3>Escribirnos</h3>
+        <p>Te contestamos a la brevedad</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="nosotros" id="nosotros">
+    <div class="titulo-seccion">
+      <span class="etiqueta">Nuestra labor</span>
+      <h2>Así acompañamos a cada familia</h2>
+      <p>Un equipo, muchas formas de ayudar.</p>
+    </div>
+    <div class="grid-valores">
+      <div class="tarjeta-valor">
+        <div class="tarjeta-valor__icono">🧩</div>
+        <h3>Terapias</h3>
+        <p>Sesiones individuales con especialistas.</p>
+      </div>
+      <div class="tarjeta-valor">
+        <div class="tarjeta-valor__icono">🌊</div>
+        <h3>Salas sensoriales</h3>
+        <p>Espacios de calma y autorregulación.</p>
+      </div>
+      <div class="tarjeta-valor">
+        <div class="tarjeta-valor__icono">👨‍👩‍👧</div>
+        <h3>Talleres para familias</h3>
+        <p>Herramientas para el día a día en casa.</p>
+      </div>
+      <div class="tarjeta-valor">
+        <div class="tarjeta-valor__icono">🤝</div>
+        <h3>Comunidad</h3>
+        <p>Familias que se acompañan entre sí.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="noticias" id="noticias">
+    <div class="titulo-seccion">
+      <span class="etiqueta">Novedades</span>
+      <h2>Últimas noticias</h2>
+      <p>Tocá "Leer noticia completa" para ver la nota entera.</p>
+    </div>
+    <div class="grid-noticias" id="gridNoticias"></div>
+    <div class="noticias__pie" id="piePublicoVacio"></div>
+  </section>
+
+  <section class="contacto" id="contacto">
+    <h2>¿Querés sumarte a Mi Mundo Azul?</h2>
+    <p>Escribinos y te respondemos a la brevedad. Estamos para ayudarte.</p>
+    <a href="mailto:hola@mimundoazul.org" class="boton boton--sol"><span class="boton__icono">✉️</span> Escribinos ahora</a>
+  </section>
+
+</main>
+
+<footer>
+  <p>© <span id="anioFooter"></span> Mi Mundo Azul · Asociación civil.</p>
+</footer>
+
+<!-- ================= LOGIN ================= -->
+<div class="oculto" id="vistaLogin">
+  <div class="contenedor-login">
+    <div class="tarjeta-login">
+      <div class="marca"><div class="marca__icono"></div></div>
+      <h2>Entrar al panel</h2>
+      <p>Este espacio es solo para el equipo que administra y publica noticias.</p>
+      <div id="errorLogin"></div>
+      <form id="formLogin">
+        <div class="campo">
+          <label for="loginUsuario">👤 Tu usuario</label>
+          <input type="text" id="loginUsuario" autocomplete="username" required>
+        </div>
+        <div class="campo campo-con-boton">
+          <label for="loginPassword">🔒 Tu contraseña</label>
+          <input type="password" id="loginPassword" autocomplete="current-password" required>
+          <button type="button" class="boton-ojo" id="btnMostrarPass" aria-label="Mostrar contraseña">👁️</button>
+        </div>
+        <button type="submit" class="boton boton--azul boton--ancho">Entrar</button>
+      </form>
+      <div class="aviso-demo">
+        <strong>Para probar el sitio, usá estos datos:</strong>
+        👩‍💼 Administración → usuario <b>admin</b> · contraseña <b>admin123</b><br><br>
+        ✍️ Editor/a → usuario <b>editora1</b> · contraseña <b>editor123</b>
+      </div>
+      <button class="boton boton--blanco boton--ancho" style="margin-top:22px;" id="volverSitioLogin">← Volver al sitio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PANEL ADMIN ================= -->
+<div class="oculto" id="vistaAdmin">
+  <div class="barra-panel">
+    <div class="marca"><div class="marca__icono"></div><div class="marca__texto" style="font-size:1.15rem;">Panel de administración</div></div>
+    <div class="barra-panel__acciones">
+      <span class="placa-rol">👩‍💼 <span id="nombreAdmin"></span></span>
+      <button class="boton boton--blanco boton--chico" id="btnLogoutAdmin">🚪 Salir</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel__cabecera">
+      <h1>Cuentas del equipo editorial</h1>
+      <p>Acá creás y eliminás las cuentas de las personas que publican noticias.</p>
+    </div>
+    <button class="boton boton--sol panel__crear" id="btnNuevoEditor"><span class="boton__icono">➕</span> Crear nueva cuenta de editor/a</button>
+    <div class="lista" id="listaEditores"></div>
+  </div>
+</div>
+
+<!-- ================= PANEL EDITOR ================= -->
+<div class="oculto" id="vistaEditor">
+  <div class="barra-panel">
+    <div class="marca"><div class="marca__icono"></div><div class="marca__texto" style="font-size:1.15rem;">Panel de noticias</div></div>
+    <div class="barra-panel__acciones">
+      <span class="placa-rol">✍️ <span id="nombreEditor"></span></span>
+      <button class="boton boton--blanco boton--chico" id="btnLogoutEditor">🚪 Salir</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel__cabecera">
+      <h1>Tus noticias</h1>
+      <p>Creá, editá o eliminá las noticias que se ven en el sitio.</p>
+    </div>
+    <button class="boton boton--sol panel__crear" id="btnNuevaNoticia"><span class="boton__icono">➕</span> Crear noticia nueva</button>
+
+    <div id="bloqueBorradores"></div>
+
+    <h2 style="font-size:1.3rem; margin:6px 0 18px;">📢 Noticias publicadas</h2>
+    <div class="lista" id="listaNoticiasEditor"></div>
+  </div>
+</div>
+
+<!-- ================= MODAL: CREAR EDITOR ================= -->
+<div class="modal-fondo" id="modalEditor">
+  <div class="modal">
+    <div class="modal__cabecera">
+      <h2>➕ Nueva cuenta de editor/a</h2>
+      <button class="modal__cerrar" data-cerrar-modal="modalEditor">✕</button>
+    </div>
+    <form id="formNuevoEditor">
+      <div class="campo">
+        <label for="editorNombre">🙂 Nombre completo</label>
+        <input type="text" id="editorNombre" required>
+      </div>
+      <div class="campo">
+        <label for="editorUsuario">👤 Usuario para entrar</label>
+        <input type="text" id="editorUsuario" required>
+      </div>
+      <div class="campo campo-con-boton">
+        <label for="editorPassword">🔒 Contraseña</label>
+        <input type="text" id="editorPassword" required>
+        <small>Se guarda solo en este navegador, con fines de prueba.</small>
+      </div>
+      <button type="submit" class="boton boton--verde boton--ancho">✔️ Crear cuenta</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL: CREAR/EDITAR NOTICIA ================= -->
+<div class="modal-fondo" id="modalNoticia">
+  <div class="modal">
+    <div class="modal__cabecera">
+      <h2 id="tituloModalNoticia">➕ Nueva noticia</h2>
+      <button class="modal__cerrar" data-cerrar-modal="modalNoticia">✕</button>
+    </div>
+    <div class="estado-guardado" id="estadoGuardado"><span>💾</span><span id="textoEstadoGuardado">Mientras escribís, vamos guardando para que no pierdas nada.</span></div>
+    <form id="formNoticia">
+      <input type="hidden" id="noticiaId">
+      <div class="campo">
+        <label for="noticiaTitulo">📝 Título de la noticia</label>
+        <input type="text" id="noticiaTitulo" required>
+      </div>
+      <div class="campo">
+        <label for="noticiaImagen">🖼️ Dirección de la imagen (URL)</label>
+        <input type="text" id="noticiaImagen" placeholder="https://...">
+      </div>
+      <div class="campo">
+        <label for="noticiaExtracto">✏️ Resumen corto</label>
+        <textarea id="noticiaExtracto" style="min-height:80px" required></textarea>
+      </div>
+      <div class="campo">
+        <label for="noticiaCuerpo">📄 Texto completo</label>
+        <textarea id="noticiaCuerpo" placeholder="Dejá una línea vacía entre párrafo y párrafo." required></textarea>
+      </div>
+      <div class="modal__acciones">
+        <button type="button" class="boton boton--rojo boton--chico" id="btnDescartarBorrador">🗑️ Descartar</button>
+        <button type="submit" class="boton boton--verde" id="btnPublicarNoticia">✔️ Publicar noticia</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL DE CONFIRMACIÓN GENÉRICO ================= -->
+<div class="modal-fondo" id="modalConfirmar">
+  <div class="modal modal--chico">
+    <div class="modal__icono-grande" id="iconoConfirmar">❓</div>
+    <h2 id="tituloConfirmar">¿Estás seguro/a?</h2>
+    <p id="textoConfirmar" style="color:var(--tinta-suave); margin-top:10px;"></p>
+    <div class="modal__acciones modal__acciones--centrado">
+      <button class="boton boton--blanco" id="btnConfirmarNo">No, volver</button>
+      <button class="boton boton--rojo" id="btnConfirmarSi">Sí, continuar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL DE AVISO SIMPLE ================= -->
+<div class="modal-fondo" id="modalAviso">
+  <div class="modal modal--chico">
+    <div class="modal__icono-grande">ℹ️</div>
+    <h2>Aviso</h2>
+    <p id="textoAviso" style="color:var(--tinta-suave); margin-top:10px;"></p>
+    <div class="modal__acciones modal__acciones--centrado">
+      <button class="boton boton--azul" id="btnCerrarAviso">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
