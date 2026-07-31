@@ -5,3 +5,8 @@ Cree los archivos index.html,styles.css,script.js
 Hice la estructura basica de la pagina header + body
 Implemente css basico al index
 Busque informacion sobre el CMS
+
+
+
+Fontes 31/7
+Implementando la demo Inicial del indedx.html
