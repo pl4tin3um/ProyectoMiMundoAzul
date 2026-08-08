@@ -14,4 +14,5 @@ Implementando la demo Inicial del indedx.html
 
 
 
-Valentin probando 07/08
+Valentin 07/08
+Estuve cambiando el icono 
