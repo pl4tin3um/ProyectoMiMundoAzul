@@ -15,7 +15,6 @@
 
   const $ = (sel, ctx) => (ctx||document).querySelector(sel);
   const $$ = (sel, ctx) => Array.from((ctx||document).querySelectorAll(sel));
-
   function uid(prefijo){ return prefijo + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
   function formatearFecha(iso){
     return new Date(iso).toLocaleDateString('es-AR', { day:'numeric', month:'long', year:'numeric' });
@@ -28,6 +27,7 @@
   function placeholderImg(seed){ return `https://picsum.photos/seed/mma2-${seed}/900/700`; }
 
   /* ---------------- SEED DE DATOS ---------------- */
+  /* A3_Script: main page and public users data (seed, helpers, localStorage keys) */
   function sembrarDatos(){
     if(!localStorage.getItem(LS_USERS)){
       localStorage.setItem(LS_USERS, JSON.stringify([
@@ -93,6 +93,7 @@
   function clearSession(){ sessionStorage.removeItem(SS_SESSION); }
 
   /* ---------------- AVISO FLOTANTE ---------------- */
+  /* A3_Script: toast/notifications for main UI */
   let toastTimer;
   function mostrarToast(msg, icono){
     const t = $('#toast');
@@ -103,6 +104,7 @@
   }
 
   /* ---------------- VENTANAS DE CONFIRMACIÓN Y AVISO (reemplazan confirm/alert) ---------------- */
+  /* A3_Script: confirmation and alert modals used across admin/editor/public */
   function preguntarConfirmacion(opciones){
     // opciones: {icono, titulo, texto, textoSi, onSi}
     $('#iconoConfirmar').textContent = opciones.icono || '❓';
@@ -132,6 +134,7 @@
   $('#btnCerrarAviso').addEventListener('click', ()=> $('#modalAviso').classList.remove('activo'));
 
   /* ---------------- NAVEGACIÓN SUAVE ---------------- */
+  /* A3_Script: smooth navigation and footer */
   $$('.nav-scroll').forEach(a => a.addEventListener('click', (e)=>{
     e.preventDefault();
     const destino = document.querySelector(a.getAttribute('href'));
@@ -140,6 +143,7 @@
   $('#anioFooter').textContent = new Date().getFullYear();
 
   /* ---------------- RENDER: NOTICIAS PÚBLICAS ---------------- */
+  /* A3_Script: rendering public news grid */
   function renderGridPublico(){
     const grid = $('#gridNoticias');
     const noticias = DB.getNews();
@@ -170,6 +174,7 @@
   }
 
   /* ---------------- ABRIR NOTICIA EN PESTAÑA COMPLETA ---------------- */
+  /* A3_Script: open full news in new tab */
   function abrirNoticiaCompleta(id){
     const noticia = DB.getNews().find(n => n.id === id);
     if(!noticia) return;
@@ -225,6 +230,7 @@
   }
 
   /* ---------------- LOGIN ---------------- */
+  /* A3_Script: login handling (public -> admin/editor) */
   $('#btnIrLogin').addEventListener('click', ()=> mostrarVista('login'));
   $('#volverSitioLogin').addEventListener('click', ()=> mostrarVista('publico'));
 
@@ -260,6 +266,7 @@
   $('#btnLogoutEditor').addEventListener('click', cerrarSesion);
 
   /* ---------------- CAMBIO DE VISTAS ---------------- */
+  /* A3_Script: view switching for public/login/admin/editor */
   function mostrarVista(nombre){
     ['vistaPublica','vistaLogin','vistaAdmin','vistaEditor'].forEach(id=>{
       const el = document.getElementById(id);
@@ -277,6 +284,7 @@
   }
 
   /* ================= PANEL ADMIN ================= */
+  /* B3_Admin: administration panel (manage editors: create, list, delete) */
   function irAPanelAdmin(){
     $('#nombreAdmin').textContent = getSession().name;
     renderListaEditores();
@@ -345,6 +353,7 @@
   });
 
   /* ================= PANEL EDITOR ================= */
+  /* C3_Editors: editor panel (drafts, create/edit/publish news) */
   let draftKeyActual = null;
 
   function irAPanelEditor(){
@@ -555,35 +564,44 @@
     });
   });
 
-  $('#formNoticia').addEventListener('submit', (e)=>{
-    e.preventDefault();
-    const s = getSession();
-    const id = $('#noticiaId').value || uid('n');
-    const titulo = $('#noticiaTitulo').value.trim();
-    const extracto = $('#noticiaExtracto').value.trim();
-    const cuerpo = $('#noticiaCuerpo').value.trim();
-    const imagen = $('#noticiaImagen').value.trim();
+      const formNoticia = $('#formNoticia');
+      if(formNoticia){
+        formNoticia.addEventListener('submit', (e)=>{
+          e.preventDefault();
+          const s = getSession();
+          const id = $('#noticiaId').value || uid('n');
+          const titulo = $('#noticiaTitulo').value.trim();
+          const extracto = $('#noticiaExtracto').value.trim();
+          const cuerpo = $('#noticiaCuerpo').value.trim();
+          const imagen = $('#noticiaImagen').value.trim();
 
-    let noticias = DB.getNews();
-    const existente = noticias.find(n=>n.id===id);
-    if(existente){
-      existente.title = titulo; existente.excerpt = extracto; existente.body = cuerpo; existente.image = imagen;
-    } else {
-      noticias.push({ id, title: titulo, excerpt: extracto, body: cuerpo, image: imagen, author: s.name, date: new Date().toISOString() });
+          let noticias = DB.getNews();
+          const existente = noticias.find(n=>n.id===id);
+          if(existente){
+            existente.title = titulo; existente.excerpt = extracto; existente.body = cuerpo; existente.image = imagen;
+          } else {
+            noticias.push({ id, title: titulo, excerpt: extracto, body: cuerpo, image: imagen, author: s.name, date: new Date().toISOString() });
+          }
+          DB.setNews(noticias);
+
+          const drafts = DB.getDrafts();
+          delete drafts[draftKeyActual];
+          DB.setDrafts(drafts);
+
+          cerrarModal('modalNoticia');
+          renderPanelEditor();
+          renderGridPublico();
+          mostrarToast(existente ? 'Noticia actualizada' : 'Noticia publicada', '✔️');
+        });
+      }
     }
-    DB.setNews(noticias);
 
-    const drafts = DB.getDrafts();
-    delete drafts[draftKeyActual];
-    DB.setDrafts(drafts);
+    return { init: bindEvents, irAPanelEditor };
+  })();
 
-    cerrarModal('modalNoticia');
-    renderPanelEditor();
-    renderGridPublico();
-    mostrarToast(existente ? 'Noticia actualizada' : 'Noticia publicada', '✔️');
-  });
-
-  /* ---------------- MODALES ---------------- */
+  /* =========================================================
+     MODALES Y UTILERÍAS DE INTERFAZ
+  ========================================================== */
   function abrirModal(id){ $('#'+id).classList.add('activo'); }
   function cerrarModal(id){ $('#'+id).classList.remove('activo'); }
   $$('[data-cerrar-modal]').forEach(btn=> btn.addEventListener('click', ()=> cerrarModal(btn.dataset.cerrarModal)));
