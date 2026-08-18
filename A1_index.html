@@ -11,6 +11,13 @@
 </head>
 <body>
 
+<!-- =========================================================
+     BLOQUE 1 — SITIO PRINCIPAL / PÚBLICO
+     Encabezado público, secciones del sitio (hero, nosotros,
+     noticias, contacto), pie de página, y pantalla de login
+     (puerta de entrada a los paneles de admin/editor).
+========================================================== -->
+
 <!-- ================= ENCABEZADO PÚBLICO ================= -->
 <header class="cabecera" id="cabeceraPublica">
   <div class="marca">
@@ -129,6 +136,21 @@
   </div>
 </div>
 
+
+          
+
+
+          
+
+
+          
+
+<!-- =========================================================
+     BLOQUE 2 — PANEL DE ADMINISTRADOR/A
+     Vista del panel de admin y modal para crear cuentas
+     de editores/as.
+========================================================== -->
+
 <!-- ================= PANEL ADMIN ================= -->
 <div class="oculto" id="vistaAdmin">
   <div class="barra-panel">
@@ -145,29 +167,6 @@
     </div>
     <button class="boton boton--sol panel__crear" id="btnNuevoEditor"><span class="boton__icono">➕</span> Crear nueva cuenta de editor/a</button>
     <div class="lista" id="listaEditores"></div>
-  </div>
-</div>
-
-<!-- ================= PANEL EDITOR ================= -->
-<div class="oculto" id="vistaEditor">
-  <div class="barra-panel">
-    <div class="marca"><div class="marca__icono"></div><div class="marca__texto" style="font-size:1.15rem;">Panel de noticias</div></div>
-    <div class="barra-panel__acciones">
-      <span class="placa-rol">✍️ <span id="nombreEditor"></span></span>
-      <button class="boton boton--blanco boton--chico" id="btnLogoutEditor">🚪 Salir</button>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel__cabecera">
-      <h1>Tus noticias</h1>
-      <p>Creá, editá o eliminá las noticias que se ven en el sitio.</p>
-    </div>
-    <button class="boton boton--sol panel__crear" id="btnNuevaNoticia"><span class="boton__icono">➕</span> Crear noticia nueva</button>
-
-    <div id="bloqueBorradores"></div>
-
-    <h2 style="font-size:1.3rem; margin:6px 0 18px;">📢 Noticias publicadas</h2>
-    <div class="lista" id="listaNoticiasEditor"></div>
   </div>
 </div>
 
@@ -194,6 +193,44 @@
       </div>
       <button type="submit" class="boton boton--verde boton--ancho">✔️ Crear cuenta</button>
     </form>
+  </div>
+</div>
+
+
+          
+
+
+          
+
+
+          
+
+<!-- =========================================================
+     BLOQUE 3 — PANEL DE EDITOR/A
+     Vista del panel de editor/a y modal para crear/editar
+     noticias.
+========================================================== -->
+
+<!-- ================= PANEL EDITOR ================= -->
+<div class="oculto" id="vistaEditor">
+  <div class="barra-panel">
+    <div class="marca"><div class="marca__icono"></div><div class="marca__texto" style="font-size:1.15rem;">Panel de noticias</div></div>
+    <div class="barra-panel__acciones">
+      <span class="placa-rol">✍️ <span id="nombreEditor"></span></span>
+      <button class="boton boton--blanco boton--chico" id="btnLogoutEditor">🚪 Salir</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel__cabecera">
+      <h1>Tus noticias</h1>
+      <p>Creá, editá o eliminá las noticias que se ven en el sitio.</p>
+    </div>
+    <button class="boton boton--sol panel__crear" id="btnNuevaNoticia"><span class="boton__icono">➕</span> Crear noticia nueva</button>
+
+    <div id="bloqueBorradores"></div>
+
+    <h2 style="font-size:1.3rem; margin:6px 0 18px;">📢 Noticias publicadas</h2>
+    <div class="lista" id="listaNoticiasEditor"></div>
   </div>
 </div>
 
@@ -230,6 +267,22 @@
     </form>
   </div>
 </div>
+
+
+          
+
+
+          
+
+
+          
+
+<!-- =========================================================
+     BLOQUE 4 — CÓDIGO COMÚN
+     Elementos usados por el sitio principal, el panel de admin
+     y el panel de editor: modal de confirmación genérico, modal
+     de aviso simple, el toast, y el script que da vida al sitio.
+========================================================== -->
 
 <!-- ================= MODAL DE CONFIRMACIÓN GENÉRICO ================= -->
 <div class="modal-fondo" id="modalConfirmar">
