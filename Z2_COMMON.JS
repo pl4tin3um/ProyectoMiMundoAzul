@@ -173,9 +173,7 @@
   $$('[data-cerrar-modal]').forEach(btn=> btn.addEventListener('click', ()=> cerrarModal(btn.dataset.cerrarModal)));
   $$('.modal-fondo').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo) fondo.classList.remove('activo'); }));
 
-  /* ---------------- INICIO ---------------- */
-  sembrarDatos();
-  renderGridPublico();
+
 
   const sesionActiva = getSession();
   if(sesionActiva && sesionActiva.role === 'admin') irAPanelAdmin();
