@@ -16,3 +16,7 @@ Implementando la demo Inicial del indedx.html
 
 Valentin 07/08
 Estuve cambiando el icono 
+
+
+Kevin Fontes 18/08
+Separacion del js y html
