@@ -8,18 +8,18 @@
 
 
  
- /* =========================================================
-     BLOQUE 4 — CÓDIGO COMÚN
-     Utilizado por el sitio principal, el panel de admin y el
-     panel de editor: almacenamiento (localStorage/sessionStorage),
-     helpers de DOM, datos semilla, avisos/modales genéricos,
-     cambio de vistas, sesión, y arranque de la app.
-
-     Nota: $ y $$ se declaran como "function" (en vez de "const")
-     a propósito, para que queden disponibles (hoisted) en TODO
-     el archivo sin importar el orden de los bloques, ya que se
-     usan de forma inmediata en los bloques 1, 2 y 3.
-  ========================================================== */
+// =========================================================
+ //    BLOQUE 4 — CÓDIGO COMÚN
+ //    Utilizado por el sitio principal, el panel de admin y el
+ //    panel de editor: almacenamiento (localStorage/sessionStorage),
+ //    helpers de DOM, datos semilla, avisos/modales genéricos,
+ //    cambio de vistas, sesión, y arranque de la app.
+//
+ //    Nota: $ y $$ se declaran como "function" (en vez de "const")
+ //    a propósito, para que queden disponibles (hoisted) en TODO
+ //    el archivo sin importar el orden de los bloques, ya que se
+ //    usan de forma inmediata en los bloques 1, 2 y 3.
+//  ========================================================== */
 
   const LS_USERS   = 'mma2_users';
   const LS_NEWS    = 'mma2_news';
