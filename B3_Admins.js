@@ -13,11 +13,7 @@
      Alta y baja de cuentas de editores/as.
   ========================================================== */
 
-  function irAPanelAdmin(){
-    $('#nombreAdmin').textContent = getSession().name;
-    renderListaEditores();
-    mostrarVista('admin');
-  }
+ 
 
   function renderListaEditores(){
     const cont = $('#listaEditores');
