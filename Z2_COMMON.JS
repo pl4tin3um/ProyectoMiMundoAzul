@@ -179,6 +179,12 @@
     mostrarVista('admin');
   }
 
+   function irAPanelEditor(){
+    $('#nombreEditor').textContent = getSession().name;
+    renderPanelEditor();
+    mostrarVista('editor');
+  }
+
   const sesionActiva = getSession();
   if(sesionActiva && sesionActiva.role === 'admin') irAPanelAdmin();
   else if(sesionActiva && sesionActiva.role === 'editor') irAPanelEditor();

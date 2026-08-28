@@ -6,11 +6,7 @@
 
   let draftKeyActual = null;
 
-  function irAPanelEditor(){
-    $('#nombreEditor').textContent = getSession().name;
-    renderPanelEditor();
-    mostrarVista('editor');
-  }
+ 
 
   function renderPanelEditor(){
     renderBloqueBorradores();
