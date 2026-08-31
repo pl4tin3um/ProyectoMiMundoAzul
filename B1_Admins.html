@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   <link rel="stylesheet" href="A2_styles.css"></link> 
+</head>
+
+<body>
+    <footer>
+  <p>© <span id="anioFooter"></span> Mi Mundo Azul · Asociación civil.</p>
+</footer>
+<!-- ================= PANEL ADMIN ================= -->
+<div class="oculto" id="vistaAdmin">
+  <div class="barra-panel">
+    <div class="marca"><div class="marca__icono"></div><div class="marca__texto" style="font-size:1.15rem;">Panel de administración</div></div>
+    <div class="barra-panel__acciones">
+      <span class="placa-rol">👩‍💼 <span id="nombreAdmin"></span></span>
+      <button class="boton boton--blanco boton--chico" id="btnLogoutAdmin">🚪 Salir</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel__cabecera">
+      <h1>Cuentas del equipo editorial</h1>
+      <p>Acá creás y eliminás las cuentas de las personas que publican noticias.</p>
+    </div>
+    <button class="boton boton--sol panel__crear" id="btnNuevoEditor"><span class="boton__icono">➕</span> Crear nueva cuenta de editor/a</button>
+    <div class="lista" id="listaEditores"></div>
+  </div>
+</div>
+
+<!-- ================= MODAL: CREAR EDITOR ================= -->
+<div class="modal-fondo" id="modalEditor">
+  <div class="modal">
+    <div class="modal__cabecera">
+      <h2>➕ Nueva cuenta de editor/a</h2>
+      <button class="modal__cerrar" data-cerrar-modal="modalEditor">✕</button>
+    </div>
+    <form id="formNuevoEditor">
+      <div class="campo">
+        <label for="editorNombre">🙂 Nombre completo</label>
+        <input type="text" id="editorNombre" required>
+      </div>
+      <div class="campo">
+        <label for="editorUsuario">👤 Usuario para entrar</label>
+        <input type="text" id="editorUsuario" required>
+      </div>
+      <div class="campo campo-con-boton">
+        <label for="editorPassword">🔒 Contraseña</label>
+        <input type="text" id="editorPassword" required>
+        <small>Se guarda solo en este navegador, con fines de prueba.</small>
+      </div>
+      <button type="submit" class="boton boton--verde boton--ancho">✔️ Crear cuenta</button>
+    </form>
+  </div>
+</div>
+    <script src="Z2_Common.js"></script>
+    <script src="B3_Admins.js"></script>
+</body>
+</html>
