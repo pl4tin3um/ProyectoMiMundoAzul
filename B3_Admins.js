@@ -13,7 +13,6 @@
      Alta y baja de cuentas de editores/as.
   ========================================================== */
 
- 
 
   function renderListaEditores(){
     const cont = $('#listaEditores');

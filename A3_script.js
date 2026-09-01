@@ -1,5 +1,4 @@
 
-(function(){
   "use strict";
 
   /* =========================================================
@@ -132,7 +131,9 @@
     $('#formLogin').reset();
     if(encontrado.role === 'admin') irAPanelAdmin(); else irAPanelEditor();
   });
-})();
+
+ 
+
 
           
 
