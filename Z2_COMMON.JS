@@ -173,4 +173,12 @@
   $$('[data-cerrar-modal]').forEach(btn=> btn.addEventListener('click', ()=> cerrarModal(btn.dataset.cerrarModal)));
   $$('.modal-fondo').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo) fondo.classList.remove('activo'); }));
 
+function irAPanelAdmin(){
+  mostrarVista('admin');
+  mostrarToast('Bienvenido/a al panel de administración', '🛠️');
+}
 
+function irAPanelEditor(){
+  mostrarVista('editor');
+  mostrarToast('Bienvenido/a al panel de editor', '✍️');
+}

@@ -132,6 +132,8 @@
     if(encontrado.role === 'admin') irAPanelAdmin(); else irAPanelEditor();
   });
 
+
+
  
 
 
