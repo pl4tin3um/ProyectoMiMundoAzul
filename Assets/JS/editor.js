@@ -36,7 +36,7 @@
 
   function cerrarSesion(){
     clearSession();
-    window.location.href = 'index.html?salida=1';
+    window.location.href = '../../index.html?salida=1';
   }
 
   /* =========================================================
@@ -46,12 +46,12 @@
      editor.html es un archivo real, cualquiera podría escribir esa
      dirección directo en el navegador sin haber iniciado sesión. Por
      eso, apenas carga el archivo, se revisa la sesión y si no es
-     válida (o no es de un/a editor/a) se redirige a index.html.
+     válida (o no es de un/a editor/a) se redirige a ../../index.html.
   ========================================================== */
   sembrarDatos();
   const sesion = getSession();
   if(!sesion || sesion.role !== 'editor'){
-    window.location.href = 'index.html';
+    window.location.href = '../../index.html';
   } else {
     $('#nombreEditor').textContent = sesion.name;
     mostrarToast('Bienvenido/a al panel de editor', '✍️');
@@ -62,8 +62,8 @@
      PANEL DE EDITOR/A — reciclado del Bloque 3 original.
      Único cambio real de lógica: ya NO se llama a renderGridPublico()
      después de guardar/eliminar una noticia, porque esa función vive
-     en index.js, en OTRO documento HTML. No hace falta llamarla: la
-     próxima vez que alguien entre a index.html, la grilla pública se
+     en ../../index.html, en OTRO documento HTML. No hace falta llamarla: la
+     próxima vez que alguien entre a ../../index.html, la grilla pública se
      arma de nuevo leyendo localStorage, así que ya va a mostrar los
      cambios sin ninguna sincronización manual entre páginas.
   ========================================================== */

@@ -161,5 +161,5 @@
     setSession({ id:encontrado.id, username:encontrado.username, role:encontrado.role, name:encontrado.name });
     $('#formLogin').reset();
     // Navegación real: cada rol va a su propio archivo, no a una "vista" oculta.
-    window.location.href = (encontrado.role === 'admin') ? 'admin.html' : 'editor.html';
+    window.location.href = (encontrado.role === 'admin') ? 'Assets/JS/admin.html' : 'Assets/JS/editor.html';
   });
