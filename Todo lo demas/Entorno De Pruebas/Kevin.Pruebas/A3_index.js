@@ -1,14 +1,14 @@
 "use strict";
-  /* cerrarSesion: ahora hace una navegación real (redirect) a index.html
+  /* cerrarSesion: ahora hace una navegación real (redirect) a A1_index.html
      en vez de "cambiar de vista" con JS. Se usa desde editor.js y
      admin.js (cada uno tiene su propia copia de esta función). */
   function cerrarSesion(){
     clearSession();
-    window.location.href = 'index.html?salida=1';
+    window.location.href = 'A1_index.html?salida=1';
   }
 
   /* =========================================================
-     LÓGICA PROPIA DE index.html / index.js
+     LÓGICA PROPIA DE A1_index.html / index.js
      (navegación suave, año del footer, semilla de datos, grilla
      pública de noticias, apertura de noticia completa en pestaña
      aparte, y pantalla de login con redirección real según el rol)
@@ -30,7 +30,7 @@
     const params = new URLSearchParams(window.location.search);
     if(params.get('salida') === '1'){
       mostrarToast('Saliste del panel. ¡Hasta pronto!', '👋');
-      history.replaceState({}, '', 'index.html');
+      history.replaceState({}, '', 'A1_index.html');
     }
     if(window.location.hash === '#login') mostrarPantallaLogin();
   })();
@@ -118,7 +118,7 @@
     window.open(URL.createObjectURL(blob), '_blank');
   }
 
-  /* ---------------- LOGIN (dentro de index.html) ---------------- */
+  /* ---------------- LOGIN (dentro de A1_index.html) ---------------- */
   function mostrarPantallaLogin(){
     $('#contenidoPublico').classList.add('hidden');
     $('#cabeceraPublica').classList.add('hidden');
@@ -136,7 +136,7 @@
     mostrarPantallaLogin();
   });
   $('#volverSitioLogin').addEventListener('click', ()=>{
-    history.replaceState({}, '', 'index.html');
+    history.replaceState({}, '', 'A1_index.html');
     mostrarSitioPublico();
   });
 
@@ -161,5 +161,5 @@
     setSession({ id:encontrado.id, username:encontrado.username, role:encontrado.role, name:encontrado.name });
     $('#formLogin').reset();
     // Navegación real: cada rol va a su propio archivo, no a una "vista" oculta.
-    window.location.href = (encontrado.role === 'admin') ? 'admin.html' : 'editor.html';
+    window.location.href = (encontrado.role === 'admin') ? 'C1_admin.html' : 'B1_editor.html';
   });

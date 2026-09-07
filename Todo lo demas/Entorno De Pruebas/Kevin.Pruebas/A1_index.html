@@ -55,7 +55,7 @@
   };
 </script>
 
-<link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="A2_index.css">
 </head>
 
 <body class="bg-cielo text-tinta font-nunito antialiased">
@@ -71,142 +71,142 @@
 <div class="bg-azul-fuerte text-white text-center py-3 font-baloo font-bold tracking-wide">
   📄 PÁGINA 1 de 3 — index.html + index.css + index.js
 </div>
-</section>
 
-<header class="flex items-center justify-between gap-4 flex-wrap px-[5vw] py-5 bg-morado-claro shadow-sm sticky top-0 z-40" id="cabeceraPublica">
-  <div class="flex items-center gap-3">
-    <img src="imagenes/Logo mi mundo azul.jpeg" alt="Mi Mundo Azul" class="w-11 h-11 rounded-full object-cover">
-    <div class="font-baloo font-bold leading-tight">
-      Mi Mundo Azul
-      <small class="block font-nunito font-normal text-tinta-suave text-sm">Asociación para la primera infancia</small>
+  <header class="flex items-center justify-between gap-4 flex-wrap px-[5vw] py-5 bg-azul-claro shadow-sm sticky top-0 z-40 border-4 border-azul-fuerte" id="cabeceraPublica">
+    <div class="flex items-center gap-3">
+      <img src="../../../Assets/Imgs/Logo.jpeg" alt="Mi Mundo Azul" class="w-11 h-11 rounded-full object-cover">
+      <div class="font-baloo font-bold leading-tight">
+        Mi Mundo Azul
+        <small class="block font-nunito font-normal text-tinta-suave text-sm">Asociación para la primera infancia</small>
+      </div>
+    </div>
+    <button class="boton boton--azul" id="btnIrLogin">
+      <span>🔑</span> Entrar al panel del equipo
+    </button>
+  </header>
+
+  <!-- ================= CONTENIDO PÚBLICO ================= -->
+  <div id="contenidoPublico">
+    <main>
+
+      <section class="px-[3vw] py-10 text-center max-w-3xl mx-auto" id="inicio">
+        <h1 class="font-baloo font-extrabold text-4xl md:text-5xl text-azul-oscuro leading-tight">
+          Acompañamos a niñas y niños con autismo y a sus familias
+        </h1>
+        <p class="mt-5 text-lg text-tinta-suave">
+          Elegí qué querés hacer. Todos los botones te llevan directo a lo que necesitás, sin vueltas.
+        </p>
+        <div class="mt-10 grid gap-5 sm:grid-cols-3 text-left">
+          <a href="#noticias" class="nav-scroll block bg-white rounded-3xl p-6 shadow-md hover:-translate-y-1 transition">
+            <div class="text-3xl">📰</div>
+            <h3 class="font-baloo font-bold mt-3">Ver las noticias</h3>
+            <p class="text-sm text-tinta-suave mt-1">Novedades, talleres e historias de la asociación</p>
+          </a>
+          <a href="#nosotros" class="nav-scroll block bg-white rounded-3xl p-6 shadow-md hover:-translate-y-1 transition">
+            <div class="text-3xl">💙</div>
+            <h3 class="font-baloo font-bold mt-3">Conocer la asociación</h3>
+            <p class="text-sm text-tinta-suave mt-1">Qué hacemos y cómo acompañamos a las familias</p>
+          </a>
+          <a href="#contacto" class="nav-scroll block bg-white rounded-3xl p-6 shadow-md hover:-translate-y-1 transition">
+            <div class="text-3xl">✉️</div>
+            <h3 class="font-baloo font-bold mt-3">Escribirnos</h3>
+            <p class="text-sm text-tinta-suave mt-1">Te contestamos a la brevedad</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="px-[6vw] py-16 bg-azul-claro" id="nosotros">
+        <div class="max-w-2xl mx-auto text-center mb-12">
+          <span class="inline-block bg-cielo text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Nuestra labor</span>
+          <h2 class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Así acompañamos a cada familia</h2>
+          <p class="text-tinta-suave mt-2">Un equipo, muchas formas de ayudar.</p>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+          <div class="bg-cielo rounded-3xl p-6 text-center">
+            <div class="text-3xl">🧩</div>
+            <h3 class="font-baloo font-bold mt-3">Terapias</h3>
+            <p class="text-sm text-tinta-suave mt-1">Sesiones individuales con especialistas.</p>
+          </div>
+          <div class="bg-cielo rounded-3xl p-6 text-center">
+            <div class="text-3xl">🌊</div>
+            <h3 class="font-baloo font-bold mt-3">Salas sensoriales</h3>
+            <p class="text-sm text-tinta-suave mt-1">Espacios de calma y autorregulación.</p>
+          </div>
+          <div class="bg-cielo rounded-3xl p-6 text-center">
+            <div class="text-3xl">👨‍👩‍👧</div>
+            <h3 class="font-baloo font-bold mt-3">Talleres para familias</h3>
+            <p class="text-sm text-tinta-suave mt-1">Herramientas para el día a día en casa.</p>
+          </div>
+          <div class="bg-cielo rounded-3xl p-6 text-center">
+            <div class="text-3xl">🤝</div>
+            <h3 class="font-baloo font-bold mt-3">Comunidad</h3>
+            <p class="text-sm text-tinta-suave mt-1">Familias que se acompañan entre sí.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="px-[6vw] py-16" id="noticias">
+        <div class="max-w-2xl mx-auto text-center mb-12">
+          <span class="inline-block bg-white text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Novedades</span>
+          <h2 class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Últimas noticias</h2>
+          <p class="text-tinta-suave mt-2">Tocá "Leer noticia completa" para ver la nota entera.</p>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto" id="gridNoticias"></div>
+        <div class="max-w-6xl mx-auto mt-6" id="piePublicoVacio"></div>
+      </section>
+
+      <section class="px-[6vw] py-20 text-center bg-azul-fuerte text-white" id="contacto">
+        <h2 class="font-baloo font-extrabold text-3xl">¿Querés sumarte a Mi Mundo Azul?</h2>
+        <p class="mt-3 text-white/85 max-w-xl mx-auto">Escribinos y te respondemos a la brevedad. Estamos para ayudarte.</p>
+        <a href="mailto:hola@mimundoazul.org" class="boton boton--sol mt-8"><span>✉️</span> Escribinos ahora</a>
+      </section>
+
+    </main>
+
+    <footer class="text-center py-8 text-tinta-suave text-sm">
+      <p>© <span id="anioFooter"></span> Mi Mundo Azul · Asociación civil.</p>
+    </footer>
+  </div>
+
+  <!-- ================= LOGIN =================
+      No es un archivo aparte: es una sección dentro de index.html que se
+      muestra/oculta con la clase "hidden" de Tailwind. Se activa con el
+      hash de la URL (index.html#login), así el estado queda reflejado
+      en la barra de direcciones en vez de vivir solo en memoria de JS. -->
+  <div class="hidden fixed inset-0 bg-cielo z-30 overflow-y-auto" id="seccionLogin">
+    <div class="min-h-full flex items-center justify-center px-6 py-12">
+      <div class="bg-white rounded-3xl shadow-xl p-8 w-full max-w-md">
+        <div class="logo-circulo mx-auto"></div>
+        <h2 class="font-baloo font-extrabold text-2xl text-azul-oscuro text-center mt-4">Entrar al panel</h2>
+        <p class="text-tinta-suave text-center text-sm mt-1">Este espacio es solo para el equipo que administra y publica noticias.</p>
+        <div id="errorLogin" class="mt-4"></div>
+        <form id="formLogin" class="mt-4 space-y-4">
+          <div>
+            <label for="loginUsuario" class="block text-sm font-bold mb-1">👤 Tu usuario</label>
+            <input type="text" id="loginUsuario" autocomplete="username" required
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          </div>
+          <div class="relative">
+            <label for="loginPassword" class="block text-sm font-bold mb-1">🔒 Tu contraseña</label>
+            <input type="password" id="loginPassword" autocomplete="current-password" required
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+            <button type="button" id="btnMostrarPass" aria-label="Mostrar contraseña"
+              class="absolute right-3 top-[38px] text-lg">👁️</button>
+          </div>
+          <button type="submit" class="boton boton--azul w-full">Entrar</button>
+        </form>
+        <div class="mt-5 bg-cielo rounded-2xl p-4 text-sm text-tinta-suave leading-relaxed">
+          <strong class="text-tinta">Para probar el sitio, usá estos datos:</strong><br>
+          👩‍💼 Administración → usuario <b>admin</b> · contraseña <b>admin123</b><br><br>
+          ✍️ Editor/a → usuario <b>editora1</b> · contraseña <b>editor123</b>
+        </div>
+        <button class="boton boton--blanco w-full mt-5" id="volverSitioLogin">← Volver al sitio</button>
+      </div>
     </div>
   </div>
-  <button class="boton boton--azul" id="btnIrLogin">
-    <span>🔑</span> Entrar al panel del equipo
-  </button>
-</header>
-
-<!-- ================= CONTENIDO PÚBLICO ================= -->
-<div id="contenidoPublico">
-  <main>
-
-    <section class="px-[6vw] py-20 text-center max-w-3xl mx-auto" id="inicio">
-      <h1 class="font-baloo font-extrabold text-4xl md:text-5xl text-azul-oscuro leading-tight">
-        Acompañamos a niñas y niños con autismo y a sus familias
-      </h1>
-      <p class="mt-5 text-lg text-tinta-suave">
-        Elegí qué querés hacer. Todos los botones te llevan directo a lo que necesitás, sin vueltas.
-      </p>
-      <div class="mt-10 grid gap-5 sm:grid-cols-3 text-left">
-        <a href="#noticias" class="nav-scroll block bg-white rounded-3xl p-6 shadow-md hover:-translate-y-1 transition">
-          <div class="text-3xl">📰</div>
-          <h3 class="font-baloo font-bold mt-3">Ver las noticias</h3>
-          <p class="text-sm text-tinta-suave mt-1">Novedades, talleres e historias de la asociación</p>
-        </a>
-        <a href="#nosotros" class="nav-scroll block bg-white rounded-3xl p-6 shadow-md hover:-translate-y-1 transition">
-          <div class="text-3xl">💙</div>
-          <h3 class="font-baloo font-bold mt-3">Conocer la asociación</h3>
-          <p class="text-sm text-tinta-suave mt-1">Qué hacemos y cómo acompañamos a las familias</p>
-        </a>
-        <a href="#contacto" class="nav-scroll block bg-white rounded-3xl p-6 shadow-md hover:-translate-y-1 transition">
-          <div class="text-3xl">✉️</div>
-          <h3 class="font-baloo font-bold mt-3">Escribirnos</h3>
-          <p class="text-sm text-tinta-suave mt-1">Te contestamos a la brevedad</p>
-        </a>
-      </div>
-    </section>
-
-    <section class="px-[6vw] py-16 bg-morado-claro" id="nosotros">
-      <div class="max-w-2xl mx-auto text-center mb-12">
-        <span class="inline-block bg-cielo text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Nuestra labor</span>
-        <h2 class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Así acompañamos a cada familia</h2>
-        <p class="text-tinta-suave mt-2">Un equipo, muchas formas de ayudar.</p>
-      </div>
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
-        <div class="bg-cielo rounded-3xl p-6 text-center">
-          <div class="text-3xl">🧩</div>
-          <h3 class="font-baloo font-bold mt-3">Terapias</h3>
-          <p class="text-sm text-tinta-suave mt-1">Sesiones individuales con especialistas.</p>
-        </div>
-        <div class="bg-cielo rounded-3xl p-6 text-center">
-          <div class="text-3xl">🌊</div>
-          <h3 class="font-baloo font-bold mt-3">Salas sensoriales</h3>
-          <p class="text-sm text-tinta-suave mt-1">Espacios de calma y autorregulación.</p>
-        </div>
-        <div class="bg-cielo rounded-3xl p-6 text-center">
-          <div class="text-3xl">👨‍👩‍👧</div>
-          <h3 class="font-baloo font-bold mt-3">Talleres para familias</h3>
-          <p class="text-sm text-tinta-suave mt-1">Herramientas para el día a día en casa.</p>
-        </div>
-        <div class="bg-cielo rounded-3xl p-6 text-center">
-          <div class="text-3xl">🤝</div>
-          <h3 class="font-baloo font-bold mt-3">Comunidad</h3>
-          <p class="text-sm text-tinta-suave mt-1">Familias que se acompañan entre sí.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="px-[6vw] py-16" id="noticias">
-      <div class="max-w-2xl mx-auto text-center mb-12">
-        <span class="inline-block bg-white text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Novedades</span>
-        <h2 class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Últimas noticias</h2>
-        <p class="text-tinta-suave mt-2">Tocá "Leer noticia completa" para ver la nota entera.</p>
-      </div>
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto" id="gridNoticias"></div>
-      <div class="max-w-6xl mx-auto mt-6" id="piePublicoVacio"></div>
-    </section>
-
-    <section class="px-[6vw] py-20 text-center bg-azul-fuerte text-white" id="contacto">
-      <h2 class="font-baloo font-extrabold text-3xl">¿Querés sumarte a Mi Mundo Azul?</h2>
-      <p class="mt-3 text-white/85 max-w-xl mx-auto">Escribinos y te respondemos a la brevedad. Estamos para ayudarte.</p>
-      <a href="mailto:hola@mimundoazul.org" class="boton boton--sol mt-8"><span>✉️</span> Escribinos ahora</a>
-    </section>
-
-  </main>
-
-  <footer class="text-center py-8 text-tinta-suave text-sm">
-    <p>© <span id="anioFooter"></span> Mi Mundo Azul · Asociación civil.</p>
-  </footer>
-</div>
-
-<!-- ================= LOGIN =================
-     No es un archivo aparte: es una sección dentro de index.html que se
-     muestra/oculta con la clase "hidden" de Tailwind. Se activa con el
-     hash de la URL (index.html#login), así el estado queda reflejado
-     en la barra de direcciones en vez de vivir solo en memoria de JS. -->
-<div class="hidden fixed inset-0 bg-cielo z-30 overflow-y-auto" id="seccionLogin">
-  <div class="min-h-full flex items-center justify-center px-6 py-12">
-    <div class="bg-white rounded-3xl shadow-xl p-8 w-full max-w-md">
-      <div class="logo-circulo mx-auto"></div>
-      <h2 class="font-baloo font-extrabold text-2xl text-azul-oscuro text-center mt-4">Entrar al panel</h2>
-      <p class="text-tinta-suave text-center text-sm mt-1">Este espacio es solo para el equipo que administra y publica noticias.</p>
-      <div id="errorLogin" class="mt-4"></div>
-      <form id="formLogin" class="mt-4 space-y-4">
-        <div>
-          <label for="loginUsuario" class="block text-sm font-bold mb-1">👤 Tu usuario</label>
-          <input type="text" id="loginUsuario" autocomplete="username" required
-            class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
-        </div>
-        <div class="relative">
-          <label for="loginPassword" class="block text-sm font-bold mb-1">🔒 Tu contraseña</label>
-          <input type="password" id="loginPassword" autocomplete="current-password" required
-            class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
-          <button type="button" id="btnMostrarPass" aria-label="Mostrar contraseña"
-            class="absolute right-3 top-[38px] text-lg">👁️</button>
-        </div>
-        <button type="submit" class="boton boton--azul w-full">Entrar</button>
-      </form>
-      <div class="mt-5 bg-cielo rounded-2xl p-4 text-sm text-tinta-suave leading-relaxed">
-        <strong class="text-tinta">Para probar el sitio, usá estos datos:</strong><br>
-        👩‍💼 Administración → usuario <b>admin</b> · contraseña <b>admin123</b><br><br>
-        ✍️ Editor/a → usuario <b>editora1</b> · contraseña <b>editor123</b>
-      </div>
-      <button class="boton boton--blanco w-full mt-5" id="volverSitioLogin">← Volver al sitio</button>
-    </div>
-  </div>
-</div>
 
 <div class="toast" id="toast"></div>
+</section>
 
 <!-- ########################################################## 
      FIN ARCHIVO: index.html
