@@ -33,7 +33,7 @@ function preguntarConfirmacion(opciones){
 
   function cerrarSesion(){
     clearSession();
-    window.location.href = '../../index.html?salida=1';
+    window.location.href = '../../index.html';
   }
 
   /* =========================================================

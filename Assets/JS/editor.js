@@ -36,7 +36,7 @@
 
   function cerrarSesion(){
     clearSession();
-    window.location.href = '../../index.html?salida=1';
+    window.location.href = '../../index.html';
   }
 
   /* =========================================================
@@ -51,7 +51,7 @@
   sembrarDatos();
   const sesion = getSession();
   if(!sesion || sesion.role !== 'editor'){
-    window.location.href = '../../index.html';
+    window.location.href = '../index.html';
   } else {
     $('#nombreEditor').textContent = sesion.name;
     mostrarToast('Bienvenido/a al panel de editor', '✍️');
