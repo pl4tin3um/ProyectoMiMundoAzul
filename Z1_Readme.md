@@ -20,3 +20,7 @@ Estuve cambiando el icono
 
 Kevin Fontes 18/08
 Separacion del js y html
+
+
+Kevin Fontes  11/9
+arrelgle las rutas que no te dejaba volver al index, y cambie algunos emojis por los iconos de boostrap que quedan mejor, mejore la visualizacion de el main de la pagina y un bug con la previsualizacion de noticias
