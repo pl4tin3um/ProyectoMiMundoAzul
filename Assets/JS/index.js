@@ -45,14 +45,14 @@
     }
     $('#piePublicoVacio').innerHTML = '';
     grid.innerHTML = noticias.map(n => `
-      <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col">
+      <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col h-full">
         <div class="tarjeta-noticia__imagen h-44 relative" style="background-image:url('${n.image || placeholderImg(n.id)}')">
           <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date)}</span>
         </div>
-        <div class="p-5 flex flex-col flex-1">
-          <h3 class="font-baloo font-bold text-lg text-azul-oscuro">${escapeHTML(n.title)}</h3>
-          <p class="text-sm text-tinta-suave mt-2 flex-1">${escapeHTML(n.excerpt)}</p>
-          <button class="boton boton--azul mt-4 self-start" data-abrir-noticia="${n.id}">
+        <div class="p-5 flex flex-col flex-1 gap-3">
+          <h3 class="font-baloo font-bold text-lg text-azul-oscuro break-words" style="overflow-wrap:anywhere;">${escapeHTML(n.title)}</h3>
+          <p class="text-sm text-tinta-suave mt-0 flex-1 break-words leading-relaxed" style="min-height:0;">${escapeHTML(n.excerpt)}</p>
+          <button class="boton boton--azul self-start mt-auto" data-abrir-noticia="${n.id}">
             <span>📖</span> Leer noticia completa
           </button>
         </div>

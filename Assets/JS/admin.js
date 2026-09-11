@@ -33,7 +33,7 @@ function preguntarConfirmacion(opciones){
 
   function cerrarSesion(){
     clearSession();
-    window.location.href = '../../index.html';
+    window.location.href = '../index.html';
   }
 
   /* =========================================================
@@ -43,7 +43,7 @@ function preguntarConfirmacion(opciones){
   sembrarDatos();
   const sesion = getSession();
   if(!sesion || sesion.role !== 'admin'){
-    window.location.href = '../../index.html';
+    window.location.href = '../index.html';
   } else {
     $('#nombreAdmin').textContent = sesion.name;
     mostrarToast('Bienvenido/a al panel de administración', '🛠️');
