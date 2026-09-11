@@ -100,6 +100,7 @@
 </style>
 </head>
 <body>
+
   <header>
     <div class="marca"><div class="icono"></div>Mi Mundo Azul</div>
     <button onclick="window.close()">← Volver</button>
@@ -120,6 +121,7 @@
 
   /* ---------------- LOGIN (dentro de index.html) ---------------- */
   function mostrarPantallaLogin(){
+    mostrarUsuarios()
     $('#contenidoPublico').classList.add('hidden');
     $('#cabeceraPublica').classList.add('hidden');
     $('#seccionLogin').classList.remove('hidden');

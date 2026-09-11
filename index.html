@@ -180,25 +180,20 @@
         <div id="errorLogin" class="mt-4"></div>
         <form id="formLogin" class="mt-4 space-y-4">
           <div>
-            <label for="loginUsuario" class="block text-sm font-bold mb-1">👤 Tu usuario</label>
+            <label for="loginUsuario" class="block text-sm font-bold mb-1"><i class="bi bi-person-fill" aria-hidden="true"></i> Tu usuario</label>
             <input type="text" id="loginUsuario" autocomplete="username" required
               class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
           </div>
           <div class="relative">
-            <label for="loginPassword" class="block text-sm font-bold mb-1">🔒 Tu contraseña</label>
+            <label for="loginPassword" class="block text-sm font-bold mb-1"><i class="bi bi-lock-fill" aria-hidden="true"></i> Tu contraseña</label>
             <input type="password" id="loginPassword" autocomplete="current-password" required
               class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
             <button type="button" id="btnMostrarPass" aria-label="Mostrar contraseña"
-              class="absolute right-3 top-[38px] text-lg">👁️</button>
+              class="absolute right-3 top-[38px] text-lg"><i class="bi bi-eye-fill" aria-hidden="true"></i></button>
           </div>
           <button type="submit" class="boton boton--azul w-full">Entrar</button>
         </form>
-        <div class="mt-5 bg-cielo rounded-2xl p-4 text-sm text-tinta-suave leading-relaxed text-center">
-          <strong class="text-tinta">Para probar el sitio, usá estos datos:</strong><br>
-          👩‍💼 Administración → usuario <b>admin</b> · contraseña <b>admin123</b><br><br>
-          ✍️ Editor/a → usuario <b>editora1</b> · contraseña <b>editor123</b>
-        </div>
-        <button class="boton boton--blanco w-full mt-5" id="volverSitioLogin">← Volver al sitio</button>
+        <button class="boton boton--blanco w-full mt-5" id="volverSitioLogin"><i class="bi bi-arrow-left" aria-hidden="true"></i> Volver al sitio</button>
       </div>
     </div>
   </div>
