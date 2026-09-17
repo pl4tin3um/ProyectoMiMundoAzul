@@ -1,12 +1,128 @@
-/* =========================================================
-     BLOQUE 3 — PANEL DE EDITOR/A
-     Borradores con autoguardado, y alta/edición/eliminación
-     de noticias publicadas.
-  ========================================================== */
+"use strict";
+  function preguntarConfirmacion(opciones){
+    $('#iconoConfirmar').textContent = opciones.icono || '❓';
+    $('#tituloConfirmar').textContent = opciones.titulo || '¿Estás seguro/a?';
+    $('#textoConfirmar').textContent = opciones.texto || '';
+    $('#btnConfirmarSi').textContent = opciones.textoSi || 'Sí, continuar';
+    const modal = $('#modalConfirmar');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
 
+    const btnSi = $('#btnConfirmarSi');
+    const btnNo = $('#btnConfirmarNo');
+    function limpiar(){
+      modal.classList.add('hidden'); modal.classList.remove('flex');
+      btnSi.removeEventListener('click', alConfirmar);
+      btnNo.removeEventListener('click', alCancelar);
+    }
+    function alConfirmar(){ limpiar(); if(opciones.onSi) opciones.onSi(); }
+    function alCancelar(){ limpiar(); }
+    btnSi.addEventListener('click', alConfirmar);
+    btnNo.addEventListener('click', alCancelar);
+  }
+  function mostrarAviso(texto){
+    $('#textoAviso').textContent = texto;
+    const modal = $('#modalAviso');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+  }
+  $('#btnCerrarAviso').addEventListener('click', ()=>{
+    const modal = $('#modalAviso');
+    modal.classList.add('hidden'); modal.classList.remove('flex');
+  });
+
+  function abrirModal(id){ const m = $('#'+id); m.classList.remove('hidden'); m.classList.add('flex'); }
+  function cerrarModal(id){ const m = $('#'+id); m.classList.add('hidden'); m.classList.remove('flex'); }
+  $$('[data-cerrar-modal]').forEach(btn=> btn.addEventListener('click', ()=> cerrarModal(btn.dataset.cerrarModal)));
+  $$('.fixed.inset-0.bg-black\\/50').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo){ fondo.classList.add('hidden'); fondo.classList.remove('flex'); } }));
+
+  function cerrarSesion(){
+    clearSession();
+    window.location.href = '../index.html';
+  }
+
+  /* =========================================================
+     PROTECCIÓN DE ACCESO (nueva — necesaria por la navegación real)
+     Antes, el panel de editor/a era solo una "vista" que JS mostraba
+     dentro de la misma página; nunca tenía una URL propia. Ahora que
+     editor.html es un archivo real, cualquiera podría escribir esa
+     dirección directo en el navegador sin haber iniciado sesión. Por
+     eso, apenas carga el archivo, se revisa la sesión y si no es
+     válida (o no es de un/a editor/a) se redirige a ../../index.html.
+  ========================================================== */
+  sembrarDatos();
+  const sesion = getSession();
+  if(!sesion || sesion.role !== 'editor'){
+    window.location.href = '../index.html';
+  } else {
+    $('#nombreEditor').textContent = sesion.name;
+    mostrarToast('Bienvenido/a al panel de editor', '✍️');
+    iniciarPanelEditor();
+  }
+
+  /* =========================================================
+     PANEL DE EDITOR/A — reciclado del Bloque 3 original.
+     Único cambio real de lógica: ya NO se llama a renderGridPublico()
+     después de guardar/eliminar una noticia, porque esa función vive
+     en ../../index.html, en OTRO documento HTML. No hace falta llamarla: la
+     próxima vez que alguien entre a ../../index.html, la grilla pública se
+     arma de nuevo leyendo localStorage, así que ya va a mostrar los
+     cambios sin ninguna sincronización manual entre páginas.
+  ========================================================== */
   let draftKeyActual = null;
 
- 
+  function iniciarPanelEditor(){
+    renderPanelEditor();
+
+    $('#btnNuevaNoticia').addEventListener('click', ()=> abrirFormularioNoticia(null));
+    $('#btnLogoutEditor').addEventListener('click', cerrarSesion);
+
+    ['noticiaTitulo','noticiaImagen','noticiaExtracto','noticiaCuerpo'].forEach(id=>{
+      $('#'+id).addEventListener('input', programarGuardadoBorrador);
+    });
+
+    $('#btnDescartarBorrador').addEventListener('click', ()=>{
+      if(!draftKeyActual) return;
+      preguntarConfirmacion({
+        icono:'🗑️', titulo:'¿Descartar los cambios?',
+        texto:'Lo que escribiste en esta noticia sin publicar se va a perder.',
+        textoSi:'Sí, descartar',
+        onSi(){
+          const drafts = DB.getDrafts();
+          delete drafts[draftKeyActual];
+          DB.setDrafts(drafts);
+          cerrarModal('modalNoticia');
+          renderPanelEditor();
+          mostrarToast('Borrador descartado', '🗑️');
+        }
+      });
+    });
+
+    $('#formNoticia').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const s = getSession();
+      const id = $('#noticiaId').value || uid('n');
+      const titulo = $('#noticiaTitulo').value.trim();
+      const extracto = $('#noticiaExtracto').value.trim();
+      const cuerpo = $('#noticiaCuerpo').value.trim();
+      const imagen = $('#noticiaImagen').value.trim();
+
+      let noticias = DB.getNews();
+      const existente = noticias.find(n=>n.id===id);
+      if(existente){
+        existente.title = titulo; existente.excerpt = extracto; existente.body = cuerpo; existente.image = imagen;
+      } else {
+        noticias.push({ id, title: titulo, excerpt: extracto, body: cuerpo, image: imagen, author: s.name, date: new Date().toISOString() });
+      }
+      DB.setNews(noticias);
+
+      const drafts = DB.getDrafts();
+      delete drafts[draftKeyActual];
+      DB.setDrafts(drafts);
+
+      cerrarModal('modalNoticia');
+      renderPanelEditor();
+      mostrarToast(existente ? 'Noticia actualizada' : 'Noticia publicada', '✔️');
+    });
+  }
 
   function renderPanelEditor(){
     renderBloqueBorradores();
@@ -23,21 +139,21 @@
     if(propios.length === 0){ bloque.innerHTML = ''; return; }
 
     bloque.innerHTML = `
-      <div class="banner-info">
-        <span class="banner-info__icono">💾</span>
-        <div><strong>Tenés noticias sin terminar de publicar</strong>Las vamos guardando solas mientras escribís, para que no se pierdan.</div>
+      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-3 mb-6">
+        <span class="text-2xl">💾</span>
+        <div><strong class="block">Tenés noticias sin terminar de publicar</strong><span class="text-sm text-tinta-suave">Las vamos guardando solas mientras escribís, para que no se pierdan.</span></div>
       </div>
-      <div class="lista" style="margin-bottom:36px;">
+      <div class="space-y-3 mb-9">
         ${propios.map(([key, d]) => `
-          <div class="fila fila--borrador">
-            <div class="fila__info">
-              <div class="fila__icono">📝</div>
-              <div class="fila__texto">
-                <h3>${escapeHTML(d.title || 'Todavía sin título')}<span class="pill-borrador">Sin publicar</span></h3>
-                <p>Guardado el ${new Date(d.updatedAt).toLocaleString('es-AR')}</p>
+          <div class="bg-white rounded-2xl p-4 flex items-center justify-between gap-3 flex-wrap">
+            <div class="flex items-center gap-3">
+              <div class="text-2xl">📝</div>
+              <div>
+                <h3 class="font-bold">${escapeHTML(d.title || 'Todavía sin título')}<span class="pill-borrador">Sin publicar</span></h3>
+                <p class="text-sm text-tinta-suave">Guardado el ${new Date(d.updatedAt).toLocaleString('es-AR')}</p>
               </div>
             </div>
-            <div class="fila__acciones">
+            <div class="flex gap-2">
               <button class="boton boton--azul boton--chico" data-continuar-borrador="${key}">▶️ Continuar</button>
               <button class="boton boton--rojo boton--chico" data-borrar-borrador="${key}">🗑️ Descartar</button>
             </div>
@@ -77,19 +193,19 @@
     const cont = $('#listaNoticiasEditor');
     const noticias = DB.getNews();
     if(noticias.length === 0){
-      cont.innerHTML = '<div class="solo-lectura-vacio">📭 Todavía no hay noticias publicadas. Tocá "+ Crear noticia nueva" para empezar.</div>';
+      cont.innerHTML = '<div class="text-center text-tinta-suave py-8">📭 Todavía no hay noticias publicadas. Tocá "+ Crear noticia nueva" para empezar.</div>';
       return;
     }
     cont.innerHTML = noticias.map(n => `
-      <div class="fila">
-        <div class="fila__info">
-          <div class="fila__icono">📰</div>
-          <div class="fila__texto">
-            <h3>${escapeHTML(n.title)}</h3>
-            <p>${formatearFecha(n.date)} · ${escapeHTML(n.author || '')}</p>
+      <div class="bg-white rounded-2xl p-4 flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3">
+          <div class="text-2xl">📰</div>
+          <div>
+            <h3 class="font-bold">${escapeHTML(n.title)}</h3>
+            <p class="text-sm text-tinta-suave">${formatearFecha(n.date)} · ${escapeHTML(n.author || '')}</p>
           </div>
         </div>
-        <div class="fila__acciones">
+        <div class="flex gap-2">
           <button class="boton boton--azul boton--chico" data-editar-noticia="${n.id}">✏️ Editar</button>
           <button class="boton boton--rojo boton--chico" data-eliminar-noticia="${n.id}">🗑️ Eliminar</button>
         </div>
@@ -109,15 +225,12 @@
           onSi(){
             DB.setNews(DB.getNews().filter(n=>n.id!==id));
             renderListaNoticiasEditor();
-            renderGridPublico();
             mostrarToast('Noticia eliminada', '🗑️');
           }
         });
       });
     });
   }
-
-  $('#btnNuevaNoticia').addEventListener('click', ()=> abrirFormularioNoticia(null));
 
   function abrirFormularioNoticia(idNoticia, borradorForzado){
     const s = getSession();
@@ -150,14 +263,14 @@
 
     if(borradorExistente && !borradorForzado){
       preguntarConfirmacion({
-        icono:'📝',
-        titulo:'Encontramos un borrador',
+        icono:'📝', titulo:'Encontramos un borrador',
         texto:'Hay una versión sin publicar de esta noticia. ¿Querés seguir donde la dejaste?',
         textoSi:'Sí, continuar con el borrador',
         onSi(){ continuarConDatos(true); }
       });
       $('#btnConfirmarNo').onclick = function(){
-        $('#modalConfirmar').classList.remove('activo');
+        const modal = $('#modalConfirmar');
+        modal.classList.add('hidden'); modal.classList.remove('flex');
         continuarConDatos(false);
       };
     } else {
@@ -165,7 +278,6 @@
     }
   }
 
-  /* --- Autoguardado de borrador con debounce --- */
   let temporizadorGuardado;
   function programarGuardadoBorrador(){
     clearTimeout(temporizadorGuardado);
@@ -189,56 +301,3 @@
     $('#textoEstadoGuardado').textContent = 'Guardado automático a las ' + new Date().toLocaleTimeString('es-AR');
     estado.classList.add('activo');
   }
-  ['noticiaTitulo','noticiaImagen','noticiaExtracto','noticiaCuerpo'].forEach(id=>{
-    $('#'+id).addEventListener('input', programarGuardadoBorrador);
-  });
-
-  $('#btnDescartarBorrador').addEventListener('click', ()=>{
-    if(!draftKeyActual) return;
-    preguntarConfirmacion({
-      icono:'🗑️', titulo:'¿Descartar los cambios?',
-      texto:'Lo que escribiste en esta noticia sin publicar se va a perder.',
-      textoSi:'Sí, descartar',
-      onSi(){
-        const drafts = DB.getDrafts();
-        delete drafts[draftKeyActual];
-        DB.setDrafts(drafts);
-        cerrarModal('modalNoticia');
-        renderPanelEditor();
-        mostrarToast('Borrador descartado', '🗑️');
-      }
-    });
-  });
-
-  const formNoticia = $('#formNoticia');
-  if(formNoticia){
-    formNoticia.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const s = getSession();
-      const id = $('#noticiaId').value || uid('n');
-      const titulo = $('#noticiaTitulo').value.trim();
-      const extracto = $('#noticiaExtracto').value.trim();
-      const cuerpo = $('#noticiaCuerpo').value.trim();
-      const imagen = $('#noticiaImagen').value.trim();
-
-      let noticias = DB.getNews();
-      const existente = noticias.find(n=>n.id===id);
-      if(existente){
-        existente.title = titulo; existente.excerpt = extracto; existente.body = cuerpo; existente.image = imagen;
-      } else {
-        noticias.push({ id, title: titulo, excerpt: extracto, body: cuerpo, image: imagen, author: s.name, date: new Date().toISOString() });
-      }
-      DB.setNews(noticias);
-
-      const drafts = DB.getDrafts();
-      delete drafts[draftKeyActual];
-      DB.setDrafts(drafts);
-
-      cerrarModal('modalNoticia');
-      renderPanelEditor();
-      renderGridPublico();
-      mostrarToast(existente ? 'Noticia actualizada' : 'Noticia publicada', '✔️');
-    });
-  }
-
-  $('#btnLogoutEditor').addEventListener('click', cerrarSesion);
