@@ -1,61 +1,150 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-  <link rel="stylesheet" href="../assets/css/styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          'azul-fuerte': '#1B5E8C',
+          'azul-oscuro': '#123A56',
+          'azul-medio': '#2479A8',
+          'azul-claro': '#4FA3D1',
+          'azul-suave': '#B9DDF2',
+          'cielo': '#EAF4FB',
+          'cielo-medio': '#D5ECF8',
+          'cielo-oscuro': '#C1E0F0',
+          'sol': '#FFC857',
+          'sol-claro': '#FFE29A',
+          'sol-oscuro': '#E5A82F',
+          'tinta': '#16324A',
+          'tinta-suave': '#3F5A72',
+          'tinta-clara': '#668197',
+          'blanco': '#FFFFFF',
+          'gris-claro': '#F3F6F8',
+          'gris': '#D9E1E6',
+          'gris-oscuro': '#8A9AA8',
+          'verde': '#4CAF7D',
+          'verde-claro': '#D9F2E5',
+          'rojo': '#D95C5C',
+          'rojo-claro': '#F8DADA',
+          'morado': '#7569A8',
+          'morado-claro': '#E5E1F3',
+        },
+
+        fontFamily: {
+          baloo: ['"Baloo 2"', 'sans-serif'],
+          nunito: ['Nunito', 'sans-serif'],
+        },
+
+        borderRadius: {
+          '3xl': '1.75rem'
+        }
+      }
+    }
+  };
+</script>
+
+<link rel="stylesheet" href="admin.css">
 </head>
 
-<body>
-    <footer>
-  <p>© <span id="anioFooter"></span> Mi Mundo Azul · Asociación civil.</p>
-</footer>
-<!-- ================= PANEL ADMIN ================= -->
-<div class="oculto" id="vistaAdmin">
-  <div class="barra-panel">
-    <div class="marca"><div class="marca__icono"></div><div class="marca__texto" style="font-size:1.15rem;">Panel de administración</div></div>
-    <div class="barra-panel__acciones">
+<body class="bg-cielo text-tinta font-nunito antialiased">
+
+<div class="bg-slate-900 text-verde text-center text-sm py-2 px-4 font-mono">
+  admin.html — Este es un prototipo de prueba para el proyecto Mi Mundo Azul. No es un sitio en producción.
+</div>
+
+<!-- ======================================================================
+     GRUPO DE PÁGINA: SITIO PÚBLICO (index.html + index.css + index.js)
+====================================================================== -->
+<section id="pagina-index" class="mb-6">
+  <div class="bg-azul-fuerte text-white text-center py-3 font-baloo font-bold tracking-wide">
+    📄 PÁGINA 3 de 3 — admin.html + admin.css + admin.js
+  </div>
+
+  <div class="flex items-center justify-between gap-4 flex-wrap px-[5vw] py-4 bg-white shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="logo-circulo"></div>
+      <div class="font-baloo font-bold text-lg">Panel de administración</div>
+    </div>
+    <div class="flex items-center gap-3">
       <span class="placa-rol">👩‍💼 <span id="nombreAdmin"></span></span>
       <button class="boton boton--blanco boton--chico" id="btnLogoutAdmin">🚪 Salir</button>
     </div>
   </div>
-  <div class="panel">
-    <div class="panel__cabecera">
-      <h1>Cuentas del equipo editorial</h1>
-      <p>Acá creás y eliminás las cuentas de las personas que publican noticias.</p>
-    </div>
-    <button class="boton boton--sol panel__crear" id="btnNuevoEditor"><span class="boton__icono">➕</span> Crear nueva cuenta de editor/a</button>
-    <div class="lista" id="listaEditores"></div>
-  </div>
-</div>
 
-<!-- ================= MODAL: CREAR EDITOR ================= -->
-<div class="modal-fondo" id="modalEditor">
-  <div class="modal">
-    <div class="modal__cabecera">
-      <h2>➕ Nueva cuenta de editor/a</h2>
-      <button class="modal__cerrar" data-cerrar-modal="modalEditor">✕</button>
+  <div class="max-w-4xl mx-auto px-[5vw] md:px-6 py-10">
+    <div class="mb-8">
+      <h1 class="font-baloo font-extrabold text-2xl text-azul-oscuro">Cuentas del equipo editorial</h1>
+      <p class="text-tinta-suave mt-1">Acá creás y eliminás las cuentas de las personas que publican noticias.</p>
     </div>
-    <form id="formNuevoEditor">
-      <div class="campo">
-        <label for="editorNombre">🙂 Nombre completo</label>
-        <input type="text" id="editorNombre" required>
-      </div>
-      <div class="campo">
-        <label for="editorUsuario">👤 Usuario para entrar</label>
-        <input type="text" id="editorUsuario" required>
-      </div>
-      <div class="campo campo-con-boton">
-        <label for="editorPassword">🔒 Contraseña</label>
-        <input type="text" id="editorPassword" required>
-        <small>Se guarda solo en este navegador, con fines de prueba.</small>
-      </div>
-      <button type="submit" class="boton boton--verde boton--ancho">✔️ Crear cuenta</button>
-    </form>
+    <button class="boton boton--sol mb-8" id="btnNuevoEditor"><span>➕</span> Crear nueva cuenta de editor/a</button>
+    <div class="space-y-3" id="listaEditores"></div>
   </div>
-</div>
-    <script src="../assets/js/common.js"></script>
-    <script src="../assets/js/admins.js"></script>
+
+  <!-- ================= MODAL: CREAR EDITOR ================= -->
+  <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalEditor">
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-md p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-baloo font-bold text-xl">➕ Nueva cuenta de editor/a</h2>
+        <button class="text-xl text-tinta-suave" data-cerrar-modal="modalEditor">✕</button>
+      </div>
+      <form id="formNuevoEditor" class="space-y-4">
+        <div>
+          <label for="editorNombre" class="block text-sm font-bold mb-1">🙂 Nombre completo</label>
+          <input type="text" id="editorNombre" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+        </div>
+        <div>
+          <label for="editorUsuario" class="block text-sm font-bold mb-1">👤 Usuario para entrar</label>
+          <input type="text" id="editorUsuario" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+        </div>
+        <div>
+          <label for="editorPassword" class="block text-sm font-bold mb-1">🔒 Contraseña</label>
+          <input type="text" id="editorPassword" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          <small class="text-xs text-tinta-suave">Se guarda solo en este navegador, con fines de prueba.</small>
+        </div>
+        <button type="submit" class="boton boton--verde w-full">✔️ Crear cuenta</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODALES GENÉRICOS (confirmar / aviso) + TOAST ================= -->
+  <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalConfirmar">
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 text-center">
+      <div class="text-4xl" id="iconoConfirmar">❓</div>
+      <h2 class="font-baloo font-bold text-lg mt-2" id="tituloConfirmar">¿Estás seguro/a?</h2>
+      <p class="text-tinta-suave text-sm mt-2" id="textoConfirmar"></p>
+      <div class="flex gap-3 justify-center mt-6">
+        <button class="boton boton--blanco" id="btnConfirmarNo">No, volver</button>
+        <button class="boton boton--rojo" id="btnConfirmarSi">Sí, continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalAviso">
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 text-center">
+      <div class="text-4xl">ℹ️</div>
+      <h2 class="font-baloo font-bold text-lg mt-2">Aviso</h2>
+      <p class="text-tinta-suave text-sm mt-2" id="textoAviso"></p>
+      <div class="flex justify-center mt-6">
+        <button class="boton boton--azul" id="btnCerrarAviso">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</section>
 </body>
+<script src="../Assets/JS/common.js"></script>
+<script src="../Assets/JS/admin.js"></script>
 </html>
