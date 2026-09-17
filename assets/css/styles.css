@@ -1,4 +1,4 @@
-/* ============ A2_styles.css - core tokens and base global styles ============ */
+/* ============ styles.css - core tokens and base global styles ============ */
 :root{
   --cielo:#EAF4FB;
   --cielo-medio:#CDE7F6;
@@ -44,7 +44,7 @@ ul{list-style:none;}
 :focus-visible{outline:4px solid var(--azul-fuerte); outline-offset:3px; border-radius:6px;}
 .oculto{display:none !important;}
 .solo-lectura-vacio{text-align:center; padding:56px 22px; background:var(--blanco); border-radius:var(--radio-lg); color:var(--tinta-suave); border:3px dashed var(--cielo-medio); font-size:1.05rem;}
-/* ============ B3_Admins.css - botón grande (patrón único reutilizado en todo el sitio) ============ */
+/* ============ b3_admins.css - botón grande (patrón único reutilizado en todo el sitio) ============ */
 .boton{
   display:inline-flex; align-items:center; justify-content:center; gap:12px;
   font-family:var(--font-titulo); font-weight:700; font-size:1.05rem;
@@ -67,7 +67,7 @@ ul{list-style:none;}
 .boton--chico{min-height:48px; padding:11px 22px; font-size:0.95rem;}
 .boton--ancho{width:100%;}
 
-\/* ============ C1_Editores.css - encabezado público y otras reglas de edición ============ *\/
+\/* ============ c1_editores.css - encabezado público y otras reglas de edición ============ *\/
 
 /* ============ ENCABEZADO PÚBLICO ============ */
 .boton{
@@ -258,7 +258,7 @@ footer{background:var(--azul-oscuro); color:rgba(255,255,255,0.7); text-align:ce
   width:52px; height:52px; border-radius:16px; background:var(--cielo); flex-shrink:0;
   display:flex; align-items:center; justify-content:center; font-size:1.5rem;
 }
-/* ============ A2_styles.css - lista y texto de fila en paneles internos ============ */
+/* ============ styles.css - lista y texto de fila en paneles internos ============ */
 .fila__texto h3{font-size:1.08rem; margin-bottom:4px; display:flex; align-items:center; flex-wrap:wrap; gap:8px;}
 .fila__texto p{font-size:0.92rem; color:var(--tinta-suave);}
 .fila__acciones{display:flex; gap:10px; flex-wrap:wrap;}

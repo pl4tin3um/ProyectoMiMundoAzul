@@ -1,5 +1,33 @@
 # ProyectoMiMundoAzul
 
+## Estructura
+
+```text
+.
+├── index.html
+├── pages/
+│   ├── admins.html
+│   └── editores.html
+├── assets/
+│   ├── css/
+│   │   ├── styles.css
+│   │   ├── admins.css
+│   │   └── editores.css
+│   ├── images/
+│   │   └── logo-mi-mundo-azul.jpeg
+│   └── js/
+│       ├── common.js
+│       ├── main.js
+│       ├── admins.js
+│       └── editores.js
+└── docs/
+	└── sections/
+```
+
+`index.html` es la entrada pública. Las páginas internas viven en `pages/`, mientras que los recursos compartidos están separados por tipo dentro de `assets/`.
+
+La explicación detallada de módulos, dependencias y flujo de ejecución está en [docs/architecture.md](docs/architecture.md).
+
 Fontes 22/06 9:45 ==> 10:27
 Cree los archivos index.html,styles.css,script.js
 Hice la estructura basica de la pagina header + body
