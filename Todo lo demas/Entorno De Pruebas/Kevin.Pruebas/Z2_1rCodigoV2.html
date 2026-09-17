@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Mundo Azul — ARCHIVO DE TRABAJO (para separar en 9 archivos)</title>
+
+<!--
+  ======================================================================
+  ⚠️  ESTE ARCHIVO NO ES UN ARCHIVO FINAL DEL PROYECTO.
+  ======================================================================
+  Es un archivo de TRABAJO que junta, en un solo documento, el contenido
+  de los 9 archivos finales que vas a armar vos:
+
+    1) index.html   4) editor.html   7) admin.html
+    2) index.css    5) editor.css    8) admin.css
+    3) index.js     6) editor.js     9) admin.js
+
+  Cada uno de los 9 bloques está marcado con un comentario grande tipo:
+
+      ##########################################################
+      ARCHIVO: index.html
+      ##########################################################
+
+  y termina con:
+
+      ##########################################################
+      FIN ARCHIVO: index.html
+      ##########################################################
+
+  Buscá esos comentarios (Ctrl+F "ARCHIVO:") para encontrar cada bloque
+  y copiarlo a su archivo final.
+
+  Además, cada uno de los 3 "grupos de página" (index / editor / admin)
+  está envuelto en un <section> con una banda de color arriba, para que
+  si abrís este archivo en el navegador puedas ver las 3 páginas, una
+  debajo de la otra, a modo de vista previa.
+
+  IMPORTANTE sobre esa vista previa: como las 3 páginas comparten este
+  mismo documento, algunos ids se repiten (por ejemplo "toast" existe en
+  las 3). Eso es válido y esperado SOLO en este archivo combinado: cuando
+  separes cada bloque en su archivo final, cada id vuelve a ser único
+  dentro de su propio documento y todo funciona sin problema. Por eso
+  también envolví el JS de cada página en una función autoejecutable
+  (function(){ ... })(); — es un envoltorio TEMPORAL, solo para que las
+  3 páginas puedan convivir en este archivo sin pisarse variables entre
+  sí. Cuando separes el código, ese envoltorio se saca (está indicado
+  con un comentario "QUITAR ESTA LÍNEA AL SEPARAR" en cada apertura y
+  cierre).
+
+  Al final de mi respuesta en el chat te explico, fuera del código,
+  cómo armar cada uno de los 9 archivos paso a paso.
+  ======================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<!--
+  Esta configuración de Tailwind (paleta de colores y tipografías propias
+  de Mi Mundo Azul) se repite igual en las 3 páginas porque cada archivo
+  HTML final es independiente y carga Tailwind por su cuenta. Los colores
+  están tomados tal cual del código original (los mismos que ya usaban
+  en la ventana de "noticia completa").
+-->
+<script>
+  tailwind = { config: {
+    theme: {
+      extend: {
+        colors: {
+          'azul-fuerte': '#1B5E8C',
+          'azul-oscuro': '#123A56',
+          'cielo':       '#EAF4FB',
+          'sol':         '#FFC857',
+          'tinta':       '#16324A',
+          'tinta-suave': '#3F5A72',
+        },
+        fontFamily: {
+          baloo:  ['"Baloo 2"', 'sans-serif'],
+          nunito: ['Nunito', 'sans-serif'],
+        },
+        borderRadius: { '3xl': '1.75rem' },
+      }
+    }
+  }};
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-cielo text-tinta font-nunito antialiased">
+
+<div class="bg-slate-900 text-cielo text-center text-sm py-2 px-4 font-mono">
+  Archivo combinado de trabajo — separar en 9 archivos (ver comentarios y explicación en el chat)
+</div>
+
+<!-- ======================================================================
+     GRUPO DE PÁGINA: SITIO PÚBLICO (index.html + index.css + index.js)
+====================================================================== -->
+<section id="pagina-index">
+<div class="bg-azul-fuerte text-white text-center py-3 font-baloo font-bold tracking-wide">
+  📄 PÁGINA 1 de 3 — index.html + index.css + index.js
+</div>
+
+<!-- ##########################################################
+     ARCHIVO: index.css
+     (Todo el contenido de este bloque <style> va, tal cual, adentro
+     de index.css. Sacá solo las etiquetas <style> y </style>.)
+     ########################################################## -->
+<style>
+  /* ---------- Variables de marca (documentación / uso en JS) ---------- */
+  #pagina-index{
+    --azul-fuerte:#1B5E8C; --azul-oscuro:#123A56; --cielo:#EAF4FB;
+    --sol:#FFC857; --tinta:#16324A; --tinta-suave:#3F5A72;
+  }
+
+  /* ---------- Componentes reutilizables (botones) ----------
+     Se recicla el sistema de clases ".boton" del proyecto original,
+     pero escrito en CSS plano (no @apply) porque Tailwind por CDN
+     no procesa @apply sin paso de build. El layout/espaciado de
+     alrededor sí se resuelve con utilidades de Tailwind en el HTML. */
+  #pagina-index .boton{
+    display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+    min-height:52px; padding:0 28px; border-radius:999px;
+    font-family:'Baloo 2',sans-serif; font-weight:700; font-size:1rem;
+    border:none; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease;
+  }
+  #pagina-index .boton:hover{ transform:translateY(-2px); }
+  #pagina-index .boton:focus-visible{ outline:3px solid var(--sol); outline-offset:2px; }
+  #pagina-index .boton--azul{ background:var(--azul-fuerte); color:#fff; box-shadow:0 10px 24px -10px rgba(27,94,140,.55); }
+  #pagina-index .boton--sol{ background:var(--sol); color:var(--tinta); box-shadow:0 10px 24px -10px rgba(255,200,87,.6); }
+  #pagina-index .boton--blanco{ background:#fff; color:var(--azul-fuerte); box-shadow:0 6px 18px -8px rgba(18,58,86,.25); }
+
+  /* ---------- Logo circular (reemplaza el ícono vacío original) ---------- */
+  #pagina-index .logo-circulo{
+    width:44px; height:44px; border-radius:50%; flex:0 0 auto;
+    background:radial-gradient(circle at 35% 35%, var(--sol), var(--azul-oscuro) 70%);
+    box-shadow: inset 0 0 0 3px rgba(255,255,255,.5);
+  }
+
+  /* ---------- Tarjetas de imagen de noticia (fondo dinámico por JS) ---------- */
+  #pagina-index .tarjeta-noticia__imagen{ background-size:cover; background-position:center; }
+
+  /* ---------- Toast (aviso flotante) ---------- */
+  #pagina-index .toast{
+    position:fixed; left:50%; bottom:26px; transform:translate(-50%, 20px);
+    background:var(--tinta); color:#fff; padding:14px 22px; border-radius:999px;
+    display:flex; align-items:center; gap:10px; font-weight:700; opacity:0;
+    pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:80;
+    box-shadow:0 14px 30px -10px rgba(0,0,0,.4);
+  }
+  #pagina-index .toast.mostrar{ opacity:1; pointer-events:auto; transform:translate(-50%, 0); }
+</style>
+
+<!-- ##########################################################
+     ARCHIVO: index.html
+     (Desde acá hasta "FIN ARCHIVO: index.html" es el <body> de la
+     página pública. Armá index.html con: DOCTYPE + head con los
+     <link> de fuentes + config de Tailwind + <link rel="stylesheet"
+     href="index.css"> y después este contenido como <body>.)
+     ########################################################## -->
+
+<!-- ================= ENCABEZADO PÚBLICO ================= -->
+<header class="flex items-center justify-between gap-4 flex-wrap px-[5vw] py-5 bg-white shadow-sm sticky top-0 z-40" id="cabeceraPublica">
+  <div class="flex items-center gap-3">
+    <img src="imagenes/Logo mi mundo azul.jpeg" alt="Mi Mundo Azul" class="w-11 h-11 rounded-full object-cover">
+    <div class="font-baloo font-bold leading-tight">
+      Mi Mundo Azul
+      <small class="block font-nunito font-normal text-tinta-suave text-sm">Asociación para la primera infancia</small>
+    </div>
+  </div>
+  <button class="boton boton--azul" id="btnIrLogin">
+    <span>🔑</span> Entrar al panel del equipo
+  </button>
+</header>
+
+<!-- ================= CONTENIDO PÚBLICO ================= -->
+<div id="contenidoPublico">
+  <main>
+
+    <section class="px-[6vw] py-20 text-center max-w-3xl mx-auto" id="inicio">
+      <h1 class="font-baloo font-extrabold text-4xl md:text-5xl text-azul-oscuro leading-tight">
+        Acompañamos a niñas y niños con autismo y a sus familias
+      </h1>
+      <p class="mt-5 text-lg text-tinta-suave">
+        Elegí qué querés hacer. Todos los botones te llevan directo a lo que necesitás, sin vueltas.
+      </p>
+      <div class="mt-10 grid gap-5 sm:grid-cols-3 text-left">
+        <a href="#noticias" class="nav-scroll block bg-white rounded-3xl p-6 shadow-md hover:-translate-y-1 transition">
+          <div class="text-3xl">📰</div>
+          <h3 class="font-baloo font-bold mt-3">Ver las noticias</h3>
+          <p class="text-sm text-tinta-suave mt-1">Novedades, talleres e historias de la asociación</p>
+        </a>
+        <a href="#nosotros" class="nav-scroll block bg-white rounded-3xl p-6 shadow-md hover:-translate-y-1 transition">
+          <div class="text-3xl">💙</div>
+          <h3 class="font-baloo font-bold mt-3">Conocer la asociación</h3>
+          <p class="text-sm text-tinta-suave mt-1">Qué hacemos y cómo acompañamos a las familias</p>
+        </a>
+        <a href="#contacto" class="nav-scroll block bg-white rounded-3xl p-6 shadow-md hover:-translate-y-1 transition">
+          <div class="text-3xl">✉️</div>
+          <h3 class="font-baloo font-bold mt-3">Escribirnos</h3>
+          <p class="text-sm text-tinta-suave mt-1">Te contestamos a la brevedad</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="px-[6vw] py-16 bg-white" id="nosotros">
+      <div class="max-w-2xl mx-auto text-center mb-12">
+        <span class="inline-block bg-cielo text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Nuestra labor</span>
+        <h2 class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Así acompañamos a cada familia</h2>
+        <p class="text-tinta-suave mt-2">Un equipo, muchas formas de ayudar.</p>
+      </div>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+        <div class="bg-cielo rounded-3xl p-6 text-center">
+          <div class="text-3xl">🧩</div>
+          <h3 class="font-baloo font-bold mt-3">Terapias</h3>
+          <p class="text-sm text-tinta-suave mt-1">Sesiones individuales con especialistas.</p>
+        </div>
+        <div class="bg-cielo rounded-3xl p-6 text-center">
+          <div class="text-3xl">🌊</div>
+          <h3 class="font-baloo font-bold mt-3">Salas sensoriales</h3>
+          <p class="text-sm text-tinta-suave mt-1">Espacios de calma y autorregulación.</p>
+        </div>
+        <div class="bg-cielo rounded-3xl p-6 text-center">
+          <div class="text-3xl">👨‍👩‍👧</div>
+          <h3 class="font-baloo font-bold mt-3">Talleres para familias</h3>
+          <p class="text-sm text-tinta-suave mt-1">Herramientas para el día a día en casa.</p>
+        </div>
+        <div class="bg-cielo rounded-3xl p-6 text-center">
+          <div class="text-3xl">🤝</div>
+          <h3 class="font-baloo font-bold mt-3">Comunidad</h3>
+          <p class="text-sm text-tinta-suave mt-1">Familias que se acompañan entre sí.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-[6vw] py-16" id="noticias">
+      <div class="max-w-2xl mx-auto text-center mb-12">
+        <span class="inline-block bg-white text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Novedades</span>
+        <h2 class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Últimas noticias</h2>
+        <p class="text-tinta-suave mt-2">Tocá "Leer noticia completa" para ver la nota entera.</p>
+      </div>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto" id="gridNoticias"></div>
+      <div class="max-w-6xl mx-auto mt-6" id="piePublicoVacio"></div>
+    </section>
+
+    <section class="px-[6vw] py-20 text-center bg-azul-fuerte text-white" id="contacto">
+      <h2 class="font-baloo font-extrabold text-3xl">¿Querés sumarte a Mi Mundo Azul?</h2>
+      <p class="mt-3 text-white/85 max-w-xl mx-auto">Escribinos y te respondemos a la brevedad. Estamos para ayudarte.</p>
+      <a href="mailto:hola@mimundoazul.org" class="boton boton--sol mt-8"><span>✉️</span> Escribinos ahora</a>
+    </section>
+
+  </main>
+
+  <footer class="text-center py-8 text-tinta-suave text-sm">
+    <p>© <span id="anioFooter"></span> Mi Mundo Azul · Asociación civil.</p>
+  </footer>
+</div>
+
+<!-- ================= LOGIN =================
+     No es un archivo aparte: es una sección dentro de index.html que se
+     muestra/oculta con la clase "hidden" de Tailwind. Se activa con el
+     hash de la URL (index.html#login), así el estado queda reflejado
+     en la barra de direcciones en vez de vivir solo en memoria de JS. -->
+<div class="hidden fixed inset-0 bg-cielo z-30 overflow-y-auto" id="seccionLogin">
+  <div class="min-h-full flex items-center justify-center px-6 py-12">
+    <div class="bg-white rounded-3xl shadow-xl p-8 w-full max-w-md">
+      <div class="logo-circulo mx-auto"></div>
+      <h2 class="font-baloo font-extrabold text-2xl text-azul-oscuro text-center mt-4">Entrar al panel</h2>
+      <p class="text-tinta-suave text-center text-sm mt-1">Este espacio es solo para el equipo que administra y publica noticias.</p>
+      <div id="errorLogin" class="mt-4"></div>
+      <form id="formLogin" class="mt-4 space-y-4">
+        <div>
+          <label for="loginUsuario" class="block text-sm font-bold mb-1">👤 Tu usuario</label>
+          <input type="text" id="loginUsuario" autocomplete="username" required
+            class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+        </div>
+        <div class="relative">
+          <label for="loginPassword" class="block text-sm font-bold mb-1">🔒 Tu contraseña</label>
+          <input type="password" id="loginPassword" autocomplete="current-password" required
+            class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          <button type="button" id="btnMostrarPass" aria-label="Mostrar contraseña"
+            class="absolute right-3 top-[38px] text-lg">👁️</button>
+        </div>
+        <button type="submit" class="boton boton--azul w-full">Entrar</button>
+      </form>
+      <div class="mt-5 bg-cielo rounded-2xl p-4 text-sm text-tinta-suave leading-relaxed">
+        <strong class="text-tinta">Para probar el sitio, usá estos datos:</strong><br>
+        👩‍💼 Administración → usuario <b>admin</b> · contraseña <b>admin123</b><br><br>
+        ✍️ Editor/a → usuario <b>editora1</b> · contraseña <b>editor123</b>
+      </div>
+      <button class="boton boton--blanco w-full mt-5" id="volverSitioLogin">← Volver al sitio</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ########################################################## 
+     FIN ARCHIVO: index.html
+     ########################################################## -->
+
+<!-- ##########################################################
+     ARCHIVO: index.js
+     (Todo el contenido de este bloque <script> va, tal cual, adentro
+     de index.js. Sacá las etiquetas <script>/</script> y también el
+     envoltorio "(function(){" ... "})();" que se indica abajo — ese
+     envoltorio es solo para que conviva con las otras 2 páginas en
+     este archivo combinado.)
+     ########################################################## -->
+<script>
+(function(){ // 👈 QUITAR ESTA LÍNEA AL SEPARAR EN index.js
+"use strict";
+
+  /* =========================================================
+     UTILIDADES COMUNES
+     Este bloque (constantes, $, $$, uid, formatearFecha, escapeHTML,
+     placeholderImg, sembrarDatos, objeto DB, sesión y toast) es
+     idéntico en index.js, editor.js y admin.js. Te recomiendo, en el
+     proyecto final, sacarlo a un archivo compartido (por ejemplo
+     "comun.js") e incluirlo con <script src="comun.js"> en los 3 HTML,
+     tal como ya hacía el proyecto original con "Z2_Common.js". Si
+     preferís mantener exactamente los 9 archivos pedidos, simplemente
+     pegá este mismo bloque, sin cambios, al principio de editor.js y
+     de admin.js (más abajo te marco dónde).
+  ========================================================== */
+
+  const LS_USERS   = 'mma2_users';
+  const LS_NEWS    = 'mma2_news';
+  const LS_DRAFTS  = 'mma2_drafts';
+  const SS_SESSION = 'mma2_session';
+
+  function $(sel, ctx){ return (ctx||document).querySelector(sel); }
+  function $$(sel, ctx){ return Array.from((ctx||document).querySelectorAll(sel)); }
+  function uid(prefijo){ return prefijo + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function formatearFecha(iso){
+    return new Date(iso).toLocaleDateString('es-AR', { day:'numeric', month:'long', year:'numeric' });
+  }
+  function escapeHTML(str){
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  function placeholderImg(seed){ return `https://picsum.photos/seed/mma2-${seed}/900/700`; }
+
+  function sembrarDatos(){
+    if(!localStorage.getItem(LS_USERS)){
+      localStorage.setItem(LS_USERS, JSON.stringify([
+        { id:'u_admin', username:'admin', password:'admin123', role:'admin', name:'Administración' },
+        { id:'u_edit1', username:'editora1', password:'editor123', role:'editor', name:'Valentina Ríos' }
+      ]));
+    }
+    if(!localStorage.getItem(LS_NEWS)){
+      const hoy = new Date();
+      const haceDias = n => { const d = new Date(hoy); d.setDate(d.getDate()-n); return d.toISOString(); };
+      localStorage.setItem(LS_NEWS, JSON.stringify([
+        { id:'n1', title:"Abrimos inscripciones para el taller de verano",
+          excerpt:"Juego y estimulación sensorial para niñas y niños de 3 a 8 años. Cupos limitados.",
+          body:"Desde el 15 de diciembre abrimos las inscripciones para el taller de verano, para niñas y niños de 3 a 8 años.\n\nLas actividades combinan juego libre y momentos de calma en la sala sensorial, siempre acompañados por el equipo.\n\nLos cupos son limitados. Podés anotarte en la sede o escribiéndonos por correo.",
+          image:"https://picsum.photos/seed/mma2-taller/900/700", author:"Equipo Mi Mundo Azul", date: haceDias(2) },
+        { id:'n2', title:"Nueva sala sensorial en la sede",
+          excerpt:"Gracias a la comunidad, sumamos un espacio para la calma y la autorregulación.",
+          body:"Inauguramos una nueva sala sensorial, pensada junto al equipo de terapia ocupacional.\n\nTiene luz regulable, texturas variadas y un rincón de calma para los momentos que lo necesitan.\n\nGracias a cada familia y donante que hizo esto posible.",
+          image:"https://picsum.photos/seed/mma2-sala/900/700", author:"Equipo Mi Mundo Azul", date: haceDias(9) },
+        { id:'n3', title:"Taller gratuito de comunicación para familias",
+          excerpt:"Aprendé a usar pictogramas y tableros de comunicación en casa.",
+          body:"Organizamos un taller gratuito sobre comunicación aumentativa para familias.\n\nNuestras fonoaudiólogas muestran cómo usar pictogramas y tableros en el día a día.\n\nEs abierto a toda la comunidad. Los cupos se confirman por orden de inscripción.",
+          image:"https://picsum.photos/seed/mma2-comunicacion/900/700", author:"Lic. Marina Sosa", date: haceDias(18) },
+        { id:'n4', title:"La historia de Tomás",
+          excerpt:"Su mamá cuenta cómo cambió el día a día después de empezar en Mi Mundo Azul.",
+          body:"Tomás llegó a los tres años, cuando a la familia le costaba comunicarse con él. Hoy, dos años después, su mamá comparte su historia.\n\n'El equipo nos acompañó a toda la familia, con mucha paciencia', cuenta.\n\nHistorias como la de Tomás son las que nos recuerdan por qué hacemos este trabajo.",
+          image:"https://picsum.photos/seed/mma2-historia/900/700", author:"Equipo Mi Mundo Azul", date: haceDias(27) }
+      ]));
+    }
+    if(!localStorage.getItem(LS_DRAFTS)) localStorage.setItem(LS_DRAFTS, JSON.stringify({}));
+  }
+
+  const DB = {
+    getUsers(){ return JSON.parse(localStorage.getItem(LS_USERS) || '[]'); },
+    setUsers(u){ localStorage.setItem(LS_USERS, JSON.stringify(u)); },
+    getNews(){ return JSON.parse(localStorage.getItem(LS_NEWS) || '[]').sort((a,b)=> new Date(b.date)-new Date(a.date)); },
+    setNews(n){ localStorage.setItem(LS_NEWS, JSON.stringify(n)); },
+    getDrafts(){ return JSON.parse(localStorage.getItem(LS_DRAFTS) || '{}'); },
+    setDrafts(d){ localStorage.setItem(LS_DRAFTS, JSON.stringify(d)); }
+  };
+  function getSession(){ try{ return JSON.parse(sessionStorage.getItem(SS_SESSION)); } catch(e){ return null; } }
+  function setSession(s){ sessionStorage.setItem(SS_SESSION, JSON.stringify(s)); }
+  function clearSession(){ sessionStorage.removeItem(SS_SESSION); }
+
+  let toastTimer;
+  function mostrarToast(msg, icono){
+    const t = $('#toast');
+    if(!t) return;
+    t.innerHTML = `<span>${icono||'✅'}</span><span>${msg}</span>`;
+    t.classList.add('mostrar');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> t.classList.remove('mostrar'), 3200);
+  }
+
+  /* cerrarSesion: ahora hace una navegación real (redirect) a index.html
+     en vez de "cambiar de vista" con JS. Se usa desde editor.js y
+     admin.js (cada uno tiene su propia copia de esta función). */
+  function cerrarSesion(){
+    clearSession();
+    window.location.href = 'index.html?salida=1';
+  }
+
+  /* =========================================================
+     LÓGICA PROPIA DE index.html / index.js
+     (navegación suave, año del footer, semilla de datos, grilla
+     pública de noticias, apertura de noticia completa en pestaña
+     aparte, y pantalla de login con redirección real según el rol)
+  ========================================================== */
+
+  $$('.nav-scroll', document.getElementById('pagina-index')).forEach(a => a.addEventListener('click', (e)=>{
+    e.preventDefault();
+    const destino = document.querySelector(a.getAttribute('href'));
+    if(destino) destino.scrollIntoView({behavior:'smooth'});
+  }));
+  $('#anioFooter').textContent = new Date().getFullYear();
+
+  sembrarDatos();
+  renderGridPublico();
+
+  /* Si venimos de un cierre de sesión (?salida=1) o de querer entrar
+     directo al login (#login), lo resolvemos al cargar la página. */
+  (function resolverEstadoInicial(){
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('salida') === '1'){
+      mostrarToast('Saliste del panel. ¡Hasta pronto!', '👋');
+      history.replaceState({}, '', 'index.html');
+    }
+    if(window.location.hash === '#login') mostrarPantallaLogin();
+  })();
+
+  function renderGridPublico(){
+    const grid = $('#gridNoticias');
+    const noticias = DB.getNews();
+    if(noticias.length === 0){
+      grid.innerHTML = '';
+      $('#piePublicoVacio').innerHTML = '<p class="text-center text-tinta-suave">📭 Todavía no hay noticias publicadas. ¡Volvé pronto!</p>';
+      return;
+    }
+    $('#piePublicoVacio').innerHTML = '';
+    grid.innerHTML = noticias.map(n => `
+      <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col">
+        <div class="tarjeta-noticia__imagen h-44 relative" style="background-image:url('${n.image || placeholderImg(n.id)}')">
+          <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date)}</span>
+        </div>
+        <div class="p-5 flex flex-col flex-1">
+          <h3 class="font-baloo font-bold text-lg text-azul-oscuro">${escapeHTML(n.title)}</h3>
+          <p class="text-sm text-tinta-suave mt-2 flex-1">${escapeHTML(n.excerpt)}</p>
+          <button class="boton boton--azul mt-4 self-start" data-abrir-noticia="${n.id}">
+            <span>📖</span> Leer noticia completa
+          </button>
+        </div>
+      </article>
+    `).join('');
+
+    $$('[data-abrir-noticia]', grid).forEach(btn=>{
+      btn.addEventListener('click', ()=> abrirNoticiaCompleta(btn.dataset.abrirNoticia));
+    });
+  }
+
+  function abrirNoticiaCompleta(id){
+    const noticia = DB.getNews().find(n => n.id === id);
+    if(!noticia) return;
+
+    const parrafos = (noticia.body || '')
+      .split(/\n\s*\n/)
+      .map(p => `<p>${escapeHTML(p).replace(/\n/g,'<br>')}</p>`)
+      .join('');
+
+    const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHTML(noticia.title)} · Mi Mundo Azul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --azul-fuerte:#1B5E8C; --azul-oscuro:#123A56; --cielo:#EAF4FB; --sol:#FFC857; --tinta:#16324A; --tinta-suave:#3F5A72; }
+  *{box-sizing:border-box;}
+  html{font-size:19px;}
+  body{margin:0; font-family:'Nunito',sans-serif; background:var(--cielo); color:var(--tinta); line-height:1.8;}
+  header{ display:flex; align-items:center; justify-content:space-between; padding:20px 5vw; background:var(--azul-fuerte); flex-wrap:wrap; gap:14px;}
+  header .marca{ display:flex; align-items:center; gap:12px; color:#fff; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:1.15rem;}
+  header .marca .icono{ width:44px; height:44px; border-radius:50%; background:radial-gradient(circle at 35% 35%, var(--sol), var(--azul-oscuro) 70%); box-shadow: inset 0 0 0 3px rgba(255,255,255,.5);}
+  header button{ background:#fff; color:var(--azul-fuerte); border:none; padding:14px 26px; border-radius:999px; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; min-height:52px;}
+  main{ max-width:740px; margin:0 auto; padding:50px 6vw 60px; }
+  .portada{ width:100%; border-radius:32px; aspect-ratio:16/10; object-fit:cover; margin-bottom:30px; box-shadow:0 18px 40px -18px rgba(18,58,86,.35);}
+  .meta{ font-size:.9rem; color:var(--tinta-suave); text-transform:uppercase; letter-spacing:.05em; font-weight:800; margin-bottom:14px;}
+  h1{ font-family:'Baloo 2',sans-serif; font-size:clamp(1.6rem,4vw,2.5rem); color:var(--azul-oscuro); line-height:1.3; margin:0 0 26px;}
+  article p{ margin-bottom:20px; font-size:1.1rem;}
+  footer{ text-align:center; padding:20px 6vw 70px; }
+  footer button{ background:var(--sol); color:var(--tinta); border:none; padding:16px 32px; border-radius:999px; font-weight:700; font-size:1.05rem; cursor:pointer; font-family:'Baloo 2',sans-serif; min-height:56px; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="marca"><div class="icono"></div>Mi Mundo Azul</div>
+    <button onclick="window.close()">← Volver</button>
+  </header>
+  <main>
+    <img class="portada" src="${noticia.image || placeholderImg(noticia.id)}" alt="">
+    <span class="meta">${formatearFecha(noticia.date)} · ${escapeHTML(noticia.author || 'Equipo Mi Mundo Azul')}</span>
+    <h1>${escapeHTML(noticia.title)}</h1>
+    <article>${parrafos}</article>
+  </main>
+  <footer><button onclick="window.close()">✕ Cerrar esta noticia</button></footer>
+</body>
+</html>`;
+
+    const blob = new Blob([html], {type:'text/html'});
+    window.open(URL.createObjectURL(blob), '_blank');
+  }
+
+  /* ---------------- LOGIN (dentro de index.html) ---------------- */
+  function mostrarPantallaLogin(){
+    $('#contenidoPublico').classList.add('hidden');
+    $('#cabeceraPublica').classList.add('hidden');
+    $('#seccionLogin').classList.remove('hidden');
+    window.scrollTo(0,0);
+  }
+  function mostrarSitioPublico(){
+    $('#seccionLogin').classList.add('hidden');
+    $('#contenidoPublico').classList.remove('hidden');
+    $('#cabeceraPublica').classList.remove('hidden');
+  }
+
+  $('#btnIrLogin').addEventListener('click', ()=>{
+    window.location.hash = 'login';
+    mostrarPantallaLogin();
+  });
+  $('#volverSitioLogin').addEventListener('click', ()=>{
+    history.replaceState({}, '', 'index.html');
+    mostrarSitioPublico();
+  });
+
+  $('#btnMostrarPass').addEventListener('click', ()=>{
+    const campo = $('#loginPassword');
+    const btn = $('#btnMostrarPass');
+    const mostrar = campo.type === 'password';
+    campo.type = mostrar ? 'text' : 'password';
+    btn.textContent = mostrar ? '🙈' : '👁️';
+  });
+
+  $('#formLogin').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const usuario = $('#loginUsuario').value.trim();
+    const pass = $('#loginPassword').value;
+    const encontrado = DB.getUsers().find(u => u.username === usuario && u.password === pass);
+    if(!encontrado){
+      $('#errorLogin').innerHTML = '<div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3 flex gap-2"><span>⚠️</span><span>Ese usuario o esa contraseña no son correctos. Fijate bien e intentá de nuevo.</span></div>';
+      return;
+    }
+    $('#errorLogin').innerHTML = '';
+    setSession({ id:encontrado.id, username:encontrado.username, role:encontrado.role, name:encontrado.name });
+    $('#formLogin').reset();
+    // Navegación real: cada rol va a su propio archivo, no a una "vista" oculta.
+    window.location.href = (encontrado.role === 'admin') ? 'admin.html' : 'editor.html';
+  });
+
+})(); // 👈 QUITAR ESTA LÍNEA AL SEPARAR EN index.js
+</script>
+</section>
+<!-- ========================== FIN PÁGINA 1 (index) ========================== -->
+
+<!-- ======================================================================
+     GRUPO DE PÁGINA: PANEL DE EDITOR/A (editor.html + editor.css + editor.js)
+====================================================================== -->
+<section id="pagina-editor">
+<div class="bg-slate-700 text-white text-center py-3 font-baloo font-bold tracking-wide">
+  📄 PÁGINA 2 de 3 — editor.html + editor.css + editor.js
+</div>
+
+<!-- ##########################################################
+     ARCHIVO: editor.css
+     ########################################################## -->
+<style>
+  #pagina-editor{
+    --azul-fuerte:#1B5E8C; --azul-oscuro:#123A56; --cielo:#EAF4FB;
+    --sol:#FFC857; --tinta:#16324A; --tinta-suave:#3F5A72;
+    background:var(--cielo);
+  }
+  #pagina-editor .boton{
+    display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+    min-height:46px; padding:0 22px; border-radius:999px;
+    font-family:'Baloo 2',sans-serif; font-weight:700; font-size:.95rem;
+    border:none; cursor:pointer; transition:transform .15s ease;
+  }
+  #pagina-editor .boton:hover{ transform:translateY(-2px); }
+  #pagina-editor .boton:focus-visible{ outline:3px solid var(--sol); outline-offset:2px; }
+  #pagina-editor .boton--azul{ background:var(--azul-fuerte); color:#fff; }
+  #pagina-editor .boton--sol{ background:var(--sol); color:var(--tinta); }
+  #pagina-editor .boton--blanco{ background:#fff; color:var(--azul-fuerte); box-shadow:0 4px 14px -6px rgba(18,58,86,.3); }
+  #pagina-editor .boton--rojo{ background:#fee2e2; color:#b91c1c; }
+  #pagina-editor .boton--verde{ background:#16a34a; color:#fff; }
+  #pagina-editor .boton--chico{ min-height:38px; padding:0 16px; font-size:.85rem; }
+
+  #pagina-editor .logo-circulo{
+    width:38px; height:38px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, var(--sol), var(--azul-oscuro) 70%);
+  }
+
+  #pagina-editor .pill-borrador{
+    display:inline-block; margin-left:8px; font-size:.7rem; font-weight:800;
+    background:#fef3c7; color:#92400e; padding:2px 10px; border-radius:999px;
+  }
+
+  #pagina-editor .estado-guardado{
+    display:none; align-items:center; gap:8px; font-size:.85rem;
+    color:var(--tinta-suave); background:#f1f5f9; border-radius:12px;
+    padding:10px 14px; margin-bottom:14px;
+  }
+  #pagina-editor .estado-guardado.activo{ display:flex; }
+
+  #pagina-editor .toast{
+    position:fixed; left:50%; bottom:26px; transform:translate(-50%, 20px);
+    background:var(--tinta); color:#fff; padding:14px 22px; border-radius:999px;
+    display:flex; align-items:center; gap:10px; font-weight:700; opacity:0;
+    pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:80;
+    box-shadow:0 14px 30px -10px rgba(0,0,0,.4);
+  }
+  #pagina-editor .toast.mostrar{ opacity:1; pointer-events:auto; transform:translate(-50%, 0); }
+</style>
+
+<!-- ##########################################################
+     ARCHIVO: editor.html
+     ########################################################## -->
+
+<!-- ================= BARRA DEL PANEL ================= -->
+<div class="flex items-center justify-between gap-4 flex-wrap px-[5vw] py-4 bg-white shadow-sm">
+  <div class="flex items-center gap-3">
+    <div class="logo-circulo"></div>
+    <div class="font-baloo font-bold text-lg">Panel de noticias</div>
+  </div>
+  <div class="flex items-center gap-3">
+    <span class="text-sm font-bold bg-cielo px-4 py-2 rounded-full">✍️ <span id="nombreEditor"></span></span>
+    <button class="boton boton--blanco boton--chico" id="btnLogoutEditor">🚪 Salir</button>
+  </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-[5vw] md:px-6 py-10">
+  <div class="mb-8">
+    <h1 class="font-baloo font-extrabold text-2xl text-azul-oscuro">Tus noticias</h1>
+    <p class="text-tinta-suave mt-1">Creá, editá o eliminá las noticias que se ven en el sitio.</p>
+  </div>
+
+  <button class="boton boton--sol mb-8" id="btnNuevaNoticia"><span>➕</span> Crear noticia nueva</button>
+
+  <div id="bloqueBorradores"></div>
+
+  <h2 class="font-baloo font-bold text-xl mb-4">📢 Noticias publicadas</h2>
+  <div class="space-y-3" id="listaNoticiasEditor"></div>
+</div>
+
+<!-- ================= MODAL: CREAR/EDITAR NOTICIA ================= -->
+<div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalNoticia">
+  <div class="bg-white rounded-3xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="font-baloo font-bold text-xl" id="tituloModalNoticia">➕ Nueva noticia</h2>
+      <button class="text-xl text-tinta-suave" data-cerrar-modal="modalNoticia">✕</button>
+    </div>
+    <div class="estado-guardado" id="estadoGuardado"><span>💾</span><span id="textoEstadoGuardado">Mientras escribís, vamos guardando para que no pierdas nada.</span></div>
+    <form id="formNoticia" class="space-y-4">
+      <input type="hidden" id="noticiaId">
+      <div>
+        <label for="noticiaTitulo" class="block text-sm font-bold mb-1">📝 Título de la noticia</label>
+        <input type="text" id="noticiaTitulo" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+      </div>
+      <div>
+        <label for="noticiaImagen" class="block text-sm font-bold mb-1">🖼️ Dirección de la imagen (URL)</label>
+        <input type="text" id="noticiaImagen" placeholder="https://..." class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+      </div>
+      <div>
+        <label for="noticiaExtracto" class="block text-sm font-bold mb-1">✏️ Resumen corto</label>
+        <textarea id="noticiaExtracto" required class="w-full min-h-[80px] rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte"></textarea>
+      </div>
+      <div>
+        <label for="noticiaCuerpo" class="block text-sm font-bold mb-1">📄 Texto completo</label>
+        <textarea id="noticiaCuerpo" placeholder="Dejá una línea vacía entre párrafo y párrafo." required class="w-full min-h-[140px] rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte"></textarea>
+      </div>
+      <div class="flex justify-between items-center pt-2">
+        <button type="button" class="boton boton--rojo boton--chico" id="btnDescartarBorrador">🗑️ Descartar</button>
+        <button type="submit" class="boton boton--verde" id="btnPublicarNoticia">✔️ Publicar noticia</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODALES GENÉRICOS (confirmar / aviso) + TOAST =================
+     Se repiten igual en editor.html y en admin.html porque cada página es un
+     documento independiente. Si preferís no duplicarlos, podés moverlos a un
+     "modales.html" que cargues con fetch(), pero eso ya excede los 9 archivos
+     pedidos, así que acá los dejo duplicados tal cual estaban en el Bloque 4
+     original. -->
+<div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalConfirmar">
+  <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 text-center">
+    <div class="text-4xl" id="iconoConfirmar">❓</div>
+    <h2 class="font-baloo font-bold text-lg mt-2" id="tituloConfirmar">¿Estás seguro/a?</h2>
+    <p class="text-tinta-suave text-sm mt-2" id="textoConfirmar"></p>
+    <div class="flex gap-3 justify-center mt-6">
+      <button class="boton boton--blanco" id="btnConfirmarNo">No, volver</button>
+      <button class="boton boton--rojo" id="btnConfirmarSi">Sí, continuar</button>
+    </div>
+  </div>
+</div>
+
+<div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalAviso">
+  <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 text-center">
+    <div class="text-4xl">ℹ️</div>
+    <h2 class="font-baloo font-bold text-lg mt-2">Aviso</h2>
+    <p class="text-tinta-suave text-sm mt-2" id="textoAviso"></p>
+    <div class="flex justify-center mt-6">
+      <button class="boton boton--azul" id="btnCerrarAviso">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<!-- ##########################################################
+     FIN ARCHIVO: editor.html
+     ########################################################## -->
+
+<!-- ##########################################################
+     ARCHIVO: editor.js
+     ########################################################## -->
+<script>
+(function(){ // 👈 QUITAR ESTA LÍNEA AL SEPARAR EN editor.js
+"use strict";
+
+  /* =========================================================
+     UTILIDADES COMUNES — pegar acá, sin cambios, el mismo bloque
+     que está en index.js (desde "const LS_USERS" hasta "clearSession").
+     Se repite abajo completo para que este archivo funcione dentro
+     de la vista previa combinada. Ver nota sobre "comun.js" en index.js.
+  ========================================================== */
+  const LS_USERS   = 'mma2_users';
+  const LS_NEWS    = 'mma2_news';
+  const LS_DRAFTS  = 'mma2_drafts';
+  const SS_SESSION = 'mma2_session';
+  const RAIZ = document.getElementById('pagina-editor'); // 👈 solo para esta vista previa combinada
+
+  function $(sel, ctx){ return (ctx||RAIZ||document).querySelector(sel); }
+  function $$(sel, ctx){ return Array.from((ctx||RAIZ||document).querySelectorAll(sel)); }
+  function uid(prefijo){ return prefijo + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function formatearFecha(iso){
+    return new Date(iso).toLocaleDateString('es-AR', { day:'numeric', month:'long', year:'numeric' });
+  }
+  function escapeHTML(str){
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  function sembrarDatos(){
+    if(!localStorage.getItem(LS_USERS)){
+      localStorage.setItem(LS_USERS, JSON.stringify([
+        { id:'u_admin', username:'admin', password:'admin123', role:'admin', name:'Administración' },
+        { id:'u_edit1', username:'editora1', password:'editor123', role:'editor', name:'Valentina Ríos' }
+      ]));
+    }
+    if(!localStorage.getItem(LS_NEWS)) localStorage.setItem(LS_NEWS, JSON.stringify([]));
+    if(!localStorage.getItem(LS_DRAFTS)) localStorage.setItem(LS_DRAFTS, JSON.stringify({}));
+  }
+  const DB = {
+    getUsers(){ return JSON.parse(localStorage.getItem(LS_USERS) || '[]'); },
+    setUsers(u){ localStorage.setItem(LS_USERS, JSON.stringify(u)); },
+    getNews(){ return JSON.parse(localStorage.getItem(LS_NEWS) || '[]').sort((a,b)=> new Date(b.date)-new Date(a.date)); },
+    setNews(n){ localStorage.setItem(LS_NEWS, JSON.stringify(n)); },
+    getDrafts(){ return JSON.parse(localStorage.getItem(LS_DRAFTS) || '{}'); },
+    setDrafts(d){ localStorage.setItem(LS_DRAFTS, JSON.stringify(d)); }
+  };
+  function getSession(){ try{ return JSON.parse(sessionStorage.getItem(SS_SESSION)); } catch(e){ return null; } }
+  function setSession(s){ sessionStorage.setItem(SS_SESSION, JSON.stringify(s)); }
+  function clearSession(){ sessionStorage.removeItem(SS_SESSION); }
+
+  let toastTimer;
+  function mostrarToast(msg, icono){
+    const t = $('#toast');
+    if(!t) return;
+    t.innerHTML = `<span>${icono||'✅'}</span><span>${msg}</span>`;
+    t.classList.add('mostrar');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> t.classList.remove('mostrar'), 3200);
+  }
+
+  function preguntarConfirmacion(opciones){
+    $('#iconoConfirmar').textContent = opciones.icono || '❓';
+    $('#tituloConfirmar').textContent = opciones.titulo || '¿Estás seguro/a?';
+    $('#textoConfirmar').textContent = opciones.texto || '';
+    $('#btnConfirmarSi').textContent = opciones.textoSi || 'Sí, continuar';
+    const modal = $('#modalConfirmar');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+
+    const btnSi = $('#btnConfirmarSi');
+    const btnNo = $('#btnConfirmarNo');
+    function limpiar(){
+      modal.classList.add('hidden'); modal.classList.remove('flex');
+      btnSi.removeEventListener('click', alConfirmar);
+      btnNo.removeEventListener('click', alCancelar);
+    }
+    function alConfirmar(){ limpiar(); if(opciones.onSi) opciones.onSi(); }
+    function alCancelar(){ limpiar(); }
+    btnSi.addEventListener('click', alConfirmar);
+    btnNo.addEventListener('click', alCancelar);
+  }
+  function mostrarAviso(texto){
+    $('#textoAviso').textContent = texto;
+    const modal = $('#modalAviso');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+  }
+  $('#btnCerrarAviso').addEventListener('click', ()=>{
+    const modal = $('#modalAviso');
+    modal.classList.add('hidden'); modal.classList.remove('flex');
+  });
+
+  function abrirModal(id){ const m = $('#'+id); m.classList.remove('hidden'); m.classList.add('flex'); }
+  function cerrarModal(id){ const m = $('#'+id); m.classList.add('hidden'); m.classList.remove('flex'); }
+  $$('[data-cerrar-modal]').forEach(btn=> btn.addEventListener('click', ()=> cerrarModal(btn.dataset.cerrarModal)));
+  $$('.fixed.inset-0.bg-black\\/50').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo){ fondo.classList.add('hidden'); fondo.classList.remove('flex'); } }));
+
+  function cerrarSesion(){
+    clearSession();
+    window.location.href = 'index.html?salida=1';
+  }
+
+  /* =========================================================
+     PROTECCIÓN DE ACCESO (nueva — necesaria por la navegación real)
+     Antes, el panel de editor/a era solo una "vista" que JS mostraba
+     dentro de la misma página; nunca tenía una URL propia. Ahora que
+     editor.html es un archivo real, cualquiera podría escribir esa
+     dirección directo en el navegador sin haber iniciado sesión. Por
+     eso, apenas carga el archivo, se revisa la sesión y si no es
+     válida (o no es de un/a editor/a) se redirige a index.html.
+  ========================================================== */
+  sembrarDatos();
+  const sesion = getSession();
+  if(!sesion || sesion.role !== 'editor'){
+    window.location.href = 'index.html';
+  } else {
+    $('#nombreEditor').textContent = sesion.name;
+    mostrarToast('Bienvenido/a al panel de editor', '✍️');
+    iniciarPanelEditor();
+  }
+
+  /* =========================================================
+     PANEL DE EDITOR/A — reciclado del Bloque 3 original.
+     Único cambio real de lógica: ya NO se llama a renderGridPublico()
+     después de guardar/eliminar una noticia, porque esa función vive
+     en index.js, en OTRO documento HTML. No hace falta llamarla: la
+     próxima vez que alguien entre a index.html, la grilla pública se
+     arma de nuevo leyendo localStorage, así que ya va a mostrar los
+     cambios sin ninguna sincronización manual entre páginas.
+  ========================================================== */
+  let draftKeyActual = null;
+
+  function iniciarPanelEditor(){
+    renderPanelEditor();
+
+    $('#btnNuevaNoticia').addEventListener('click', ()=> abrirFormularioNoticia(null));
+    $('#btnLogoutEditor').addEventListener('click', cerrarSesion);
+
+    ['noticiaTitulo','noticiaImagen','noticiaExtracto','noticiaCuerpo'].forEach(id=>{
+      $('#'+id).addEventListener('input', programarGuardadoBorrador);
+    });
+
+    $('#btnDescartarBorrador').addEventListener('click', ()=>{
+      if(!draftKeyActual) return;
+      preguntarConfirmacion({
+        icono:'🗑️', titulo:'¿Descartar los cambios?',
+        texto:'Lo que escribiste en esta noticia sin publicar se va a perder.',
+        textoSi:'Sí, descartar',
+        onSi(){
+          const drafts = DB.getDrafts();
+          delete drafts[draftKeyActual];
+          DB.setDrafts(drafts);
+          cerrarModal('modalNoticia');
+          renderPanelEditor();
+          mostrarToast('Borrador descartado', '🗑️');
+        }
+      });
+    });
+
+    $('#formNoticia').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const s = getSession();
+      const id = $('#noticiaId').value || uid('n');
+      const titulo = $('#noticiaTitulo').value.trim();
+      const extracto = $('#noticiaExtracto').value.trim();
+      const cuerpo = $('#noticiaCuerpo').value.trim();
+      const imagen = $('#noticiaImagen').value.trim();
+
+      let noticias = DB.getNews();
+      const existente = noticias.find(n=>n.id===id);
+      if(existente){
+        existente.title = titulo; existente.excerpt = extracto; existente.body = cuerpo; existente.image = imagen;
+      } else {
+        noticias.push({ id, title: titulo, excerpt: extracto, body: cuerpo, image: imagen, author: s.name, date: new Date().toISOString() });
+      }
+      DB.setNews(noticias);
+
+      const drafts = DB.getDrafts();
+      delete drafts[draftKeyActual];
+      DB.setDrafts(drafts);
+
+      cerrarModal('modalNoticia');
+      renderPanelEditor();
+      mostrarToast(existente ? 'Noticia actualizada' : 'Noticia publicada', '✔️');
+    });
+  }
+
+  function renderPanelEditor(){
+    renderBloqueBorradores();
+    renderListaNoticiasEditor();
+  }
+
+  function draftKeyPara(usuario, idNoticia){ return `${usuario}__${idNoticia || 'nueva'}`; }
+
+  function renderBloqueBorradores(){
+    const s = getSession();
+    const drafts = DB.getDrafts();
+    const propios = Object.entries(drafts).filter(([key]) => key.startsWith(s.username + '__'));
+    const bloque = $('#bloqueBorradores');
+    if(propios.length === 0){ bloque.innerHTML = ''; return; }
+
+    bloque.innerHTML = `
+      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-3 mb-6">
+        <span class="text-2xl">💾</span>
+        <div><strong class="block">Tenés noticias sin terminar de publicar</strong><span class="text-sm text-tinta-suave">Las vamos guardando solas mientras escribís, para que no se pierdan.</span></div>
+      </div>
+      <div class="space-y-3 mb-9">
+        ${propios.map(([key, d]) => `
+          <div class="bg-white rounded-2xl p-4 flex items-center justify-between gap-3 flex-wrap">
+            <div class="flex items-center gap-3">
+              <div class="text-2xl">📝</div>
+              <div>
+                <h3 class="font-bold">${escapeHTML(d.title || 'Todavía sin título')}<span class="pill-borrador">Sin publicar</span></h3>
+                <p class="text-sm text-tinta-suave">Guardado el ${new Date(d.updatedAt).toLocaleString('es-AR')}</p>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button class="boton boton--azul boton--chico" data-continuar-borrador="${key}">▶️ Continuar</button>
+              <button class="boton boton--rojo boton--chico" data-borrar-borrador="${key}">🗑️ Descartar</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    $$('[data-continuar-borrador]', bloque).forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const key = btn.dataset.continuarBorrador;
+        const d = DB.getDrafts()[key];
+        const idNoticia = key.split('__')[1];
+        abrirFormularioNoticia(idNoticia === 'nueva' ? null : idNoticia, d);
+      });
+    });
+    $$('[data-borrar-borrador]', bloque).forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const key = btn.dataset.borrarBorrador;
+        preguntarConfirmacion({
+          icono:'🗑️', titulo:'¿Descartar este borrador?',
+          texto:'Se va a perder todo lo que escribiste en esta noticia sin publicar.',
+          textoSi:'Sí, descartar',
+          onSi(){
+            const drafts = DB.getDrafts();
+            delete drafts[key];
+            DB.setDrafts(drafts);
+            renderBloqueBorradores();
+            mostrarToast('Borrador descartado', '🗑️');
+          }
+        });
+      });
+    });
+  }
+
+  function renderListaNoticiasEditor(){
+    const cont = $('#listaNoticiasEditor');
+    const noticias = DB.getNews();
+    if(noticias.length === 0){
+      cont.innerHTML = '<div class="text-center text-tinta-suave py-8">📭 Todavía no hay noticias publicadas. Tocá "+ Crear noticia nueva" para empezar.</div>';
+      return;
+    }
+    cont.innerHTML = noticias.map(n => `
+      <div class="bg-white rounded-2xl p-4 flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3">
+          <div class="text-2xl">📰</div>
+          <div>
+            <h3 class="font-bold">${escapeHTML(n.title)}</h3>
+            <p class="text-sm text-tinta-suave">${formatearFecha(n.date)} · ${escapeHTML(n.author || '')}</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button class="boton boton--azul boton--chico" data-editar-noticia="${n.id}">✏️ Editar</button>
+          <button class="boton boton--rojo boton--chico" data-eliminar-noticia="${n.id}">🗑️ Eliminar</button>
+        </div>
+      </div>
+    `).join('');
+
+    $$('[data-editar-noticia]', cont).forEach(btn=>{
+      btn.addEventListener('click', ()=> abrirFormularioNoticia(btn.dataset.editarNoticia));
+    });
+    $$('[data-eliminar-noticia]', cont).forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.dataset.eliminarNoticia;
+        preguntarConfirmacion({
+          icono:'🗑️', titulo:'¿Eliminar esta noticia?',
+          texto:'Va a desaparecer del sitio para siempre.',
+          textoSi:'Sí, eliminar',
+          onSi(){
+            DB.setNews(DB.getNews().filter(n=>n.id!==id));
+            renderListaNoticiasEditor();
+            mostrarToast('Noticia eliminada', '🗑️');
+          }
+        });
+      });
+    });
+  }
+
+  function abrirFormularioNoticia(idNoticia, borradorForzado){
+    const s = getSession();
+    draftKeyActual = draftKeyPara(s.username, idNoticia);
+
+    const drafts = DB.getDrafts();
+    const borradorExistente = borradorForzado || drafts[draftKeyActual];
+    const noticiaPublicada = idNoticia ? DB.getNews().find(n=>n.id===idNoticia) : null;
+
+    function continuarConDatos(usarBorrador){
+      const datos = usarBorrador ? borradorExistente : (noticiaPublicada || { title:'', image:'', excerpt:'', body:'' });
+      $('#tituloModalNoticia').textContent = idNoticia ? '✏️ Editar noticia' : '➕ Nueva noticia';
+      $('#noticiaId').value = idNoticia || '';
+      $('#noticiaTitulo').value = datos.title || '';
+      $('#noticiaImagen').value = datos.image || '';
+      $('#noticiaExtracto').value = datos.excerpt || '';
+      $('#noticiaCuerpo').value = datos.body || '';
+      $('#btnPublicarNoticia').innerHTML = idNoticia ? '✔️ Guardar cambios' : '✔️ Publicar noticia';
+      const estado = $('#estadoGuardado');
+      const texto = $('#textoEstadoGuardado');
+      if(usarBorrador){
+        texto.textContent = 'Restauramos el borrador que habías dejado sin publicar.';
+        estado.classList.add('activo');
+      } else {
+        texto.textContent = 'Mientras escribís, vamos guardando para que no pierdas nada.';
+        estado.classList.remove('activo');
+      }
+      abrirModal('modalNoticia');
+    }
+
+    if(borradorExistente && !borradorForzado){
+      preguntarConfirmacion({
+        icono:'📝', titulo:'Encontramos un borrador',
+        texto:'Hay una versión sin publicar de esta noticia. ¿Querés seguir donde la dejaste?',
+        textoSi:'Sí, continuar con el borrador',
+        onSi(){ continuarConDatos(true); }
+      });
+      $('#btnConfirmarNo').onclick = function(){
+        const modal = $('#modalConfirmar');
+        modal.classList.add('hidden'); modal.classList.remove('flex');
+        continuarConDatos(false);
+      };
+    } else {
+      continuarConDatos(!!borradorForzado);
+    }
+  }
+
+  let temporizadorGuardado;
+  function programarGuardadoBorrador(){
+    clearTimeout(temporizadorGuardado);
+    temporizadorGuardado = setTimeout(guardarBorradorActual, 600);
+  }
+  function guardarBorradorActual(){
+    if(!draftKeyActual) return;
+    const s = getSession();
+    if(!s) return;
+    const titulo = $('#noticiaTitulo').value.trim();
+    const extracto = $('#noticiaExtracto').value.trim();
+    const cuerpo = $('#noticiaCuerpo').value.trim();
+    const imagen = $('#noticiaImagen').value.trim();
+    if(!titulo && !extracto && !cuerpo && !imagen) return;
+
+    const drafts = DB.getDrafts();
+    drafts[draftKeyActual] = { title: titulo, excerpt: extracto, body: cuerpo, image: imagen, updatedAt: new Date().toISOString() };
+    DB.setDrafts(drafts);
+
+    const estado = $('#estadoGuardado');
+    $('#textoEstadoGuardado').textContent = 'Guardado automático a las ' + new Date().toLocaleTimeString('es-AR');
+    estado.classList.add('activo');
+  }
+
+})(); // 👈 QUITAR ESTA LÍNEA AL SEPARAR EN editor.js
+</script>
+</section>
+<!-- ========================== FIN PÁGINA 2 (editor) ========================== -->
+
+<!-- ======================================================================
+     GRUPO DE PÁGINA: PANEL DE ADMINISTRACIÓN (admin.html + admin.css + admin.js)
+====================================================================== -->
+<section id="pagina-admin">
+<div class="bg-azul-oscuro text-white text-center py-3 font-baloo font-bold tracking-wide">
+  📄 PÁGINA 3 de 3 — admin.html + admin.css + admin.js
+</div>
+
+<!-- ##########################################################
+     ARCHIVO: admin.css
+     ########################################################## -->
+<style>
+  #pagina-admin{
+    --azul-fuerte:#1B5E8C; --azul-oscuro:#123A56; --cielo:#EAF4FB;
+    --sol:#FFC857; --tinta:#16324A; --tinta-suave:#3F5A72;
+    background:var(--cielo);
+  }
+  #pagina-admin .boton{
+    display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+    min-height:46px; padding:0 22px; border-radius:999px;
+    font-family:'Baloo 2',sans-serif; font-weight:700; font-size:.95rem;
+    border:none; cursor:pointer; transition:transform .15s ease;
+  }
+  #pagina-admin .boton:hover{ transform:translateY(-2px); }
+  #pagina-admin .boton:focus-visible{ outline:3px solid var(--sol); outline-offset:2px; }
+  #pagina-admin .boton--azul{ background:var(--azul-fuerte); color:#fff; }
+  #pagina-admin .boton--sol{ background:var(--sol); color:var(--tinta); }
+  #pagina-admin .boton--blanco{ background:#fff; color:var(--azul-fuerte); box-shadow:0 4px 14px -6px rgba(18,58,86,.3); }
+  #pagina-admin .boton--rojo{ background:#fee2e2; color:#b91c1c; }
+  #pagina-admin .boton--verde{ background:#16a34a; color:#fff; }
+  #pagina-admin .boton--chico{ min-height:38px; padding:0 16px; font-size:.85rem; }
+
+  #pagina-admin .logo-circulo{
+    width:38px; height:38px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, var(--sol), var(--azul-oscuro) 70%);
+  }
+
+  #pagina-admin .placa-rol{
+    display:inline-flex; align-items:center; gap:6px; font-size:.85rem; font-weight:800;
+    background:var(--cielo); padding:8px 16px; border-radius:999px;
+  }
+
+  #pagina-admin .toast{
+    position:fixed; left:50%; bottom:26px; transform:translate(-50%, 20px);
+    background:var(--tinta); color:#fff; padding:14px 22px; border-radius:999px;
+    display:flex; align-items:center; gap:10px; font-weight:700; opacity:0;
+    pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:80;
+    box-shadow:0 14px 30px -10px rgba(0,0,0,.4);
+  }
+  #pagina-admin .toast.mostrar{ opacity:1; pointer-events:auto; transform:translate(-50%, 0); }
+</style>
+
+<!-- ##########################################################
+     ARCHIVO: admin.html
+     ########################################################## -->
+
+<!-- ================= BARRA DEL PANEL ================= -->
+<div class="flex items-center justify-between gap-4 flex-wrap px-[5vw] py-4 bg-white shadow-sm">
+  <div class="flex items-center gap-3">
+    <div class="logo-circulo"></div>
+    <div class="font-baloo font-bold text-lg">Panel de administración</div>
+  </div>
+  <div class="flex items-center gap-3">
+    <span class="placa-rol">👩‍💼 <span id="nombreAdmin"></span></span>
+    <button class="boton boton--blanco boton--chico" id="btnLogoutAdmin">🚪 Salir</button>
+  </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-[5vw] md:px-6 py-10">
+  <div class="mb-8">
+    <h1 class="font-baloo font-extrabold text-2xl text-azul-oscuro">Cuentas del equipo editorial</h1>
+    <p class="text-tinta-suave mt-1">Acá creás y eliminás las cuentas de las personas que publican noticias.</p>
+  </div>
+  <button class="boton boton--sol mb-8" id="btnNuevoEditor"><span>➕</span> Crear nueva cuenta de editor/a</button>
+  <div class="space-y-3" id="listaEditores"></div>
+</div>
+
+<!-- ================= MODAL: CREAR EDITOR ================= -->
+<div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalEditor">
+  <div class="bg-white rounded-3xl shadow-xl w-full max-w-md p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="font-baloo font-bold text-xl">➕ Nueva cuenta de editor/a</h2>
+      <button class="text-xl text-tinta-suave" data-cerrar-modal="modalEditor">✕</button>
+    </div>
+    <form id="formNuevoEditor" class="space-y-4">
+      <div>
+        <label for="editorNombre" class="block text-sm font-bold mb-1">🙂 Nombre completo</label>
+        <input type="text" id="editorNombre" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+      </div>
+      <div>
+        <label for="editorUsuario" class="block text-sm font-bold mb-1">👤 Usuario para entrar</label>
+        <input type="text" id="editorUsuario" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+      </div>
+      <div>
+        <label for="editorPassword" class="block text-sm font-bold mb-1">🔒 Contraseña</label>
+        <input type="text" id="editorPassword" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+        <small class="text-xs text-tinta-suave">Se guarda solo en este navegador, con fines de prueba.</small>
+      </div>
+      <button type="submit" class="boton boton--verde w-full">✔️ Crear cuenta</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODALES GENÉRICOS (confirmar / aviso) + TOAST ================= -->
+<div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalConfirmar">
+  <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 text-center">
+    <div class="text-4xl" id="iconoConfirmar">❓</div>
+    <h2 class="font-baloo font-bold text-lg mt-2" id="tituloConfirmar">¿Estás seguro/a?</h2>
+    <p class="text-tinta-suave text-sm mt-2" id="textoConfirmar"></p>
+    <div class="flex gap-3 justify-center mt-6">
+      <button class="boton boton--blanco" id="btnConfirmarNo">No, volver</button>
+      <button class="boton boton--rojo" id="btnConfirmarSi">Sí, continuar</button>
+    </div>
+  </div>
+</div>
+
+<div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalAviso">
+  <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 text-center">
+    <div class="text-4xl">ℹ️</div>
+    <h2 class="font-baloo font-bold text-lg mt-2">Aviso</h2>
+    <p class="text-tinta-suave text-sm mt-2" id="textoAviso"></p>
+    <div class="flex justify-center mt-6">
+      <button class="boton boton--azul" id="btnCerrarAviso">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<!-- ##########################################################
+     FIN ARCHIVO: admin.html
+     ########################################################## -->
+
+<!-- ##########################################################
+     ARCHIVO: admin.js
+     ########################################################## -->
+<script>
+(function(){ // 👈 QUITAR ESTA LÍNEA AL SEPARAR EN admin.js
+"use strict";
+
+  /* =========================================================
+     UTILIDADES COMUNES — mismo bloque que en index.js / editor.js.
+  ========================================================== */
+  const LS_USERS   = 'mma2_users';
+  const LS_NEWS    = 'mma2_news';
+  const LS_DRAFTS  = 'mma2_drafts';
+  const SS_SESSION = 'mma2_session';
+  const RAIZ = document.getElementById('pagina-admin'); // 👈 solo para esta vista previa combinada
+
+  function $(sel, ctx){ return (ctx||RAIZ||document).querySelector(sel); }
+  function $$(sel, ctx){ return Array.from((ctx||RAIZ||document).querySelectorAll(sel)); }
+  function uid(prefijo){ return prefijo + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function sembrarDatos(){
+    if(!localStorage.getItem(LS_USERS)){
+      localStorage.setItem(LS_USERS, JSON.stringify([
+        { id:'u_admin', username:'admin', password:'admin123', role:'admin', name:'Administración' },
+        { id:'u_edit1', username:'editora1', password:'editor123', role:'editor', name:'Valentina Ríos' }
+      ]));
+    }
+    if(!localStorage.getItem(LS_NEWS)) localStorage.setItem(LS_NEWS, JSON.stringify([]));
+    if(!localStorage.getItem(LS_DRAFTS)) localStorage.setItem(LS_DRAFTS, JSON.stringify({}));
+  }
+  const DB = {
+    getUsers(){ return JSON.parse(localStorage.getItem(LS_USERS) || '[]'); },
+    setUsers(u){ localStorage.setItem(LS_USERS, JSON.stringify(u)); },
+    getNews(){ return JSON.parse(localStorage.getItem(LS_NEWS) || '[]'); },
+    setNews(n){ localStorage.setItem(LS_NEWS, JSON.stringify(n)); },
+    getDrafts(){ return JSON.parse(localStorage.getItem(LS_DRAFTS) || '{}'); },
+    setDrafts(d){ localStorage.setItem(LS_DRAFTS, JSON.stringify(d)); }
+  };
+  function getSession(){ try{ return JSON.parse(sessionStorage.getItem(SS_SESSION)); } catch(e){ return null; } }
+  function setSession(s){ sessionStorage.setItem(SS_SESSION, JSON.stringify(s)); }
+  function clearSession(){ sessionStorage.removeItem(SS_SESSION); }
+
+  let toastTimer;
+  function mostrarToast(msg, icono){
+    const t = $('#toast');
+    if(!t) return;
+    t.innerHTML = `<span>${icono||'✅'}</span><span>${msg}</span>`;
+    t.classList.add('mostrar');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> t.classList.remove('mostrar'), 3200);
+  }
+  function preguntarConfirmacion(opciones){
+    $('#iconoConfirmar').textContent = opciones.icono || '❓';
+    $('#tituloConfirmar').textContent = opciones.titulo || '¿Estás seguro/a?';
+    $('#textoConfirmar').textContent = opciones.texto || '';
+    $('#btnConfirmarSi').textContent = opciones.textoSi || 'Sí, continuar';
+    const modal = $('#modalConfirmar');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+    const btnSi = $('#btnConfirmarSi');
+    const btnNo = $('#btnConfirmarNo');
+    function limpiar(){
+      modal.classList.add('hidden'); modal.classList.remove('flex');
+      btnSi.removeEventListener('click', alConfirmar);
+      btnNo.removeEventListener('click', alCancelar);
+    }
+    function alConfirmar(){ limpiar(); if(opciones.onSi) opciones.onSi(); }
+    function alCancelar(){ limpiar(); }
+    btnSi.addEventListener('click', alConfirmar);
+    btnNo.addEventListener('click', alCancelar);
+  }
+  function mostrarAviso(texto){
+    $('#textoAviso').textContent = texto;
+    const modal = $('#modalAviso');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+  }
+  $('#btnCerrarAviso').addEventListener('click', ()=>{
+    const modal = $('#modalAviso');
+    modal.classList.add('hidden'); modal.classList.remove('flex');
+  });
+  function abrirModal(id){ const m = $('#'+id); m.classList.remove('hidden'); m.classList.add('flex'); }
+  function cerrarModal(id){ const m = $('#'+id); m.classList.add('hidden'); m.classList.remove('flex'); }
+  $$('[data-cerrar-modal]').forEach(btn=> btn.addEventListener('click', ()=> cerrarModal(btn.dataset.cerrarModal)));
+  $$('.fixed.inset-0.bg-black\\/50').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo){ fondo.classList.add('hidden'); fondo.classList.remove('flex'); } }));
+
+  function cerrarSesion(){
+    clearSession();
+    window.location.href = 'index.html?salida=1';
+  }
+
+  /* =========================================================
+     PROTECCIÓN DE ACCESO (igual criterio que en editor.js, pero
+     exigiendo role === 'admin').
+  ========================================================== */
+  sembrarDatos();
+  const sesion = getSession();
+  if(!sesion || sesion.role !== 'admin'){
+    window.location.href = 'index.html';
+  } else {
+    $('#nombreAdmin').textContent = sesion.name;
+    mostrarToast('Bienvenido/a al panel de administración', '🛠️');
+    iniciarPanelAdmin();
+  }
+
+  /* =========================================================
+     PANEL DE ADMINISTRACIÓN
+     ⚠️ A DIFERENCIA DEL RESTO DEL ARCHIVO, esta parte NO estaba en el
+     texto que me pasaste (solo venía el HTML del panel de admin, sin
+     su lógica en JS — el "Bloque 2" de script nunca aparecía). La
+     reconstruí siguiendo exactamente el mismo patrón que ya usaba el
+     panel de editor/a (Bloque 3), para que el proyecto quede completo
+     y funcional. Revisala con más atención que al resto.
+  ========================================================== */
+  function iniciarPanelAdmin(){
+    renderListaEditores();
+
+    $('#btnNuevoEditor').addEventListener('click', ()=>{
+      $('#formNuevoEditor').reset();
+      abrirModal('modalEditor');
+    });
+
+    $('#btnLogoutAdmin').addEventListener('click', cerrarSesion);
+
+    $('#formNuevoEditor').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const nombre = $('#editorNombre').value.trim();
+      const usuario = $('#editorUsuario').value.trim();
+      const password = $('#editorPassword').value;
+
+      const usuarios = DB.getUsers();
+      const yaExiste = usuarios.some(u => u.username.toLowerCase() === usuario.toLowerCase());
+      if(yaExiste){
+        mostrarAviso('Ese nombre de usuario ya existe. Elegí otro para crear la cuenta.');
+        return;
+      }
+
+      usuarios.push({ id: uid('u'), username: usuario, password, role:'editor', name: nombre });
+      DB.setUsers(usuarios);
+      cerrarModal('modalEditor');
+      renderListaEditores();
+      mostrarToast('Cuenta de editor/a creada', '✔️');
+    });
+  }
+
+  function renderListaEditores(){
+    const cont = $('#listaEditores');
+    const editores = DB.getUsers().filter(u => u.role === 'editor');
+    if(editores.length === 0){
+      cont.innerHTML = '<div class="text-center text-tinta-suave py-8">📭 Todavía no creaste ninguna cuenta de editor/a.</div>';
+      return;
+    }
+    cont.innerHTML = editores.map(u => `
+      <div class="bg-white rounded-2xl p-4 flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3">
+          <div class="text-2xl">✍️</div>
+          <div>
+            <h3 class="font-bold">${escapeHTML(u.name)}</h3>
+            <p class="text-sm text-tinta-suave">Usuario: ${escapeHTML(u.username)}</p>
+          </div>
+        </div>
+        <button class="boton boton--rojo boton--chico" data-eliminar-editor="${u.id}">🗑️ Eliminar cuenta</button>
+      </div>
+    `).join('');
+
+    $$('[data-eliminar-editor]', cont).forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.dataset.eliminarEditor;
+        const usuario = DB.getUsers().find(u=>u.id===id);
+        preguntarConfirmacion({
+          icono:'🗑️', titulo:'¿Eliminar esta cuenta?',
+          texto:`${usuario ? usuario.name : 'Esta persona'} ya no va a poder entrar al panel de noticias. Las noticias que ya publicó quedan en el sitio.`,
+          textoSi:'Sí, eliminar',
+          onSi(){
+            DB.setUsers(DB.getUsers().filter(u=>u.id!==id));
+            // Además limpiamos los borradores sin publicar de esa cuenta.
+            if(usuario){
+              const drafts = DB.getDrafts();
+              Object.keys(drafts).forEach(key=>{ if(key.startsWith(usuario.username + '__')) delete drafts[key]; });
+              DB.setDrafts(drafts);
+            }
+            renderListaEditores();
+            mostrarToast('Cuenta eliminada', '🗑️');
+          }
+        });
+      });
+    });
+  }
+
+  function escapeHTML(str){
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+})(); // 👈 QUITAR ESTA LÍNEA AL SEPARAR EN admin.js
+</script>
+</section>
+<!-- ========================== FIN PÁGINA 3 (admin) ========================== -->
+
+</body>
+</html>

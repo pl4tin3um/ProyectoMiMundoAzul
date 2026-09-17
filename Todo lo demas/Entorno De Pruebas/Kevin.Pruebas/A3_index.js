@@ -1,45 +1,59 @@
-
-  "use strict";
+"use strict";
+  /* cerrarSesion: ahora hace una navegación real (redirect) a A1_index.html
+     en vez de "cambiar de vista" con JS. Se usa desde editor.js y
+     admin.js (cada uno tiene su propia copia de esta función). */
+  function cerrarSesion(){
+    clearSession();
+    window.location.href = 'A1_index.html?salida=1';
+  }
 
   /* =========================================================
-     BLOQUE 1 — SITIO PRINCIPAL / PÚBLICO
-     Grilla de noticias públicas, lectura de noticia completa
-     en pestaña aparte, y pantalla de login (acceso a admin/editor).
+     LÓGICA PROPIA DE A1_index.html / index.js
+     (navegación suave, año del footer, semilla de datos, grilla
+     pública de noticias, apertura de noticia completa en pestaña
+     aparte, y pantalla de login con redirección real según el rol)
   ========================================================== */
 
-  /* ---------------- NAVEGACIÓN SUAVE ---------------- */
-  $$('.nav-scroll').forEach(a => a.addEventListener('click', (e)=>{
+  $$('.nav-scroll', document.getElementById('pagina-index')).forEach(a => a.addEventListener('click', (e)=>{
     e.preventDefault();
     const destino = document.querySelector(a.getAttribute('href'));
     if(destino) destino.scrollIntoView({behavior:'smooth'});
   }));
   $('#anioFooter').textContent = new Date().getFullYear();
 
-
-  /* ---------------- INICIO ---------------- */
   sembrarDatos();
   renderGridPublico();
 
-  /* ---------------- RENDER: NOTICIAS PÚBLICAS ---------------- */
+  /* Si venimos de un cierre de sesión (?salida=1) o de querer entrar
+     directo al login (#login), lo resolvemos al cargar la página. */
+  (function resolverEstadoInicial(){
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('salida') === '1'){
+      mostrarToast('Saliste del panel. ¡Hasta pronto!', '👋');
+      history.replaceState({}, '', 'A1_index.html');
+    }
+    if(window.location.hash === '#login') mostrarPantallaLogin();
+  })();
+
   function renderGridPublico(){
     const grid = $('#gridNoticias');
     const noticias = DB.getNews();
     if(noticias.length === 0){
       grid.innerHTML = '';
-      $('#piePublicoVacio').innerHTML = '<div class="solo-lectura-vacio">📭 Todavía no hay noticias publicadas. ¡Volvé pronto!</div>';
+      $('#piePublicoVacio').innerHTML = '<p class="text-center text-tinta-suave">📭 Todavía no hay noticias publicadas. ¡Volvé pronto!</p>';
       return;
     }
     $('#piePublicoVacio').innerHTML = '';
     grid.innerHTML = noticias.map(n => `
-      <article class="tarjeta-noticia">
-        <div class="tarjeta-noticia__imagen" style="background-image:url('${n.image || placeholderImg(n.id)}')">
-          <span class="tarjeta-noticia__fecha">${formatearFecha(n.date)}</span>
+      <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col">
+        <div class="tarjeta-noticia__imagen h-44 relative" style="background-image:url('${n.image || placeholderImg(n.id)}')">
+          <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date)}</span>
         </div>
-        <div class="tarjeta-noticia__cuerpo">
-          <h3 class="tarjeta-noticia__titulo">${escapeHTML(n.title)}</h3>
-          <p class="tarjeta-noticia__extracto">${escapeHTML(n.excerpt)}</p>
-          <button class="boton boton--azul boton--chico tarjeta-noticia__boton" data-abrir-noticia="${n.id}">
-            <span class="boton__icono">📖</span> Leer noticia completa
+        <div class="p-5 flex flex-col flex-1">
+          <h3 class="font-baloo font-bold text-lg text-azul-oscuro">${escapeHTML(n.title)}</h3>
+          <p class="text-sm text-tinta-suave mt-2 flex-1">${escapeHTML(n.excerpt)}</p>
+          <button class="boton boton--azul mt-4 self-start" data-abrir-noticia="${n.id}">
+            <span>📖</span> Leer noticia completa
           </button>
         </div>
       </article>
@@ -50,7 +64,6 @@
     });
   }
 
-  /* ---------------- ABRIR NOTICIA EN PESTAÑA COMPLETA ---------------- */
   function abrirNoticiaCompleta(id){
     const noticia = DB.getNews().find(n => n.id === id);
     if(!noticia) return;
@@ -105,9 +118,27 @@
     window.open(URL.createObjectURL(blob), '_blank');
   }
 
-  /* ---------------- LOGIN (acceso a admin/editor) ---------------- */
-  $('#btnIrLogin').addEventListener('click', ()=> mostrarVista('login'));
-  $('#volverSitioLogin').addEventListener('click', ()=> mostrarVista('publico'));
+  /* ---------------- LOGIN (dentro de A1_index.html) ---------------- */
+  function mostrarPantallaLogin(){
+    $('#contenidoPublico').classList.add('hidden');
+    $('#cabeceraPublica').classList.add('hidden');
+    $('#seccionLogin').classList.remove('hidden');
+    window.scrollTo(0,0);
+  }
+  function mostrarSitioPublico(){
+    $('#seccionLogin').classList.add('hidden');
+    $('#contenidoPublico').classList.remove('hidden');
+    $('#cabeceraPublica').classList.remove('hidden');
+  }
+
+  $('#btnIrLogin').addEventListener('click', ()=>{
+    window.location.hash = 'login';
+    mostrarPantallaLogin();
+  });
+  $('#volverSitioLogin').addEventListener('click', ()=>{
+    history.replaceState({}, '', 'A1_index.html');
+    mostrarSitioPublico();
+  });
 
   $('#btnMostrarPass').addEventListener('click', ()=>{
     const campo = $('#loginPassword');
@@ -123,36 +154,12 @@
     const pass = $('#loginPassword').value;
     const encontrado = DB.getUsers().find(u => u.username === usuario && u.password === pass);
     if(!encontrado){
-      $('#errorLogin').innerHTML = '<div class="mensaje-error"><span>⚠️</span><span>Ese usuario o esa contraseña no son correctos. Fijate bien e intentá de nuevo.</span></div>';
+      $('#errorLogin').innerHTML = '<div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3 flex gap-2"><span>⚠️</span><span>Ese usuario o esa contraseña no son correctos. Fijate bien e intentá de nuevo.</span></div>';
       return;
     }
     $('#errorLogin').innerHTML = '';
     setSession({ id:encontrado.id, username:encontrado.username, role:encontrado.role, name:encontrado.name });
     $('#formLogin').reset();
-    if(encontrado.role === 'admin') irAPanelAdmin(); else irAPanelEditor();
+    // Navegación real: cada rol va a su propio archivo, no a una "vista" oculta.
+    window.location.href = (encontrado.role === 'admin') ? 'C1_admin.html' : 'B1_editor.html';
   });
-
-
-
- 
-
-
-          
-
-
-          
-
-
-          
-
-
-
-          
-
-
-          
-
-
-          
-
-  
