@@ -48,7 +48,7 @@
   function mostrarToast(msg, icono){
     const t = $('#toast');
     if(!t) return;
-    t.innerHTML = <span>${icono||'✅'}</span><span>${msg}</span>;
+    t.innerHTML = `<span>${icono||'✅'}</span><span>${msg}</span>`;
     t.classList.add('mostrar');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(()=> t.classList.remove('mostrar'), 3200);
