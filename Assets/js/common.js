@@ -1,4 +1,4 @@
-/* =========================================================
+ /* =========================================================
      UTILIDADES COMUNES — pegar acá, sin cambios, el mismo bloque
      que está en index.js (desde "const LS_USERS" hasta "clearSession").
      Se repite abajo completo para que este archivo funcione dentro
@@ -52,4 +52,34 @@
     t.classList.add('mostrar');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(()=> t.classList.remove('mostrar'), 3200);
+  }
+
+  function mostrarUsuarios(){
+    const usuarios = DB.getUsers();
+    const ventana = document.createElement('div');
+    ventana.id = 'ventanaUsuarios';
+    ventana.className = 'fixed inset-y-0 left-0 z-50 flex items-center p-6 pointer-events-none';
+    ventana.innerHTML = `
+      <div class="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-md pointer-events-auto" role="dialog" aria-modal="true" aria-labelledby="tituloUsuarios">
+        <div class="flex items-center justify-between mb-4">
+          <h2 id="tituloUsuarios" class="font-baloo font-extrabold text-2xl text-azul-oscuro">Usuarios</h2>
+          <button type="button" id="cerrarUsuarios" class="text-2xl text-tinta-suave" aria-label="Cerrar">&times;</button>
+        </div>
+        <div class="space-y-3">
+          ${usuarios.length ? usuarios.map(usuario => `
+            <div class="rounded-2xl bg-cielo p-4">
+              <p class="font-bold">${escapeHTML(usuario.name || usuario.username)}</p>
+              <p class="text-sm text-tinta-suave">@${escapeHTML(usuario.username)} <br> ${escapeHTML(usuario.role)}</p>
+              <p class="text-sm text-tinta-suave">Contraseña: ${escapeHTML(usuario.password || '')}</p>
+            </div>
+          `).join('') : '<p class="text-tinta-suave">No hay usuarios registrados.</p>'}
+        </div>
+      </div>`;
+
+    document.body.appendChild(ventana);
+    const cerrar = () => ventana.remove();
+    ventana.querySelector('#cerrarUsuarios').addEventListener('click', cerrar);
+    ventana.addEventListener('click', event => {
+      if(event.target === ventana) cerrar();
+    });
   }
