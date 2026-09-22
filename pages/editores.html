@@ -79,14 +79,8 @@
       <div class="font-baloo font-bold text-lg">Panel de noticias</div>
     </div>
     <div class="flex items-center gap-3">
-      <span class="text-sm font-bold bg-cielo px-4 py-2 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-</svg> <span id="nombreEditor"></span></span>
-      <button class="boton boton--blanco boton--chico" id="btnLogoutEditor"><svg xmlns="http://www.w3.org/2000/svg" 
-        width="26" height="26" fill="currentColor" class="bi bi-door-open-fill" viewBox="0 0 14 16">
-  <path d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0 0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15zM11 2h.5a.5.5 0 0 1 .5.5V15h-1zm-2.5 8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1"/>
-</svg> Salir</button>
+      <span class="text-sm font-bold bg-cielo px-4 py-2 rounded-full">✍️ <span id="nombreEditor"></span></span>
+      <button class="boton boton--blanco boton--chico" id="btnLogoutEditor">🚪 Salir</button>
     </div>
   </div>
 
@@ -96,15 +90,11 @@
       <p class="text-tinta-suave mt-1">Creá, editá o eliminá las noticias que se ven en el sitio.</p>
     </div>
 
-    <button class="boton boton--sol mb-8" id="btnNuevaNoticia"><span><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-</svg></span> Crear noticia nueva</button>
+    <button class="boton boton--sol mb-8" id="btnNuevaNoticia"><span>➕</span> Crear noticia nueva</button>
 
     <div id="bloqueBorradores"></div>
 
-    <h2 class="font-baloo font-bold text-xl mb-4"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-megaphone-fill" viewBox="0 0 16 16">
-  <path d="M13 2.5a1.5 1.5 0 0 1 3 0v11a1.5 1.5 0 0 1-3 0zm-1 .724c-2.067.95-4.539 1.481-7 1.656v6.237a25 25 0 0 1 1.088.085c2.053.204 4.038.668 5.912 1.56zm-8 7.841V4.934c-.68.027-1.399.043-2.008.053A2.02 2.02 0 0 0 0 7v2c0 1.106.896 1.996 1.994 2.009l.496.008a64 64 0 0 1 1.51.048m1.39 1.081q.428.032.85.078l.253 1.69a1 1 0 0 1-.983 1.187h-.548a1 1 0 0 1-.916-.599l-1.314-2.48a66 66 0 0 1 1.692.064q.491.026.966.06"/>
-</svg> Noticias publicadas</h2>
+    <h2 class="font-baloo font-bold text-xl mb-4">📢 Noticias publicadas</h2>
     <div class="space-y-3" id="listaNoticiasEditor"></div>
   </div>
 
@@ -112,49 +102,30 @@
   <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalNoticia">
     <div class="bg-white rounded-3xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="font-baloo font-bold text-xl" id="tituloModalNoticia"><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-</svg> Nueva noticia</h2>
+        <h2 class="font-baloo font-bold text-xl" id="tituloModalNoticia">➕ Nueva noticia</h2>
         <button class="text-xl text-tinta-suave" data-cerrar-modal="modalNoticia">✕</button>
       </div>
-      <div class="estado-guardado" id="estadoGuardado"><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-floppy2-fill" viewBox="0 0 16 16">
-  <path d="M12 2h-2v3h2z"/>
-  <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v13A1.5 1.5 0 0 0 1.5 16h13a1.5 1.5 0 0 0 1.5-1.5V2.914a1.5 1.5 0 0 0-.44-1.06L14.147.439A1.5 1.5 0 0 0 13.086 0zM4 6a1 1 0 0 1-1-1V1h10v4a1 1 0 0 1-1 1zM3 9h10a1 1 0 0 1 1 1v5H2v-5a1 1 0 0 1 1-1"/>
-</svg></span><span id="textoEstadoGuardado">Mientras escribís, vamos guardando para que no pierdas nada.</span></div>
+      <div class="estado-guardado" id="estadoGuardado"><span>💾</span><span id="textoEstadoGuardado">Mientras escribís, vamos guardando para que no pierdas nada.</span></div>
       <form id="formNoticia" class="space-y-4">
         <input type="hidden" id="noticiaId">
         <div>
-          <label for="noticiaTitulo" class="block text-sm font-bold mb-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-journal-text" viewBox="0 0 16 16">
-  <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
-  <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/>
-  <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z"/>
-</svg> Título de la noticia</label>
+          <label for="noticiaTitulo" class="block text-sm font-bold mb-1">📝 Título de la noticia</label>
           <input type="text" id="noticiaTitulo" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
         </div>
         <div>
-          <label for="noticiaImagen" class="block text-sm font-bold mb-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
-  <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
-  <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2M14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1M2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1z"/>
-</svg> Dirección de la imagen (URL)</label>
+          <label for="noticiaImagen" class="block text-sm font-bold mb-1">🖼️ Dirección de la imagen (URL)</label>
           <input type="text" id="noticiaImagen" placeholder="https://..." class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
         </div>
         <div>
-          <label for="noticiaExtracto" class="block text-sm font-bold mb-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-vector-pen" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M10.646.646a.5.5 0 0 1 .708 0l4 4a.5.5 0 0 1 0 .708l-1.902 1.902-.829 3.313a1.5 1.5 0 0 1-1.024 1.073L1.254 14.746 4.358 4.4A1.5 1.5 0 0 1 5.43 3.377l3.313-.828zm-1.8 2.908-3.173.793a.5.5 0 0 0-.358.342l-2.57 8.565 8.567-2.57a.5.5 0 0 0 .34-.357l.794-3.174-3.6-3.6z"/>
-  <path fill-rule="evenodd" d="M2.832 13.228 8 9a1 1 0 1 0-1-1l-4.228 5.168-.026.086z"/>
-</svg> Resumen corto</label>
+          <label for="noticiaExtracto" class="block text-sm font-bold mb-1">✏️ Resumen corto</label>
           <textarea id="noticiaExtracto" required class="w-full min-h-[80px] rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte"></textarea>
         </div>
         <div>
-          <label for="noticiaCuerpo" class="block text-sm font-bold mb-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark" viewBox="0 0 16 16">
-  <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
-</svg> Texto completo</label>
+          <label for="noticiaCuerpo" class="block text-sm font-bold mb-1">📄 Texto completo</label>
           <textarea id="noticiaCuerpo" placeholder="Dejá una línea vacía entre párrafo y párrafo." required class="w-full min-h-[140px] rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte"></textarea>
         </div>
         <div class="flex justify-between items-center pt-2">
-          <button type="button" class="boton boton--rojo boton--chico" id="btnDescartarBorrador"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-  <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-</svg> Descartar</button>
+          <button type="button" class="boton boton--rojo boton--chico" id="btnDescartarBorrador">🗑️ Descartar</button>
           <button type="submit" class="boton boton--verde" id="btnPublicarNoticia">✔️ Publicar noticia</button>
         </div>
       </form>
