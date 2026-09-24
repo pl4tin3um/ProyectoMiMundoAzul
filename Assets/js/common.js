@@ -8,6 +8,13 @@ const LS_DRAFTS  = 'mma2_drafts';
 const LS_FORMS   = 'mma2_forms';
 const SS_SESSION = 'mma2_session';
 
+function $(sel, ctx) {
+    return (ctx || document).querySelector(sel);
+}
+
+function $$(sel, ctx) {
+    return Array.from((ctx || document).querySelectorAll(sel));
+}
 function uid(prefijo) { return prefijo + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
 function formatearFecha(iso) {
