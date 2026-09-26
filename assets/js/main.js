@@ -187,6 +187,6 @@ if(formLogin) {
     if(err) err.innerHTML = '';
     setSession({ id:encontrado.id, username:encontrado.username, role:encontrado.role, name:encontrado.name });
     formLogin.reset();
-    window.location.href = (encontrado.role === 'admin') ? 'Public/admin.html' : 'Public/editor.html';
+    window.location.href = (encontrado.role === 'admin') ? 'pages/admin.html' : 'pages/editor.html';
   });
 }
