@@ -51,7 +51,8 @@
   sembrarDatos();
   const sesion = getSession();
   if(!sesion || sesion.role !== 'editor'){
-    !alert('No tenés permiso para entrar a esta página. Vas a volver al inicio.') && window.location.href = '../index.html';
+    alert('No tenés permiso para entrar a esta página. Vas a volver al inicio.');
+    window.location.href = '../index.html';
   }
 
   /* =========================================================
