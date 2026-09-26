@@ -300,6 +300,7 @@
   }
 document.addEventListener('DOMContentLoaded', () => {
   iniciarPanelEditor();
+  renderFormularios();
 });
 
 /* =========================================================
@@ -316,23 +317,84 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Procesa la entrada (URL o iframe completo) y la prepara para renderizarse
+function renderFormularios() {
+  const container = document.getElementById('gridFormularios');
+  if (!container) return;
+
+  const formularios = DB.getForms();
+
+  if (!formularios || formularios.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full text-center text-tinta-suave py-8 bg-white/50 rounded-3xl border border-dashed border-cielo-oscuro">
+        <p><i class="bi bi-inbox-fill me-2" aria-hidden="true"></i>No hay formularios disponibles en este momento.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = formularios.map((form) => `
+    <article class="bg-white rounded-3xl p-6 shadow-md border border-cielo-medio flex flex-col justify-between hover:-translate-y-1 transition duration-200">
+      <div>
+        <div class="text-3xl text-azul-fuerte mb-3">
+          <i class="bi bi-file-earmark-text-fill" aria-hidden="true"></i>
+        </div>
+        <h3 class="font-baloo font-bold text-xl text-azul-oscuro break-words [overflow-wrap:anywhere]">${escapeHTML(form.title)}</h3>
+      </div>
+      <div class="mt-6 flex gap-2">
+        <button class="boton boton--rojo py-2.5 px-3 text-sm" data-eliminar-form="${form.id}" aria-label="Eliminar formulario">
+          <i class="bi bi-trash" aria-hidden="true"></i>
+        </button>
+      </div>
+    </article>
+  `).join('');
+
+  container.querySelectorAll('[data-eliminar-form]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const eliminar = () => {
+        DB.setForms(DB.getForms().filter(form => form.id !== btn.dataset.eliminarForm));
+        renderFormularios();
+      };
+
+      if (typeof preguntarConfirmacion === 'function') {
+        preguntarConfirmacion({
+          icono: '🗑️',
+          titulo: 'Eliminar formulario',
+          texto: '¿Querés eliminar este formulario?',
+          textoSi: 'Sí, eliminar',
+          onSi: eliminar
+        });
+      } else if (window.confirm('¿Querés eliminar este formulario?')) {
+        eliminar();
+      }
+    });
+  });
+}
+
 function extraerUrlForm(entrada) {
-  let url = entrada.trim();
+  let valor = entrada.trim();
   
   if (entrada.includes('<iframe')) {
     const match = entrada.match(/src=["']([^"']+)["']/);
-    url = match ? match[1] : '';
+    valor = match ? match[1] : '';
   }
 
-  if (url.includes('docs.google.com/forms') && !url.includes('embedded=true')) {
-    url += (url.includes('?') ? '&' : '?') + 'embedded=true';
+  let url;
+  try {
+    url = new URL(valor);
+  } catch {
+    return null;
   }
 
-  return url || null;
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return null;
+  if (url.hostname === 'forms.gle' && /^\/[\w-]+\/?$/.test(url.pathname)) return url.href;
+  if (url.hostname !== 'docs.google.com') return null;
+
+  const rutaValida = /^\/forms\/(?:u\/\d+\/)?d\/(?:e\/)?[\w-]+\/viewform\/?$/;
+  if (!rutaValida.test(url.pathname)) return null;
+
+  url.searchParams.set('embedded', 'true');
+  return url.href;
 }
 
-// Captura los valores de los inputs y guarda el nuevo registro
 function AgregarForm(e) {
   e.preventDefault();
 
@@ -343,12 +405,22 @@ function AgregarForm(e) {
   const rawInput = inputUrl ? inputUrl.value.trim() : '';
   const urlLimpia = rawInput ? extraerUrlForm(rawInput) : null;
 
+  if (rawInput && !urlLimpia) {
+    mostrarToast('El enlace no parece una ruta válida de Google Forms. Revisá la URL o el iframe.', '⚠️');
+    inputUrl?.focus();
+    return;
+  }
+
   if (!titulo || !urlLimpia) {
+    const mensaje = !titulo
+      ? 'Ingresá un título para identificar el formulario.'
+      : 'El enlace no parece una ruta válida de Google Forms. Revisá la URL o el iframe.';
     if (typeof mostrarToast === 'function') {
-      mostrarToast('Ingresá un título y una URL o iframe válido.', '⚠️');
+      mostrarToast(mensaje, '⚠️');
     } else {
-      alert('Ingresá un título y una URL o iframe válido.');
+      alert(mensaje);
     }
+    (!titulo ? inputTitulo : inputUrl)?.focus();
     return;
   }
 
@@ -364,7 +436,6 @@ function AgregarForm(e) {
   if (inputTitulo) inputTitulo.value = '';
   if (inputUrl) inputUrl.value = '';
 
-  // Opcional: si existe la función de render en el otro apartado, actualiza la vista
   if (typeof renderFormularios === 'function') {
     renderFormularios();
   }
