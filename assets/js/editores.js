@@ -301,3 +301,46 @@
     $('#textoEstadoGuardado').textContent = 'Guardado automático a las ' + new Date().toLocaleTimeString('es-AR');
     estado.classList.add('activo');
   }
+
+
+/* =========================================================
+   ==================== Formularios ========================
+   ========================================================= */
+
+   function AgregarForm(e) {
+  e.preventDefault();
+
+  // IDs adaptados exactamente a tu HTML
+  const inputTitulo = document.getElementById('tituloForm');
+  const inputUrl = document.getElementById('inputGoogleForm');
+
+  const titulo = inputTitulo ? inputTitulo.value.trim() : '';
+  const rawInput = inputUrl ? inputUrl.value.trim() : '';
+  const urlLimpia = rawInput ? extraerUrlForm(rawInput) : null;
+
+  if (!titulo || !urlLimpia) {
+    if (typeof mostrarToast === 'function') {
+      mostrarToast('Ingresá un título y una URL o iframe válido.', '⚠️');
+    } else {
+      alert('Ingresá un título y una URL o iframe válido.');
+    }
+    return;
+  }
+
+  const nuevos = DB.getForms() || [];
+  nuevos.push({
+    id: typeof uid === 'function' ? uid('f') : Date.now().toString(),
+    title: titulo,
+    url: urlLimpia
+  });
+
+  DB.setForms(nuevos);
+
+  if (inputTitulo) inputTitulo.value = '';
+  if (inputUrl) inputUrl.value = '';
+
+  renderFormularios();
+  if (typeof mostrarToast === 'function') {
+    mostrarToast('¡Tarjeta de formulario agregada!', '✨');
+  }
+}

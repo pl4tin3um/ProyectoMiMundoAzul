@@ -23,7 +23,7 @@ if (elAnio) elAnio.textContent = new Date().getFullYear();
 
 sembrarDatos();
 renderGridPublico();
-renderFormularios();
+
 
 (function resolverEstadoInicial(){
   const params = new URLSearchParams(window.location.search);
@@ -34,128 +34,6 @@ renderFormularios();
   if(window.location.hash === '#login') mostrarPantallaLogin();
 })();
 
-/* ---------------- FORMULARIOS GOOGLE ---------------- */
-
-function extraerUrlForm(entrada) {
-  if (entrada.includes('<iframe')) {
-    const match = entrada.match(/src=["']([^"']+)["']/);
-    return match ? match[1] : null;
-  }
-  return entrada.trim();
-}
-
-function renderFormularios() {
-  const container = document.getElementById('gridFormularios');
-  if (!container) return;
-
-  const formularios = DB.getForms();
-  
-  if (formularios.length === 0) {
-    container.innerHTML = `
-      <div class="col-span-full text-center text-tinta-suave py-8 bg-white/50 rounded-3xl border border-dashed border-cielo-oscuro">
-        <p>📭 No hay formularios disponibles en este momento.</p>
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = formularios.map((form) => `
-    <article class="bg-white rounded-3xl p-6 shadow-md border border-cielo-medio flex flex-col justify-between hover:-translate-y-1 transition duration-200">
-      <div>
-        <div class="text-3xl text-azul-fuerte mb-3">
-          <i class="bi bi-file-earmark-text-fill" aria-hidden="true"></i>
-        </div>
-        <h3 class="font-baloo font-bold text-xl text-azul-oscuro break-words">${escapeHTML(form.title)}</h3>
-      </div>
-      <div class="mt-6 flex gap-2">
-        <button class="boton boton--azul flex-1 py-2.5 text-sm" data-abrir-form="${form.id}">
-          <span>📝</span> Completar
-        </button>
-        <button class="bg-rojo-claro text-rojo font-bold px-3 py-2.5 rounded-xl hover:bg-rojo hover:text-white transition text-sm" data-eliminar-form="${form.id}" title="Eliminar">
-          <i class="bi bi-trash-fill" aria-hidden="true"></i>
-        </button>
-      </div>
-    </article>
-  `).join('');
-
-  $$('[data-abrir-form]', container).forEach(btn => {     btn.addEventListener('click', () => {       const id = btn.dataset.abrirForm;       const form = DB.getForms().find(f => f.id === id);       if (form) abrirModalFormulario(form);     });   });    $$
-('[data-eliminar-form]', container).forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.eliminarForm;
-      if (confirm('¿Seguro que deseas eliminar este formulario?')) {
-        const nuevosForms = DB.getForms().filter(f => f.id !== id);
-        DB.setForms(nuevosForms);
-        renderFormularios();
-        mostrarToast('Formulario eliminado correctamente', '🗑️');
-      }
-    });
-  });
-}
-
-// Escucha del botón por ID
-const btnAgregar = document.getElementById('btnAgregarForm');
-if (btnAgregar) {
-  btnAgregar.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    const inputTitulo = document.getElementById('inputTituloForm');
-    const inputUrl = document.getElementById('inputUrlForm');
-
-    const titulo = inputTitulo ? inputTitulo.value.trim() : '';
-    const rawInput = inputUrl ? inputUrl.value.trim() : '';
-    const urlLimpia = rawInput ? extraerUrlForm(rawInput) : null;
-
-    if (!titulo || !urlLimpia) {
-      mostrarToast('Ingresá un título y una URL o iframe válido.', '⚠️');
-      return;
-    }
-
-    const nuevos = DB.getForms();
-    nuevos.push({
-      id: uid('f'),
-      title: titulo,
-      url: urlLimpia
-    });
-
-    DB.setForms(nuevos);
-
-    if (inputTitulo) inputTitulo.value = '';
-    if (inputUrl) inputUrl.value = '';
-
-    renderFormularios();
-    mostrarToast('¡Tarjeta de formulario agregada!', '✨');
-  });
-}
-
-function abrirModalFormulario(form) {
-  let modal = document.getElementById('modalFormulario');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'modalFormulario';
-    modal.className = 'fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4';
-    document.body.appendChild(modal);
-  }
-
-  modal.innerHTML = `
-    <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[85vh]">
-      <div class="flex justify-between items-center px-6 py-4 border-b border-cielo-medio bg-cielo">
-        <h3 class="font-baloo font-bold text-lg text-azul-oscuro">${escapeHTML(form.title)}</h3>
-        <button id="btnCerrarModalForm" class="text-tinta-suave hover:text-rojo text-2xl font-bold leading-none">&times;</button>
-      </div>
-      <div class="p-2 flex-1 bg-white">
-        <iframe src="${form.url}" class="w-full h-full border-0 rounded-b-2xl" loading="lazy">Cargando formulario...</iframe>
-      </div>
-    </div>
-  `;
-
-  modal.classList.remove('hidden');
-
-  const cerrar = () => modal.classList.add('hidden');
-  const btnCerrar = modal.querySelector('#btnCerrarModalForm');
-  if(btnCerrar) btnCerrar.addEventListener('click', cerrar);
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) cerrar();
-  });
-}
 
 /* ---------------- NOTICIAS PÚBLICAS ---------------- */
 
