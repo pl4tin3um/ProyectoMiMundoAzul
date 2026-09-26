@@ -51,11 +51,7 @@
   sembrarDatos();
   const sesion = getSession();
   if(!sesion || sesion.role !== 'editor'){
-    window.location.href = '../index.html';
-  } else {
-    $('#nombreEditor').textContent = sesion.name;
-    mostrarToast('Bienvenido/a al panel de editor', '✍️');
-    iniciarPanelEditor();
+    !alert('No tenés permiso para entrar a esta página. Vas a volver al inicio.') && window.location.href = '../index.html';
   }
 
   /* =========================================================

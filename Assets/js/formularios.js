@@ -8,22 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-function extraerUrlForm(entrada) {
-  let url = entrada.trim();
-  
-  // Si pegan un iframe completo, extraemos el src
-  if (entrada.includes('<iframe')) {
-    const match = entrada.match(/src=["']([^"']+)["']/);
-    url = match ? match[1] : '';
-  }
-
-  // Asegurar que la URL tenga el parámetro ?embedded=true para Google Forms
-  if (url.includes('docs.google.com/forms') && !url.includes('embedded=true')) {
-    url += (url.includes('?') ? '&' : '?') + 'embedded=true';
-  }
-
-  return url || null;
-}
 
 function renderFormularios() {
   const container = document.getElementById('gridFormularios');
