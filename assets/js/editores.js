@@ -298,7 +298,9 @@
     $('#textoEstadoGuardado').textContent = 'Guardado automático a las ' + new Date().toLocaleTimeString('es-AR');
     estado.classList.add('activo');
   }
-
+document.addEventListener('DOMContentLoaded', () => {
+  iniciarPanelEditor();
+});
 
 /* =========================================================
    ==================== Formularios ========================
@@ -307,10 +309,11 @@
 
 // Inicializa el evento en el botón de agregar
 document.addEventListener('DOMContentLoaded', () => {
-  const btnAgregar = document.getElementById('btnAgregar');
-  if (btnAgregar) {
-    btnAgregar.addEventListener('click', AgregarForm);
-  }
+    const form = document.getElementById('formNuevoGoogle');
+
+    if (form) {
+        form.addEventListener('submit', AgregarForm);
+    }
 });
 
 // Procesa la entrada (URL o iframe completo) y la prepara para renderizarse
