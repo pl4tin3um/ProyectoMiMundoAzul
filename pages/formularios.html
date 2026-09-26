@@ -63,18 +63,25 @@
 
 <body class="bg-cielo text-tinta font-nunito antialiased">
 
-  <header class="flex items-center justify-between gap-4 flex-wrap px-[5vw] py-5 bg-morado-claro shadow-sm sticky top-0 z-40 border-4 border-azul-fuerte rounded-3xl" id="cabeceraPublica">
-    <a href="index.html" class="flex items-center gap-3">
+
+  <div class="relative flex items-center justify-between gap-4 flex-wrap px-[5vw] py-4 bg-white shadow-sm">
+    <div class="flex items-center gap-3">
       <img src="../Assets/Imgs/Logo.jpeg" alt="Mi Mundo Azul" class="w-11 h-11 rounded-full object-cover">
       <div class="font-baloo font-bold leading-tight">
         Mi Mundo Azul
         <small class="block font-nunito font-normal text-tinta-suave text-sm">Asociación Autista de flores</small>
       </div>
-    </a>
-    <button class="boton boton--azul" id="btnIrLogin">
-      <span><i class="bi bi-key-fill text-xl text-azul-claro" aria-hidden="true"></i></span> Entrar al panel del equipo
-    </button>
-  </header>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="logo-circulo"></div>
+      <div class="absolute left-1/2 -translate-x-1/2 font-baloo font-bold text-lg whitespace-nowrap">Formularios</div>
+    </div>
+      <button class="boton--claro boton--chico" id="btnirIndex" onclick="window.location.href='../index.html'">
+            <i class="bi bi-box-arrow-right"></i>
+        Salir
+      </button>
+    </div>
+  </div>
 
   <!-- ================= CONTENIDO PRINCIPAL DE ESTA PÁGINA ================= -->
   <main class="min-h-[70vh]">

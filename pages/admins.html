@@ -60,29 +60,20 @@
 
 <body class="bg-cielo text-tinta font-nunito antialiased">
 
-<div class="bg-slate-900 text-verde text-center text-sm py-2 px-4 font-mono">
-  admin.html — Este es un prototipo de prueba para el proyecto Mi Mundo Azul. No es un sitio en producción.
-</div>
-
-<!-- ======================================================================
-     GRUPO DE PÁGINA: SITIO PÚBLICO (index.html + index.css + index.js)
-====================================================================== -->
-<section id="pagina-index" class="mb-6">
-  <div class="bg-azul-fuerte text-white text-center py-3 font-baloo font-bold tracking-wide">
-    📄 PÁGINA 3 de 3 — admin.html + admin.css + admin.js
-  </div>
-
-  <div class="flex items-center justify-between gap-4 flex-wrap px-[5vw] py-4 bg-white shadow-sm">
+  <div class="relative flex items-center justify-between gap-4 flex-wrap px-[5vw] py-4 bg-white shadow-sm">
     <div class="flex items-center gap-3">
-      <div class="logo-circulo"></div>
-      <div class="font-baloo font-bold text-lg">Panel de administración</div>
+      <img src="../Assets/Imgs/Logo.jpeg" alt="Mi Mundo Azul" class="w-11 h-11 rounded-full object-cover">
+      <div class="font-baloo font-bold leading-tight">
+        Mi Mundo Azul
+        <small class="block font-nunito font-normal text-tinta-suave text-sm">Asociación Autista de flores</small>
+      </div>
     </div>
     <div class="flex items-center gap-3">
-      <span class="placa-rol">
-        <i class="bi bi-person-badge"></i>
-        <span id="nombreAdmin"></span>
-      <button class="boton boton--blanco boton--chico" id="btnLogoutAdmin">
-          <i class="bi bi-box-arrow-right"></i>
+      <div class="logo-circulo"></div>
+      <div class="absolute left-1/2 -translate-x-1/2 font-baloo font-bold text-lg whitespace-nowrap">Panel de administración</div>
+    </div>
+      <button class="boton--claro boton--chico" id="btnLogoutAdmin">
+            <i class="bi bi-box-arrow-right"></i>
         Salir
       </button>
     </div>
@@ -172,7 +163,8 @@
   <div class="toast" id="toast"></div>
 
 </section>
-</body>
+
 <script src="../Assets/js/common.js"></script>
 <script src="../Assets/js/admins.js"></script>
+</body>
 </html>
