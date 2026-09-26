@@ -306,11 +306,36 @@
 /* =========================================================
    ==================== Formularios ========================
    ========================================================= */
+/* ---------------- CREACIÓN DE FORMULARIOS ---------------- */
 
-   function AgregarForm(e) {
+// Inicializa el evento en el botón de agregar
+document.addEventListener('DOMContentLoaded', () => {
+  const btnAgregar = document.getElementById('btnAgregar');
+  if (btnAgregar) {
+    btnAgregar.addEventListener('click', AgregarForm);
+  }
+});
+
+// Procesa la entrada (URL o iframe completo) y la prepara para renderizarse
+function extraerUrlForm(entrada) {
+  let url = entrada.trim();
+  
+  if (entrada.includes('<iframe')) {
+    const match = entrada.match(/src=["']([^"']+)["']/);
+    url = match ? match[1] : '';
+  }
+
+  if (url.includes('docs.google.com/forms') && !url.includes('embedded=true')) {
+    url += (url.includes('?') ? '&' : '?') + 'embedded=true';
+  }
+
+  return url || null;
+}
+
+// Captura los valores de los inputs y guarda el nuevo registro
+function AgregarForm(e) {
   e.preventDefault();
 
-  // IDs adaptados exactamente a tu HTML
   const inputTitulo = document.getElementById('tituloForm');
   const inputUrl = document.getElementById('inputGoogleForm');
 
@@ -339,7 +364,11 @@
   if (inputTitulo) inputTitulo.value = '';
   if (inputUrl) inputUrl.value = '';
 
-  renderFormularios();
+  // Opcional: si existe la función de render en el otro apartado, actualiza la vista
+  if (typeof renderFormularios === 'function') {
+    renderFormularios();
+  }
+
   if (typeof mostrarToast === 'function') {
     mostrarToast('¡Tarjeta de formulario agregada!', '✨');
   }
