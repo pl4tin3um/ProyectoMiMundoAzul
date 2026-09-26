@@ -121,6 +121,123 @@ function abrirNoticiaCompleta(id){
   const blob = new Blob([html], {type:'text/html'});
   window.open(URL.createObjectURL(blob), '_blank');
 }
+/* =========================================================
+   Bloques de información
+========================================================== */
+
+
+function abrirBloqueTexto(data) {
+  const win = window.open('', '_blank');
+  if (!win) return;
+
+  const html = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHTML(data.titulo || 'Información')} · Mi Mundo Azul</title>
+  
+  <style>
+    :root {
+      --azul-fuerte: #1B5E8C;
+      --cielo: #EAF4FB;
+      --tinta: #16324A;
+      --tinta-suave: #3F5A72;
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--cielo);
+      color: var(--tinta);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Tarjeta contenedora para bloques cortos */
+    .card {
+      background: #ffffff;
+      max-width: 500px;
+      width: 100%;
+      padding: 32px;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px rgba(27, 94, 140, 0.1);
+    }
+
+    .categoria {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--tinta-suave);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      color: var(--azul-fuerte);
+      font-size: 1.5rem;
+      line-height: 1.3;
+    }
+
+    .contenido {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .btn-cerrar {
+      width: 100%;
+      background: var(--azul-fuerte);
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-cerrar:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="card">
+    ${data.categoria ? `<span class="categoria">${escapeHTML(data.categoria)}</span>` : ''}
+    <h1>${escapeHTML(data.titulo || 'Nota')}</h1>
+    
+    <div class="contenido">
+      ${escapeHTML(data.texto || '').replace(/\n/g, '<br>')}
+    </div>
+
+    <button class="btn-cerrar" onclick="window.close()">Entendido</button>
+  </main>
+
+</body>
+</html>
+  `;
+
+  win.document.write(html);
+  win.document.close();
+}
+
+
+
+
+
+
+
 
 /* ---------------- LOGIN ---------------- */
 
