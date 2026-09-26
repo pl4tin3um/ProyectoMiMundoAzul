@@ -173,13 +173,79 @@
       </form>
     </div>
   </div>
+  
+  <!-- ================= Formularios =================
+       =============================================== -->
+
+  <!-- Contenedor principal de administración de formularios -->
+<div class="max-w-4xl mx-auto space-y-8">
+
+  <!-- BOTÓN DESPLEGABLE (Accordion nativo con <details>) -->
+  <details class="group bg-white rounded-3xl border-2 border-cielo-oscuro shadow-md overflow-hidden transition-all duration-300">
+    
+    <!-- Cabecera para desplegar -->
+    <summary class="flex items-center justify-between p-5 cursor-pointer list-none select-none bg-white hover:bg-cielo transition-colors">
+      <div class="flex items-center gap-3 text-azul-oscuro font-baloo font-bold text-lg">
+        <div class="w-10 h-10 rounded-2xl bg-cielo-medio flex items-center justify-center text-azul-fuerte">
+          <i class="bi bi-file-earmark-plus-fill text-xl" aria-hidden="true"></i>
+        </div>
+        <span>Añadir nuevo formulario</span>
+      </div>
+      
+      <!-- Flecha con rotación automática mediante variantes group-open de Tailwind -->
+      <div class="w-8 h-8 rounded-xl bg-gris-claro group-open:bg-azul-fuerte group-open:text-white flex items-center justify-center text-tinta-suave transition-all duration-300 group-open:rotate-180">
+        <i class="bi bi-chevron-down text-sm" aria-hidden="true"></i>
+      </div>
+    </summary>
+
+    <!-- Contenido del formulario -->
+    <div class="p-6 border-t border-cielo-medio bg-cielo/30">
+      <form id="formNuevoGoogle" class="space-y-4" onsubmit="event.preventDefault();">
+        
+        <div>
+          <label for="tituloForm" class="block text-sm font-bold text-tinta mb-1.5">Título del formulario</label>
+          <div class="relative flex items-center">
+            <i class="bi bi-tag-fill absolute left-3.5 text-azul-claro text-base pointer-events-none" aria-hidden="true"></i>
+            <input type="text" id="tituloForm" placeholder="Ej: Inscripción a Taller" 
+                   class="w-full pl-10 pr-4 py-2.5 bg-white rounded-xl border border-cielo-oscuro text-tinta placeholder-tinta-clara focus:outline-none focus:ring-2 focus:ring-azul-fuerte text-sm transition">
+          </div>
+        </div>
+
+        <div>
+          <label for="inputGoogleForm" class="block text-sm font-bold text-tinta mb-1.5">Enlace o iFrame de Google Forms</label>
+          <div class="relative flex items-center">
+            <i class="bi bi-link-45deg absolute left-3.5 text-azul-claro text-xl pointer-events-none" aria-hidden="true"></i>
+            <input type="text" id="inputGoogleForm" placeholder='Pega la URL o el <iframe src="..."> completo' 
+                   class="w-full pl-10 pr-4 py-2.5 bg-white rounded-xl border border-cielo-oscuro text-tinta placeholder-tinta-clara focus:outline-none focus:ring-2 focus:ring-azul-fuerte text-sm transition">
+          </div>
+        </div>
+
+        <button type="submit" id="btnAgregar" 
+                class="boton boton--azul w-full py-3 font-bold rounded-xl flex items-center justify-center gap-2 shadow-sm">
+          <i class="bi bi-plus-circle-fill text-lg" aria-hidden="true"></i>
+          <span>Guardar Formulario</span>
+        </button>
+      </form>
+    </div>
+  </details>
+
+  <!-- SECCIÓN DE GRID Y TARJETAS -->
+  <section class="space-y-4">
+    <div class="flex items-center gap-2 border-b border-cielo-oscuro pb-3">
+      <i class="bi bi-journal-text text-azul-fuerte text-2xl" aria-hidden="true"></i>
+      <h3 class="font-baloo font-bold text-xl text-azul-oscuro">Formularios Disponibles</h3>
+    </div>
+    
+    <!-- Contenedor donde JS inyecta las cards -->
+    <div id="gridFormularios" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <!-- Carga dinámica -->
+    </div>
+  </section>
+
+</div>
 
   <!-- ================= MODALES GENÉRICOS (confirmar / aviso) + TOAST =================
-      Se repiten igual en editor.html y en admin.html porque cada página es un
-      documento independiente. Si preferís no duplicarlos, podés moverlos a un
-      "modales.html" que cargues con fetch(), pero eso ya excede los 9 archivos
-      pedidos, así que acá los dejo duplicados tal cual estaban en el Bloque 4
-      original. -->
+       ====================================================================== -->
   <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalConfirmar">
     <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 text-center">
       <div class="text-4xl" id="iconoConfirmar">
