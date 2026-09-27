@@ -325,7 +325,7 @@ function renderFormularios() {
 
   if (!formularios || formularios.length === 0) {
     container.innerHTML = `
-      <div class="col-span-full text-center text-tinta-suave py-8 bg-white/50 rounded-3xl border border-dashed border-cielo-oscuro">
+      <div class="col-span-full text-center text-tinta-suave py-8 bg-white/50 rounded-3xl border border-dashed border-azul-fuerte">
         <p><i class="bi bi-inbox-fill me-2" aria-hidden="true"></i>No hay formularios disponibles en este momento.</p>
       </div>`;
     return;
