@@ -152,9 +152,11 @@
 }
 
 #pagina-admin .boton--sol,
-#pagina-editor .boton--sol {
+#pagina-editor .boton--sol,
+#pagina-formularios .boton--sol {
     background: var(--sol);
     color: var(--tinta);
+    box-shadow: 0 10px 24px -10px rgba(255, 200, 87, .6);
 }
 
 
@@ -167,7 +169,8 @@
 }
 
 #pagina-admin .boton--blanco,
-#pagina-editor .boton--blanco {
+#pagina-editor .boton--blanco,
+#pagina-formularios .boton--blanco {
     background: #fff;
     color: var(--azul-fuerte);
     box-shadow: 0 4px 14px -6px rgba(18, 58, 86, .3);
@@ -177,7 +180,8 @@
 /* Botón rojo */
 
 #pagina-index .boton--rojo,
-#pagina-editor .boton--rojo {
+#pagina-editor .boton--rojo,
+#pagina-formularios .boton--rojo {
     background: #cc0000;
     color: #fff;
 }
@@ -192,7 +196,8 @@
 
 #pagina-index .boton--verde,
 #pagina-admin .boton--verde,
-#pagina-editor .boton--verde {
+#pagina-editor .boton--verde,
+#pagina-formularios .boton--verde {
     background: #16a34a;
     color: #fff;
 }
