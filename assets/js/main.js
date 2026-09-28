@@ -23,7 +23,7 @@ if (elAnio) elAnio.textContent = new Date().getFullYear();
 
 sembrarDatos();
 renderGridPublico();
-renderFormularios();
+
 
 (function resolverEstadoInicial(){
   const params = new URLSearchParams(window.location.search);
@@ -34,128 +34,6 @@ renderFormularios();
   if(window.location.hash === '#login') mostrarPantallaLogin();
 })();
 
-/* ---------------- FORMULARIOS GOOGLE ---------------- */
-
-function extraerUrlForm(entrada) {
-  if (entrada.includes('<iframe')) {
-    const match = entrada.match(/src=["']([^"']+)["']/);
-    return match ? match[1] : null;
-  }
-  return entrada.trim();
-}
-
-function renderFormularios() {
-  const container = document.getElementById('gridFormularios');
-  if (!container) return;
-
-  const formularios = DB.getForms();
-  
-  if (formularios.length === 0) {
-    container.innerHTML = `
-      <div class="col-span-full text-center text-tinta-suave py-8 bg-white/50 rounded-3xl border border-dashed border-cielo-oscuro">
-        <p>📭 No hay formularios disponibles en este momento.</p>
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = formularios.map((form) => `
-    <article class="bg-white rounded-3xl p-6 shadow-md border border-cielo-medio flex flex-col justify-between hover:-translate-y-1 transition duration-200">
-      <div>
-        <div class="text-3xl text-azul-fuerte mb-3">
-          <i class="bi bi-file-earmark-text-fill" aria-hidden="true"></i>
-        </div>
-        <h3 class="font-baloo font-bold text-xl text-azul-oscuro break-words">${escapeHTML(form.title)}</h3>
-      </div>
-      <div class="mt-6 flex gap-2">
-        <button class="boton boton--azul flex-1 py-2.5 text-sm" data-abrir-form="${form.id}">
-          <span>📝</span> Completar
-        </button>
-        <button class="bg-rojo-claro text-rojo font-bold px-3 py-2.5 rounded-xl hover:bg-rojo hover:text-white transition text-sm" data-eliminar-form="${form.id}" title="Eliminar">
-          <i class="bi bi-trash-fill" aria-hidden="true"></i>
-        </button>
-      </div>
-    </article>
-  `).join('');
-
-  $$('[data-abrir-form]', container).forEach(btn => {     btn.addEventListener('click', () => {       const id = btn.dataset.abrirForm;       const form = DB.getForms().find(f => f.id === id);       if (form) abrirModalFormulario(form);     });   });    $$
-('[data-eliminar-form]', container).forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.eliminarForm;
-      if (confirm('¿Seguro que deseas eliminar este formulario?')) {
-        const nuevosForms = DB.getForms().filter(f => f.id !== id);
-        DB.setForms(nuevosForms);
-        renderFormularios();
-        mostrarToast('Formulario eliminado correctamente', '🗑️');
-      }
-    });
-  });
-}
-
-// Escucha del botón por ID
-const btnAgregar = document.getElementById('btnAgregarForm');
-if (btnAgregar) {
-  btnAgregar.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    const inputTitulo = document.getElementById('inputTituloForm');
-    const inputUrl = document.getElementById('inputUrlForm');
-
-    const titulo = inputTitulo ? inputTitulo.value.trim() : '';
-    const rawInput = inputUrl ? inputUrl.value.trim() : '';
-    const urlLimpia = rawInput ? extraerUrlForm(rawInput) : null;
-
-    if (!titulo || !urlLimpia) {
-      mostrarToast('Ingresá un título y una URL o iframe válido.', '⚠️');
-      return;
-    }
-
-    const nuevos = DB.getForms();
-    nuevos.push({
-      id: uid('f'),
-      title: titulo,
-      url: urlLimpia
-    });
-
-    DB.setForms(nuevos);
-
-    if (inputTitulo) inputTitulo.value = '';
-    if (inputUrl) inputUrl.value = '';
-
-    renderFormularios();
-    mostrarToast('¡Tarjeta de formulario agregada!', '✨');
-  });
-}
-
-function abrirModalFormulario(form) {
-  let modal = document.getElementById('modalFormulario');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'modalFormulario';
-    modal.className = 'fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4';
-    document.body.appendChild(modal);
-  }
-
-  modal.innerHTML = `
-    <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[85vh]">
-      <div class="flex justify-between items-center px-6 py-4 border-b border-cielo-medio bg-cielo">
-        <h3 class="font-baloo font-bold text-lg text-azul-oscuro">${escapeHTML(form.title)}</h3>
-        <button id="btnCerrarModalForm" class="text-tinta-suave hover:text-rojo text-2xl font-bold leading-none">&times;</button>
-      </div>
-      <div class="p-2 flex-1 bg-white">
-        <iframe src="${form.url}" class="w-full h-full border-0 rounded-b-2xl" loading="lazy">Cargando formulario...</iframe>
-      </div>
-    </div>
-  `;
-
-  modal.classList.remove('hidden');
-
-  const cerrar = () => modal.classList.add('hidden');
-  const btnCerrar = modal.querySelector('#btnCerrarModalForm');
-  if(btnCerrar) btnCerrar.addEventListener('click', cerrar);
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) cerrar();
-  });
-}
 
 /* ---------------- NOTICIAS PÚBLICAS ---------------- */
 
@@ -243,6 +121,123 @@ function abrirNoticiaCompleta(id){
   const blob = new Blob([html], {type:'text/html'});
   window.open(URL.createObjectURL(blob), '_blank');
 }
+/* =========================================================
+   Bloques de información
+========================================================== */
+
+
+function abrirBloqueTexto(data) {
+  const win = window.open('', '_blank');
+  if (!win) return;
+
+  const html = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHTML(data.titulo || 'Información')} · Mi Mundo Azul</title>
+  
+  <style>
+    :root {
+      --azul-fuerte: #1B5E8C;
+      --cielo: #EAF4FB;
+      --tinta: #16324A;
+      --tinta-suave: #3F5A72;
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--cielo);
+      color: var(--tinta);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Tarjeta contenedora para bloques cortos */
+    .card {
+      background: #ffffff;
+      max-width: 500px;
+      width: 100%;
+      padding: 32px;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px rgba(27, 94, 140, 0.1);
+    }
+
+    .categoria {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--tinta-suave);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      color: var(--azul-fuerte);
+      font-size: 1.5rem;
+      line-height: 1.3;
+    }
+
+    .contenido {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .btn-cerrar {
+      width: 100%;
+      background: var(--azul-fuerte);
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-cerrar:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="card">
+    ${data.categoria ? `<span class="categoria">${escapeHTML(data.categoria)}</span>` : ''}
+    <h1>${escapeHTML(data.titulo || 'Nota')}</h1>
+    
+    <div class="contenido">
+      ${escapeHTML(data.texto || '').replace(/\n/g, '<br>')}
+    </div>
+
+    <button class="btn-cerrar" onclick="window.close()">Entendido</button>
+  </main>
+
+</body>
+</html>
+  `;
+
+  win.document.write(html);
+  win.document.close();
+}
+
+
+
+
+
+
+
 
 /* ---------------- LOGIN ---------------- */
 
@@ -309,6 +304,6 @@ if(formLogin) {
     if(err) err.innerHTML = '';
     setSession({ id:encontrado.id, username:encontrado.username, role:encontrado.role, name:encontrado.name });
     formLogin.reset();
-    window.location.href = (encontrado.role === 'admin') ? 'Public/admin.html' : 'Public/editor.html';
+    window.location.href = (encontrado.role === 'admin') ? 'pages/admins.html' : 'pages/editores.html';
   });
 }

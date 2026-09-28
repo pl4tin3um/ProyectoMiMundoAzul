@@ -57,15 +57,11 @@
   };
 </script>
 
-<link rel="stylesheet" href="assets/CSS/styles.css">
+<link rel="stylesheet" href="Assets/css/styles.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body class="bg-cielo text-tinta font-nunito antialiased">
-
-<div class="bg-slate-900 text-cielo text-center text-sm py-2 px-4 font-mono">
-  INDEX.HTML — Proyecto Mi Mundo Azul. es un sitio en producción.
-</div>
 
 <!-- ======================================================================
      GRUPO DE PÁGINA: SITIO PÚBLICO (index.html + index.css + index.js)
@@ -88,61 +84,96 @@
   <div id="contenidoPublico">
     <main>
 
-      <section class="px-[6vw] py-28 text-center max-w-6xl mx-auto" id="inicio">
-        <h1 class="font-baloo font-extrabold text-4xl md:text-6xl text-azul-oscuro leading-tight">
-          Creamos espacios de apoyo y acompañamiento para personas autistas.
-        </h1>
-        <p class="mt-6 text-xl text-tinta-suave max-w-3xl mx-auto leading-relaxed">
-          Elegí qué querés hacer. Toca un botón para ir directo a lo que necesitás, sin vueltas.
-        </p>
-        <div class="mt-14 grid gap-8 sm:grid-cols-3 text-left">
-          <a href="pages/donaciones.html" class="nav-scroll block bg-white rounded-3xl p-8 min-h-56 shadow-md hover:-translate-y-1 transition">
-            <div class="text-4xl text-azul-fuerte"><i class="bi bi-newspaper" aria-hidden="true"></i></div>
-            <h3 class="font-baloo font-bold text-xl mt-4">Dona!</h3>
-            <p class="text-base text-tinta-suave mt-2 leading-relaxed">Apoyanos con una donacion completamente a voluntad!</p>
-          </a>
-          <a href="#nosotros" class="nav-scroll block bg-white rounded-3xl p-8 min-h-56 shadow-md hover:-translate-y-1 transition">
-            <div class="text-4xl text-azul-fuerte"><i class="bi bi-heart-fill" aria-hidden="true"></i></div>
-            <h3 class="font-baloo font-bold text-xl mt-4">Conocer la asociación</h3>
-            <p class="text-base text-tinta-suave mt-2 leading-relaxed">Qué hacemos y cómo acompañamos a las familias</p>
-          </a>
-          <a href="#contacto" class="nav-scroll block bg-white rounded-3xl p-8 min-h-56 shadow-md hover:-translate-y-1 transition">
-            <div class="text-4xl text-azul-fuerte"><i class="bi bi-envelope-fill" aria-hidden="true"></i></div>
-            <h3 class="font-baloo font-bold text-xl mt-4">Escribirnos</h3>
-            <p class="text-base text-tinta-suave mt-2 leading-relaxed">Te contestamos a la brevedad</p>
-          </a>
-        </div>
-      </section>
+          <section class="px-[6vw] py-28 text-center max-w-6xl mx-auto" id="inicio">
+      <h1 class="font-baloo font-extrabold text-4xl md:text-6xl text-azul-oscuro leading-tight">
+        Creamos espacios de apoyo y acompañamiento para personas autistas.
+      </h1>
+      <p class="mt-6 text-xl text-tinta-suave max-w-3xl mx-auto leading-relaxed">
+        Elegí qué querés hacer. Toca un botón para ir directo a lo que necesitás, sin vueltas.
+      </p>
+      <div class="mt-14 grid gap-8 sm:grid-cols-3 text-left">
+        <a href="pages/formularios.html" class="nav-Paginas block bg-white rounded-3xl p-8 min-h-56 shadow-md hover:-translate-y-1 transition">
+          <div class="text-4xl text-azul-fuerte"><i class="bi bi-newspaper" aria-hidden="true"></i></div>
+          <h3 class="font-baloo font-bold text-xl mt-4">Visita nuestros formularios</h3>
+          <p class="text-base text-tinta-suave mt-2 leading-relaxed">Apoya a nuestra causa completando nuestros formularios</p>
+        </a>
+        <button type="button" class="block w-full text-left bg-white rounded-3xl p-8 min-h-56 shadow-md hover:-translate-y-1 transition cursor-pointer"
+                onclick="abrirBloqueTexto({
+                  categoria: 'Institucional',
+                  titulo: 'Conocer la Asociación',
+                  texto: 'Mi Mundo Azul es una asociación dedicada a crear espacios integrales de apoyo, concienciación y acompañamiento para personas autistas y sus familias.'
+                })">
+          <div class="text-4xl text-azul-fuerte"><i class="bi bi-heart-fill" aria-hidden="true"></i></div>
+          <h3 class="font-baloo font-bold text-xl mt-4">Conocer la asociación</h3>
+          <p class="text-base text-tinta-suave mt-2 leading-relaxed">Qué hacemos y cómo acompañamos a las familias</p>
+        </button>
+        <button type="button" class="block w-full text-left bg-white rounded-3xl p-8 min-h-56 shadow-md hover:-translate-y-1 transition cursor-pointer"
+                onclick="abrirBloqueTexto({
+                  categoria: 'Colaboración',
+                  titulo: 'Cómo Donar',
+                  texto: 'Tu donación nos permite seguir brindando talleres, terapias y contención gratuita.\n\nPuedes aportar a través de transferencia bancaria o Mercado Pago.'
+                })">
+          <div class="text-4xl text-azul-fuerte"><i class="bi bi-envelope-fill" aria-hidden="true"></i></div>
+          <h3 class="font-baloo font-bold text-xl mt-4">Dona!</h3>
+          <p class="text-base text-tinta-suave mt-2 leading-relaxed">Apoya a nuestra causa con una donación</p>
+        </button>
+      </div>
+    </section>
 
-      <section class="px-[6vw] py-16 bg-morado-claro" id="nosotros">
-        <div class="max-w-2xl mx-auto text-center mb-12">
-          <span class="inline-block bg-cielo text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Nuestra labor</span>
-          <h2 class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Así acompañamos a cada familia</h2>
-          <p class="text-tinta-suave mt-2">Un equipo, muchas formas de ayudar.</p>
+    <section class="px-[6vw] py-16 bg-morado-claro" id="nosotros">
+      <div class="max-w-2xl mx-auto text-center mb-12">
+        <span class="inline-block bg-cielo text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Nuestra labor</span>
+        <h2 class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Así acompañamos a cada familia</h2>
+        <p class="text-tinta-suave mt-2">Un equipo, muchas formas de ayudar.</p>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+        <div class="bg-cielo rounded-3xl p-6 text-center cursor-pointer hover:shadow-md transition"
+            onclick="abrirBloqueTexto({
+              categoria: 'Nuestra Labor',
+              titulo: 'Terapias y Apoyo',
+              texto: 'Espacios de acompañamiento profesional y grupos de apoyo adaptados a cada necesidad.'
+            })">
+          <div class="text-3xl text-azul-fuerte"><i class="bi bi-heart-pulse-fill" aria-hidden="true"></i></div>
+          <h3 class="font-baloo font-bold mt-3">Terapias</h3>
+          <p class="text-sm text-tinta-suave mt-1">Espacios de acompañamiento y apoyo.</p>
         </div>
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
-          <div class="bg-cielo rounded-3xl p-6 text-center">
-            <div class="text-3xl text-azul-fuerte"><i class="bi bi-heart-pulse-fill" aria-hidden="true"></i></div>
-            <h3 class="font-baloo font-bold mt-3">Terapias</h3>
-            <p class="text-sm text-tinta-suave mt-1">Espacios de acompañamiento y apoyo.</p>
-          </div>
-          <div class="bg-cielo rounded-3xl p-6 text-center">
-            <div class="text-3xl text-azul-fuerte"><i class="bi bi-people-fill" aria-hidden="true"></i></div>
-            <h3 class="font-baloo font-bold mt-3">Socios</h3>
-            <p class="text-sm text-tinta-suave mt-1">Sumate a nuestra comunidad.</p>
-          </div>
-          <div class="bg-cielo rounded-3xl p-6 text-center">
-            <div class="text-3xl text-azul-fuerte"><i class="bi bi-info-circle-fill" aria-hidden="true"></i></div>
-            <h3 class="font-baloo font-bold mt-3">Sobre nosotros</h3>
-            <p class="text-sm text-tinta-suave mt-1">Conocé nuestra asociación y labor.</p>
-          </div>
-          <div class="bg-cielo rounded-3xl p-6 text-center">
-            <div class="text-3xl text-azul-fuerte"><i class="bi bi-file-earmark-text-fill" aria-hidden="true"></i></div>
-            <h3 class="font-baloo font-bold mt-3">Formularios</h3>
-            <p class="text-sm text-tinta-suave mt-1">Encontrá los formularios disponibles.</p>
-          </div>
+
+        <div class="bg-cielo rounded-3xl p-6 text-center cursor-pointer hover:shadow-md transition"
+            onclick="abrirBloqueTexto({
+              categoria: 'Comunidad',
+              titulo: 'Hazte Socio',
+              texto: 'Súmate a nuestra comunidad para colaborar mensualmente y acceder a beneficios e información exclusiva.'
+            })">
+          <div class="text-3xl text-azul-fuerte"><i class="bi bi-people-fill" aria-hidden="true"></i></div>
+          <h3 class="font-baloo font-bold mt-3">Socios</h3>
+          <p class="text-sm text-tinta-suave mt-1">Sumate a nuestra comunidad.</p>
         </div>
-      </section>
+
+        <div class="bg-cielo rounded-3xl p-6 text-center cursor-pointer hover:shadow-md transition"
+            onclick="abrirBloqueTexto({
+              categoria: 'Institucional',
+              titulo: 'Sobre Nosotros',
+              texto: 'Trabajamos día a día para promover la inclusión, el respeto y la autonomía de las personas con condición del espectro autista.'
+            })">
+          <div class="text-3xl text-azul-fuerte"><i class="bi bi-info-circle-fill" aria-hidden="true"></i></div>
+          <h3 class="font-baloo font-bold mt-3">Sobre nosotros</h3>
+          <p class="text-sm text-tinta-suave mt-1">Conocé nuestra asociación y labor.</p>
+        </div>
+
+        <div class="bg-cielo rounded-3xl p-6 text-center cursor-pointer hover:shadow-md transition"
+            onclick="abrirBloqueTexto({
+              categoria: 'Información',
+              titulo: 'Formularios y Trámites',
+              texto: 'En nuestra sección de formularios podrás solicitar acompañamiento, registrarte a eventos o solicitar entrevistas.'
+            })">
+          <div class="text-3xl text-azul-fuerte"><i class="bi bi-file-earmark-text-fill" aria-hidden="true"></i></div>
+          <h3 class="font-baloo font-bold mt-3">Formularios</h3>
+          <p class="text-sm text-tinta-suave mt-1">Encontrá los formularios disponibles.</p>
+        </div>
+        
+      </div>
+    </section>
 
       <section class="px-[6vw] py-16" id="noticias">
         <div class="max-w-2xl mx-auto text-center mb-12">

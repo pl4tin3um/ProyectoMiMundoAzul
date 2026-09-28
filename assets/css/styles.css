@@ -1,36 +1,344 @@
-  #pagina-index{
-    --azul-fuerte:#1B5E8C; --azul-oscuro:#123A56; --cielo:#EAF4FB;
-    --sol:#FFC857; --tinta:#16324A; --tinta-suave:#3F5A72;
-  }
+/* =========================================================
+   MI MUNDO AZUL
+   CSS UNIFICADO
+   Páginas: index, admin y editor
+========================================================= */
 
-  #pagina-index .boton{
-    display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
-    min-height:52px; padding:0 28px; border-radius:999px;
-    font-family:'Baloo 2',sans-serif; font-weight:700; font-size:1rem;
-    border:none; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease;
-  }
-  #pagina-index .boton:hover{ transform:translateY(-2px); }
-  #pagina-index .boton:focus-visible{ outline:3px solid var(--sol); outline-offset:2px; }
-  #pagina-index .boton--azul{ background:var(--azul-fuerte); color:#fff; box-shadow:0 10px 24px -10px rgba(27,94,140,.55); }
-  #pagina-index .boton--sol{ background:var(--sol); color:var(--tinta); box-shadow:0 10px 24px -10px rgba(255,200,87,.6); }
-  #pagina-index .boton--blanco{ background:#fff; color:var(--azul-fuerte); box-shadow:0 6px 18px -8px rgba(18,58,86,.25); }
 
-  /* ---------- Logo circular (reemplaza el ícono vacío original) ---------- */
-  #pagina-index .logo-circulo{
-    width:44px; height:44px; border-radius:50%; flex:0 0 auto;
-    background:radial-gradient(circle at 35% 35%, var(--sol), var(--azul-oscuro) 70%);
-    box-shadow: inset 0 0 0 3px rgba(255,255,255,.5);
-  }
+/* =========================================================
+   1. VARIABLES GLOBALES
+========================================================= */
 
-  /* ---------- Tarjetas de imagen de noticia (fondo dinámico por JS) ---------- */
-  #pagina-index .tarjeta-noticia__imagen{ background-size:cover; background-position:center; }
+#pagina-index,
+#pagina-admin,
+#pagina-editor,
+#pagina-formularios {
+    --azul-fuerte: #1B5E8C;
+    --azul-oscuro: #123A56;
+    --azul-medio: #2479A8;
+    --azul-claro: #4FA3D1;
+    --azul-suave: #B9DDF2;
 
-  /* ---------- Toast (aviso flotante) ---------- */
-  #pagina-index .toast{
-    position:fixed; left:50%; bottom:26px; transform:translate(-50%, 20px);
-    background:var(--tinta); color:#fff; padding:14px 22px; border-radius:999px;
-    display:flex; align-items:center; gap:10px; font-weight:700; opacity:0;
-    pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:80;
-    box-shadow:0 14px 30px -10px rgba(0,0,0,.4);
-  }
-  #pagina-index .toast.mostrar{ opacity:1; pointer-events:auto; transform:translate(-50%, 0); }
+    --cielo: #EAF4FB;
+    --cielo-medio: #D5ECF8;
+    --cielo-oscuro: #C1E0F0;
+
+    --sol: #FFC857;
+    --sol-claro: #FFE29A;
+    --sol-oscuro: #E5A82F;
+
+    --tinta: #16324A;
+    --tinta-suave: #3F5A72;
+    --tinta-clara: #668197;
+
+    --blanco: #FFFFFF;
+    --gris-claro: #F3F6F8;
+    --gris: #D9E1E6;
+    --gris-oscuro: #8A9AA8;
+
+    --verde: #4CAF7D;
+    --verde-claro: #D9F2E5;
+
+    --rojo: #D95C5C;
+    --rojo-claro: #F8DADA;
+
+    --morado: #7569A8;
+    --morado-oscuro: #4B3D7A;
+    --morado-medio: #8C7FC1;
+    --morado-claro: #E5E1F3;
+
+    background: var(--cielo-oscuro);
+}
+#pagina-formularios {
+    background: var(--azul-fuerte);
+}
+
+
+/* =========================================================
+   2. BOTONES GENERALES
+========================================================= */
+
+#pagina-index .boton,
+#pagina-admin .boton,
+#pagina-editor .boton,
+#pagina-formularios .boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+
+    border: none;
+    border-radius: 999px;
+
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform .15s ease,
+        box-shadow .15s ease;
+}
+
+
+/* Tamaño de botones de la página pública */
+
+#pagina-index .boton {
+    min-height: 52px;
+    padding: 0 28px;
+    font-size: 1rem;
+}
+
+
+/* Tamaño de botones de administración y editor */
+
+#pagina-admin .boton,
+#pagina-editor .boton,
+#pagina-formularios .boton {
+    min-height: 46px;
+    padding: 0 22px;
+    font-size: .95rem;
+}
+
+
+/* Hover */
+
+#pagina-index .boton:hover,
+#pagina-admin .boton:hover,
+#pagina-editor .boton:hover,
+#pagina-formularios .boton:hover {
+    transform: translateY(-2px);
+}
+
+
+/* Accesibilidad: indicador de foco */
+
+#pagina-index .boton:focus-visible,
+#pagina-admin .boton:focus-visible,
+#pagina-editor .boton:focus-visible,
+#pagina-formularios .boton:focus-visible {
+    outline: 3px solid var(--sol);
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   3. VARIANTES DE BOTONES
+========================================================= */
+
+
+/* Botón azul */
+
+#pagina-index .boton--azul {
+    background: var(--azul-fuerte);
+    color: #fff;
+    box-shadow: 0 10px 24px -10px rgba(27, 94, 140, .55);
+}
+
+#pagina-admin .boton--azul,
+#pagina-editor .boton--azul,
+#pagina-formularios .boton--azul {
+    background: var(--azul-fuerte);
+    color: #fff;
+}
+
+
+/* Botón amarillo */
+
+#pagina-index .boton--sol {
+    background: var(--sol);
+    color: var(--tinta);
+    box-shadow: 0 10px 24px -10px rgba(255, 200, 87, .6);
+}
+
+#pagina-admin .boton--sol,
+#pagina-editor .boton--sol,
+#pagina-formularios .boton--sol {
+    background: var(--sol);
+    color: var(--tinta);
+    box-shadow: 0 10px 24px -10px rgba(255, 200, 87, .6);
+}
+
+
+/* Botón blanco */
+
+#pagina-index .boton--blanco {
+    background: #fff;
+    color: var(--azul-fuerte);
+    box-shadow: 0 6px 18px -8px rgba(18, 58, 86, .25);
+}
+
+#pagina-admin .boton--blanco,
+#pagina-editor .boton--blanco,
+#pagina-formularios .boton--blanco {
+    background: #fff;
+    color: var(--azul-fuerte);
+    box-shadow: 0 4px 14px -6px rgba(18, 58, 86, .3);
+}
+
+
+/* Botón rojo */
+
+#pagina-index .boton--rojo,
+#pagina-editor .boton--rojo,
+#pagina-formularios .boton--rojo {
+    background: #cc0000;
+    color: #fff;
+}
+
+#pagina-admin .boton--rojo {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+
+/* Botón verde */
+
+#pagina-index .boton--verde,
+#pagina-admin .boton--verde,
+#pagina-editor .boton--verde,
+#pagina-formularios .boton--verde {
+    background: #16a34a;
+    color: #fff;
+}
+
+
+/* Botones pequeños */
+
+#pagina-index .boton--chico,
+#pagina-admin .boton--chico,
+#pagina-editor .boton--chico,
+#pagina-formularios .boton--chico {
+    min-height: 38px;
+    padding: 0 16px;
+    font-size: .85rem;
+}
+
+
+
+/* =========================================================
+   5. NOTICIAS
+========================================================= */
+
+
+/* Imágenes de las tarjetas */
+
+#pagina-index .tarjeta-noticia__imagen {
+    background-size: cover;
+    background-position: center;
+}
+
+
+/* Etiqueta de borrador */
+
+#pagina-editor .pill-borrador,
+#pagina-admin .pill-borrador {
+    display: inline-block;
+    margin-left: 8px;
+
+    font-size: .7rem;
+    font-weight: 800;
+
+    background: #fef3c7;
+    color: #92400e;
+
+    padding: 2px 10px;
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   6. ESTADO DE GUARDADO AUTOMÁTICO
+========================================================= */
+
+#pagina-editor .estado-guardado,
+#pagina-admin .estado-guardado {
+    display: none;
+    align-items: center;
+    gap: 8px;
+
+    font-size: .85rem;
+    color: var(--tinta-suave);
+
+    background: #f1f5f9;
+    border-radius: 12px;
+
+    padding: 10px 14px;
+    margin-bottom: 14px;
+}
+
+
+/* Estado activo */
+
+#pagina-editor .estado-guardado.activo,
+#pagina-admin .estado-guardado.activo {
+    display: flex;
+}
+
+
+/* =========================================================
+   7. PLACA DE ROL
+========================================================= */
+
+#pagina-admin .placa-rol {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    font-size: .85rem;
+    font-weight: 800;
+
+    background: var(--cielo);
+    padding: 8px 16px;
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   8. TOAST / NOTIFICACIONES
+========================================================= */
+
+#pagina-index .toast,
+#pagina-admin .toast,
+#pagina-editor .toast {
+    position: fixed;
+
+    left: 50%;
+    bottom: 26px;
+
+    transform: translate(-50%, 20px);
+
+    background: var(--tinta);
+    color: #fff;
+
+    padding: 14px 22px;
+    border-radius: 999px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-weight: 700;
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition:
+        opacity .25s ease,
+        transform .25s ease;
+
+    z-index: 80;
+
+    box-shadow: 0 14px 30px -10px rgba(0, 0, 0, .4);
+}
+
+
+/* Toast visible */
+
+#pagina-index .toast.mostrar,
+#pagina-admin .toast.mostrar,
+#pagina-editor .toast.mostrar {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+}

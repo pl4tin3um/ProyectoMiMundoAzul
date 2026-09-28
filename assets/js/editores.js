@@ -51,11 +51,8 @@
   sembrarDatos();
   const sesion = getSession();
   if(!sesion || sesion.role !== 'editor'){
+    alert('No tenés permiso para entrar a esta página. Vas a volver al inicio.');
     window.location.href = '../index.html';
-  } else {
-    $('#nombreEditor').textContent = sesion.name;
-    mostrarToast('Bienvenido/a al panel de editor', '✍️');
-    iniciarPanelEditor();
   }
 
   /* =========================================================
@@ -301,3 +298,149 @@
     $('#textoEstadoGuardado').textContent = 'Guardado automático a las ' + new Date().toLocaleTimeString('es-AR');
     estado.classList.add('activo');
   }
+document.addEventListener('DOMContentLoaded', () => {
+  iniciarPanelEditor();
+  renderFormularios();
+});
+
+/* =========================================================
+   ==================== Formularios ========================
+   ========================================================= */
+/* ---------------- CREACIÓN DE FORMULARIOS ---------------- */
+
+// Inicializa el evento en el botón de agregar
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('formNuevoGoogle');
+
+    if (form) {
+        form.addEventListener('submit', AgregarForm);
+    }
+});
+
+function renderFormularios() {
+  const container = document.getElementById('gridFormularios');
+  if (!container) return;
+
+  const formularios = DB.getForms();
+
+  if (!formularios || formularios.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full text-center text-tinta-suave py-8 bg-white/50 rounded-3xl border border-dashed border-azul-fuerte">
+        <p><i class="bi bi-inbox-fill me-2" aria-hidden="true"></i>No hay formularios disponibles en este momento.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = formularios.map((form) => `
+    <article class="bg-white rounded-3xl p-6 shadow-md border border-cielo-medio flex flex-col justify-between hover:-translate-y-1 transition duration-200">
+      <div>
+        <div class="text-3xl text-azul-fuerte mb-3">
+          <i class="bi bi-file-earmark-text-fill" aria-hidden="true"></i>
+        </div>
+        <h3 class="font-baloo font-bold text-xl text-azul-oscuro break-words [overflow-wrap:anywhere]">${escapeHTML(form.title)}</h3>
+      </div>
+      <div class="mt-6 flex gap-2">
+        <button class="boton boton--rojo py-2.5 px-3 text-sm" data-eliminar-form="${form.id}" aria-label="Eliminar formulario">
+          <i class="bi bi-trash" aria-hidden="true"></i>
+        </button>
+      </div>
+    </article>
+  `).join('');
+
+  container.querySelectorAll('[data-eliminar-form]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const eliminar = () => {
+        DB.setForms(DB.getForms().filter(form => form.id !== btn.dataset.eliminarForm));
+        renderFormularios();
+      };
+
+      if (typeof preguntarConfirmacion === 'function') {
+        preguntarConfirmacion({
+          icono: '🗑️',
+          titulo: 'Eliminar formulario',
+          texto: '¿Querés eliminar este formulario?',
+          textoSi: 'Sí, eliminar',
+          onSi: eliminar
+        });
+      } else if (window.confirm('¿Querés eliminar este formulario?')) {
+        eliminar();
+      }
+    });
+  });
+}
+
+function extraerUrlForm(entrada) {
+  let valor = entrada.trim();
+  
+  if (entrada.includes('<iframe')) {
+    const match = entrada.match(/src=["']([^"']+)["']/);
+    valor = match ? match[1] : '';
+  }
+
+  let url;
+  try {
+    url = new URL(valor);
+  } catch {
+    return null;
+  }
+
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return null;
+  if (url.hostname === 'forms.gle' && /^\/[\w-]+\/?$/.test(url.pathname)) return url.href;
+  if (url.hostname !== 'docs.google.com') return null;
+
+  const rutaValida = /^\/forms\/(?:u\/\d+\/)?d\/(?:e\/)?[\w-]+\/viewform\/?$/;
+  if (!rutaValida.test(url.pathname)) return null;
+
+  url.searchParams.set('embedded', 'true');
+  return url.href;
+}
+
+function AgregarForm(e) {
+  e.preventDefault();
+
+  const inputTitulo = document.getElementById('tituloForm');
+  const inputUrl = document.getElementById('inputGoogleForm');
+
+  const titulo = inputTitulo ? inputTitulo.value.trim() : '';
+  const rawInput = inputUrl ? inputUrl.value.trim() : '';
+  const urlLimpia = rawInput ? extraerUrlForm(rawInput) : null;
+
+  if (rawInput && !urlLimpia) {
+    mostrarToast('El enlace no parece una ruta válida de Google Forms. Revisá la URL o el iframe.', '⚠️');
+    inputUrl?.focus();
+    return;
+  }
+
+  if (!titulo || !urlLimpia) {
+    const mensaje = !titulo
+      ? 'Ingresá un título para identificar el formulario.'
+      : 'El enlace no parece una ruta válida de Google Forms. Revisá la URL o el iframe.';
+    if (typeof mostrarToast === 'function') {
+      mostrarToast(mensaje, '⚠️');
+    } else {
+      alert(mensaje);
+    }
+    (!titulo ? inputTitulo : inputUrl)?.focus();
+    return;
+  }
+
+  const nuevos = DB.getForms() || [];
+  nuevos.push({
+    id: typeof uid === 'function' ? uid('f') : Date.now().toString(),
+    title: titulo,
+    url: urlLimpia
+  });
+
+  DB.setForms(nuevos);
+
+  if (inputTitulo) inputTitulo.value = '';
+  if (inputUrl) inputUrl.value = '';
+
+  if (typeof renderFormularios === 'function') {
+    renderFormularios();
+  }
+
+  if (typeof mostrarToast === 'function') {
+    mostrarToast('¡Tarjeta de formulario agregada!', '✨');
+  }
+}
