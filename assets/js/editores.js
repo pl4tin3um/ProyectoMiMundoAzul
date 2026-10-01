@@ -72,7 +72,7 @@
     $('#btnNuevaNoticia').addEventListener('click', ()=> abrirFormularioNoticia(null));
     $('#btnLogoutEditor').addEventListener('click', cerrarSesion);
 
-    ['noticiaTitulo','noticiaPortada','noticiaExtracto','noticiaCuerpo'].forEach(id=>{
+    ['noticiaTitulo','imagenPortada','noticiaExtracto','noticiaCuerpo'].forEach(id=>{
       $('#'+id).addEventListener('input', programarGuardadoBorrador);
     });
 
@@ -100,7 +100,7 @@
       const titulo = $('#noticiaTitulo').value.trim();
       const extracto = $('#noticiaExtracto').value.trim();
       const cuerpo = $('#noticiaCuerpo').value.trim();
-      const imagenPortada = $('#noticiaPortada').files[0] ? URL.createObjectURL($('#noticiaPortada').files[0]) : 'https://i.ibb.co/6X0Z3kM/portada-noticia-default.png';
+      const imagenPortada = $('#imagenPortada').files[0] ? URL.createObjectURL($('#imagenPortada').files[0]) : 'https://i.ibb.co/6X0Z3kM/portada-noticia-default.png';
 
       let noticias = DB.getNews();
       const existente = noticias.find(n=>n.id===id);
@@ -292,7 +292,7 @@ function continuarConDatos(usarBorrador){
     const titulo = $('#noticiaTitulo').value.trim();
     const extracto = $('#noticiaExtracto').value.trim();
     const cuerpo = $('#noticiaCuerpo').value.trim();
-    const imagenPortada = $('#noticiaPortada').files[0];
+    const imagenPortada = $('#imagenPortada').files[0];
     if(!titulo && !extracto && !cuerpo && !imagenPortada) return;
 
     const drafts = DB.getDrafts();
