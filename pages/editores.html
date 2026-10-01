@@ -131,11 +131,12 @@
           <input type="text" id="noticiaTitulo" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
         </div>
         <div>
-          <label for="noticiaImagen" class="block text-sm font-bold mb-1">
+         <label for="noticiaImagen" class="block text-sm font-bold mb-1">
                 <i class="bi bi-image"></i>
-            Dirección de la imagen (URL)
+            Sube una Imagen de portada
           </label>
-          <input type="text" id="noticiaImagen" placeholder="https://..." class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          <input type="file" id="noticiaPortada" accept="image/*" single class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          <small class="text-xs text-tinta-suave">Si no subís ninguna, se usará la imagen por defecto.</small>
         </div>
         <div>
           <label for="noticiaExtracto" class="block text-sm font-bold mb-1">

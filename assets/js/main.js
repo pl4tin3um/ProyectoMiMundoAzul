@@ -78,40 +78,112 @@ function abrirNoticiaCompleta(id){
     .map(p => `<p>${escapeHTML(p).replace(/\n/g,'<br>')}</p>`)
     .join('');
 
-  const html = `<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${escapeHTML(noticia.title)} · Mi Mundo Azul</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-<style>
-  :root{ --azul-fuerte:#1B5E8C; --azul-oscuro:#123A56; --cielo:#EAF4FB; --sol:#FFC857; --tinta:#16324A; --tinta-suave:#3F5A72; }
-  *{box-sizing:border-box;}
-  html{font-size:19px;}
-  body{margin:0; font-family:'Nunito',sans-serif; background:var(--cielo); color:var(--tinta); line-height:1.8;}
-  header{ display:flex; align-items:center; justify-content:space-between; padding:20px 5vw; background:var(--azul-fuerte); flex-wrap:wrap; gap:14px;}
-  header .marca{ display:flex; align-items:center; gap:12px; color:#fff; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:1.15rem;}
-  header button{ background:#fff; color:var(--azul-fuerte); border:none; padding:14px 26px; border-radius:999px; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; min-height:52px;}
-  main{ max-width:740px; margin:0 auto; padding:50px 6vw 60px; }
-  .portada{ width:100%; border-radius:32px; aspect-ratio:16/10; object-fit:cover; margin-bottom:30px;}
-  .meta{ font-size:.9rem; color:var(--tinta-suave); text-transform:uppercase; letter-spacing:.05em; font-weight:800; margin-bottom:14px;}
-  h1{ font-family:'Baloo 2',sans-serif; font-size:clamp(1.6rem,4vw,2.5rem); color:var(--azul-oscuro); line-height:1.3; margin:0 0 26px;}
-  article p{ margin-bottom:20px; font-size:1.1rem;}
-  footer{ text-align:center; padding:20px 6vw 70px; }
-  footer button{ background:var(--sol); color:var(--tinta); border:none; padding:16px 32px; border-radius:999px; font-weight:700; font-size:1.05rem; cursor:pointer; font-family:'Baloo 2',sans-serif; min-height:56px; }
-</style>
-</head>
+
+
+
+let portadaHTML = '';
+
+if (noticia.image) {
+    const src = noticia.image instanceof File
+        ? URL.createObjectURL(noticia.image)
+        : noticia.image;
+
+    portadaHTML = `
+        <img class="imagen-portada" src="${src}" alt="">
+    `;
+}
+
+let mediaHTML = '';
+
+      if (Array.isArray(noticia.media) && noticia.media.length > 0) {
+        mediaHTML = noticia.media.map(item => {
+
+            const archivo = item.data || item;
+
+            const src = archivo instanceof File
+                ? URL.createObjectURL(archivo)
+                : archivo;
+
+            const esVideo =
+                item.type === 'video' ||
+                (archivo instanceof File && archivo.type.startsWith('video/')) ||
+                (typeof archivo === 'string' && archivo.startsWith('data:video/'));
+
+            if (esVideo) {
+                return `
+                    <video class="media-item" controls preload="metadata">
+                        <source src="${src}" type="${archivo instanceof File ? archivo.type : 'video/mp4'}">
+                        Tu navegador no soporta la reproducción de video.
+                    </video>
+                `;
+            } else {
+                return `
+                    <img class="media-item" src="${src}" alt="" loading="lazy">
+                `;
+            }
+
+      }).join('');
+    }   
+    else if (noticia.image) {
+      const src = noticia.image instanceof File ? URL.createObjectURL(noticia.image) : noticia.image; mediaHTML = `<img class="media-item" src="${src}" alt="">`; }
+      const html = `<!DOCTYPE html>
+    <html lang="es">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escapeHTML(noticia.title)} · Mi Mundo Azul</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+      :root{ --azul-fuerte:#1B5E8C; --azul-oscuro:#123A56; --cielo:#EAF4FB; --sol:#FFC857; --tinta:#16324A; --tinta-suave:#3F5A72; }
+      *{box-sizing:border-box;}
+      html{font-size:19px;}
+      body{margin:0; font-family:'Nunito',sans-serif; background:var(--cielo); color:var(--tinta); line-height:1.8;}
+      header{ display:flex; align-items:center; justify-content:space-between; padding:20px 5vw; background:var(--azul-fuerte); flex-wrap:wrap; gap:14px;}
+      header .marca{ display:flex; align-items:center; gap:12px; color:#fff; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:1.15rem;}
+      header button{ background:#fff; color:var(--azul-fuerte); border:none; padding:14px 26px; border-radius:999px; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; min-height:52px;}
+      main{ max-width:740px; margin:0 auto; padding:50px 6vw 60px; }
+      .portada{ width:100%; border-radius:32px; aspect-ratio:16/10; object-fit:cover; margin-bottom:30px;}
+      
+      .media-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .media-item {
+      width: 100%;
+      border-radius: 24px;
+      max-height: 500px;
+      object-fit: cover;
+      background: #000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    video.media-item {
+      aspect-ratio: 16/9;
+    }
+      
+      .meta{ font-size:.9rem; color:var(--tinta-suave); text-transform:uppercase; letter-spacing:.05em; font-weight:800; margin-bottom:14px;}
+      h1{ font-family:'Baloo 2',sans-serif; font-size:clamp(1.6rem,4vw,2.5rem); color:var(--azul-oscuro); line-height:1.3; margin:0 0 26px;}
+      article p{ margin-bottom:20px; font-size:1.1rem;}
+      footer{ text-align:center; padding:20px 6vw 70px; }
+      footer button{ background:var(--sol); color:var(--tinta); border:none; padding:16px 32px; border-radius:999px; font-weight:700; font-size:1.05rem; cursor:pointer; font-family:'Baloo 2',sans-serif; min-height:56px; }
+    </style>
+    </head>
 <body>
   <header>
     <div class="marca">Mi Mundo Azul</div>
     <button onclick="window.close()">← Volver</button>
   </header>
   <main>
-    <img class="portada" src="${noticia.image || ''}" alt="">
     <span class="meta">${formatearFecha(noticia.date)} · ${escapeHTML(noticia.author || 'Equipo Mi Mundo Azul')}</span>
     <h1>${escapeHTML(noticia.title)}</h1>
+    
+    <!-- Contenedor con todas las imágenes y videos -->
+    <div class="media-gallery">
+      ${mediaHTML}
+    </div>
+
     <article>${parrafos}</article>
   </main>
   <footer><button onclick="window.close()">✕ Cerrar esta noticia</button></footer>
