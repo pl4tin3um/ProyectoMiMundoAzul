@@ -100,14 +100,14 @@
       const titulo = $('#noticiaTitulo').value.trim();
       const extracto = $('#noticiaExtracto').value.trim();
       const cuerpo = $('#noticiaCuerpo').value.trim();
-      const imagen = $('#noticiaPortada').files[0] ? URL.createObjectURL($('#noticiaPortada').files[0]) : 'https://i.ibb.co/6X0Z3kM/portada-noticia-default.png';
+      const imagenPortada = $('#noticiaPortada').files[0] ? URL.createObjectURL($('#noticiaPortada').files[0]) : 'https://i.ibb.co/6X0Z3kM/portada-noticia-default.png';
 
       let noticias = DB.getNews();
       const existente = noticias.find(n=>n.id===id);
       if(existente){
-        existente.title = titulo; existente.excerpt = extracto; existente.body = cuerpo; existente.image = imagen;
+        existente.title = titulo; existente.excerpt = extracto; existente.body = cuerpo; existente.imagenPortada = imagenPortada;
       } else {
-        noticias.push({ id, title: titulo, excerpt: extracto, body: cuerpo, image: imagen, author: s.name, date: new Date().toISOString() });
+        noticias.push({ id, title: titulo, excerpt: extracto, body: cuerpo, imagenPortada: imagenPortada, author: s.name, date: new Date().toISOString() });
       }
       DB.setNews(noticias);
 
@@ -237,27 +237,31 @@
     const borradorExistente = borradorForzado || drafts[draftKeyActual];
     const noticiaPublicada = idNoticia ? DB.getNews().find(n=>n.id===idNoticia) : null;
 
-    function continuarConDatos(usarBorrador){
-      const datos = usarBorrador ? borradorExistente : (noticiaPublicada || { title:'', image:'', excerpt:'', body:'' });
-      $('#tituloModalNoticia').textContent = idNoticia ? '✏️ Editar noticia' : '➕ Nueva noticia';
-      $('#noticiaId').value = idNoticia || '';
-      $('#noticiaTitulo').value = datos.title || '';
-      $('#noticiaPortada').value = '';
-      //$('#noticiaImagen').value = datos.image || '';
-      $('#noticiaExtracto').value = datos.excerpt || '';
-      $('#noticiaCuerpo').value = datos.body || '';
-      $('#btnPublicarNoticia').innerHTML = idNoticia ? '✔️ Guardar cambios' : '✔️ Publicar noticia';
-      const estado = $('#estadoGuardado');
-      const texto = $('#textoEstadoGuardado');
-      if(usarBorrador){
-        texto.textContent = 'Restauramos el borrador que habías dejado sin publicar.';
-        estado.classList.add('activo');
-      } else {
-        texto.textContent = 'Mientras escribís, vamos guardando para que no pierdas nada.';
-        estado.classList.remove('activo');
-      }
-      abrirModal('modalNoticia');
+function continuarConDatos(usarBorrador){
+    const datos = usarBorrador ? borradorExistente : (noticiaPublicada || { title:'', image:'', excerpt:'', body:'' });
+    
+    $('#tituloModalNoticia').textContent = idNoticia ? '✏️ Editar noticia' : '➕ Nueva noticia';
+    $('#noticiaId').value = idNoticia || '';
+    $('#noticiaTitulo').value = datos.title || '';
+    const imagenActual = datos.imagenPortada || datos.image || 'https://i.ibb.co/6X0Z3kM/portada-noticia-default.png';
+    const previewImg = $('#previewImagenPortada');
+    if (previewImg) {
+      previewImg.src = imagenActual;
     }
+    $('#noticiaExtracto').value = datos.excerpt || '';
+    $('#noticiaCuerpo').value = datos.body || '';
+    $('#btnPublicarNoticia').innerHTML = idNoticia ? '✔️ Guardar cambios' : '✔️ Publicar noticia';
+    const estado = $('#estadoGuardado');
+    const texto = $('#textoEstadoGuardado');
+    if(usarBorrador){
+      texto.textContent = 'Restauramos el borrador que habías dejado sin publicar.';
+      estado.classList.add('activo');
+    } else {
+      texto.textContent = 'Mientras escribís, vamos guardando para que no pierdas nada.';
+      estado.classList.remove('activo');
+    }
+    abrirModal('modalNoticia');
+  }
 
     if(borradorExistente && !borradorForzado){
       preguntarConfirmacion({
@@ -288,11 +292,11 @@
     const titulo = $('#noticiaTitulo').value.trim();
     const extracto = $('#noticiaExtracto').value.trim();
     const cuerpo = $('#noticiaCuerpo').value.trim();
-    const imagen = $('#noticiaImagen').value.trim();
-    if(!titulo && !extracto && !cuerpo && !imagen) return;
+    const imagenPortada = $('#noticiaPortada').files[0];
+    if(!titulo && !extracto && !cuerpo && !imagenPortada) return;
 
     const drafts = DB.getDrafts();
-    drafts[draftKeyActual] = { title: titulo, excerpt: extracto, body: cuerpo, image: imagen, updatedAt: new Date().toISOString() };
+    drafts[draftKeyActual] = { title: titulo, excerpt: extracto, body: cuerpo, image: imagenPortada, updatedAt: new Date().toISOString() };
     DB.setDrafts(drafts);
 
     const estado = $('#estadoGuardado');
