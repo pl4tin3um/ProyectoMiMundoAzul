@@ -292,12 +292,16 @@ function continuarConDatos(usarBorrador){
     const titulo = $('#noticiaTitulo').value.trim();
     const extracto = $('#noticiaExtracto').value.trim();
     const cuerpo = $('#noticiaCuerpo').value.trim();
-    const imagenPortada = $('#imagenPortada').files[0];
-    if(!titulo && !extracto && !cuerpo && !imagenPortada) return;
 
-    const drafts = DB.getDrafts();
-    drafts[draftKeyActual] = { title: titulo, excerpt: extracto, body: cuerpo, image: imagenPortada, updatedAt: new Date().toISOString() };
-    DB.setDrafts(drafts);
+    const archivoInput = $('#imagenPortada').files[0];
+    if(!titulo && !extracto && !cuerpo && !archivoInput && !draftKeyActual) return;
+
+    const draftsActuales = DB.getDrafts();
+    const borradorViejo = draftsActuales[draftKeyActual] || {};
+    const imagenFinal = archivoInput ? URL.createObjectURL(archivoInput) : (borradorViejo.image || 'https://i.ibb.co/6X0Z3kM/portada-noticia-default.png');
+
+    draftsActuales[draftKeyActual] = { title: titulo, excerpt: extracto, body: cuerpo, image: imagenFinal, updatedAt: new Date().toISOString() };
+    DB.setDrafts(draftsActuales);
 
     const estado = $('#estadoGuardado');
     $('#textoEstadoGuardado').textContent = 'Guardado automático a las ' + new Date().toLocaleTimeString('es-AR');

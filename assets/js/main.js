@@ -93,8 +93,8 @@ function abrirNoticiaCompleta(id) {
   let mediaHTML = '';
   if (Array.isArray(noticia.media) && noticia.media.length > 0) {
     mediaHTML = noticia.media.map(item => {
-      const archivo = item.data || item;
-      const src = archivo instanceof File ? URL.createObjectURL(archivo) : archivo;
+    const archivo = item.data || item;
+    const src = archivo instanceof File ? URL.createObjectURL(archivo) : archivo;
       
       const esVideo =
         item.type === 'video' ||
