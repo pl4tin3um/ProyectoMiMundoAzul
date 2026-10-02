@@ -1,21 +1,27 @@
 /* =========================================================
-   UTILIDADES COMUNES — Mi Mundo Azul
+   UTILIDADES COMUNES — Mi Mundo Azul (versión Supabase)
+   Requiere en el HTML, ANTES de este archivo:
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 ========================================================== */
 
-const LS_USERS   = 'mma2_users';
-const LS_NEWS    = 'mma2_news';
+// ---------- Conexión a Supabase ----------
+const SUPABASE_URL = 'https://vcphcbrtaddmearotoly.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_8NKHHib_DLmdZYTz3sAEfQ_yJp01pNv';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ---------- Lo que sigue en el navegador ----------
 const LS_DRAFTS  = 'mma2_drafts';
 const LS_FORMS   = 'mma2_forms';
 const SS_SESSION = 'mma2_session';
 
 function $(sel, ctx) {
-    return (ctx || document).querySelector(sel);
+  return (ctx || document).querySelector(sel);
 }
 
 function $$(sel, ctx) {
-    return Array.from((ctx || document).querySelectorAll(sel));
+  return Array.from((ctx || document).querySelectorAll(sel));
 }
-function uid(prefijo) { return prefijo + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
 function formatearFecha(iso) {
   return new Date(iso).toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -27,33 +33,110 @@ function escapeHTML(str) {
   return div.innerHTML;
 }
 
-function sembrarDatos() {
-  if (!localStorage.getItem(LS_USERS)) {
-    localStorage.setItem(LS_USERS, JSON.stringify([
-      { id: 'u_admin', username: 'admin', password: 'admin123', role: 'admin', name: 'Administración' },
-      { id: 'u_edit1', username: 'editora1', password: 'editor123', role: 'editor', name: 'Valentina Ríos' }
-    ]));
-  }
-  if (!localStorage.getItem(LS_NEWS)) localStorage.setItem(LS_NEWS, JSON.stringify([]));
-  if (!localStorage.getItem(LS_DRAFTS)) localStorage.setItem(LS_DRAFTS, JSON.stringify({}));
-  if (!localStorage.getItem(LS_FORMS)) localStorage.setItem(LS_FORMS, JSON.stringify([]));
-}
-
+// ---------- Acceso a datos ----------
+// Todas las funciones son async: hay que usarlas con await.
 const DB = {
-  getUsers() { return JSON.parse(localStorage.getItem(LS_USERS) || '[]'); },
-  setUsers(u) { localStorage.setItem(LS_USERS, JSON.stringify(u)); },
-  getNews() { return JSON.parse(localStorage.getItem(LS_NEWS) || '[]').sort((a, b) => new Date(b.date) - new Date(a.date)); },
-  setNews(n) { localStorage.setItem(LS_NEWS, JSON.stringify(n)); },
+
+  /* ---------- CUENTAS ---------- */
+  async getEditores() {
+    const { data, error } = await supabaseClient
+      .from('cuentas')
+      .select('id, name, username, email, enabled')
+      .eq('role', 'editor')
+      .order('id', { ascending: true });
+    if (error) throw error;
+    return data || [];
+  },
+
+  async getCuentas() {
+    const { data, error } = await supabaseClient
+      .from('cuentas')
+      .select('id, name, username, email, role, enabled')
+      .order('id', { ascending: true });
+    if (error) throw error;
+    return data || [];
+  },
+
+  async existeUsername(username) {
+    const { data, error } = await supabaseClient
+      .from('cuentas')
+      .select('id')
+      .ilike('username', username)
+      .maybeSingle();
+    if (error) throw error;
+    return !!data;
+  },
+
+  async crearEditor({ name, username, email, password }) {
+    const hash = await dcodeIO.bcrypt.hash(password, 10);
+    const { error } = await supabaseClient.from('cuentas').insert([{
+      name,
+      username,
+      email: email || null,
+      password: hash,
+      role: 'editor',
+      enabled: true
+    }]);
+    if (error) throw error;
+  },
+
+  async eliminarCuenta(id) {
+    const { error } = await supabaseClient.from('cuentas').delete().eq('id', id);
+    if (error) throw error;
+  },
+
+  /* ---------- NOTICIAS ---------- */
+  async getNews() {
+  const { data, error } = await supabaseClient
+    .from('noticias')
+    .select('*')
+    .eq('enabled', true)
+    .order('date', { ascending: false });
+  if (error) throw error;
+  return data || [];
+},
+
+  /* ---------- BORRADORES Y FORMULARIOS (siguen locales) ---------- */
   getDrafts() { return JSON.parse(localStorage.getItem(LS_DRAFTS) || '{}'); },
   setDrafts(d) { localStorage.setItem(LS_DRAFTS, JSON.stringify(d)); },
   getForms() { return JSON.parse(localStorage.getItem(LS_FORMS) || '[]'); },
   setForms(f) { localStorage.setItem(LS_FORMS, JSON.stringify(f)); }
 };
 
+// ---------- Login ----------
+// Devuelve { id, name, username, role } si es correcto, o null si no.
+async function loginCuenta(identificador, password) {
+  const columnas = 'id, name, username, role, password';
+
+  // Se busca primero por username y luego por email (dos consultas simples,
+  // sin armar filtros con texto del usuario).
+  let { data, error } = await supabaseClient
+    .from('cuentas').select(columnas)
+    .eq('username', identificador).eq('enabled', true).maybeSingle();
+  if (error) throw error;
+
+  if (!data) {
+    const r = await supabaseClient
+      .from('cuentas').select(columnas)
+      .eq('email', identificador).eq('enabled', true).maybeSingle();
+    if (r.error) throw r.error;
+    data = r.data;
+  }
+
+  if (!data) return null;
+
+  const ok = await dcodeIO.bcrypt.compare(password, data.password);
+  if (!ok) return null;
+
+  return { id: data.id, name: data.name, username: data.username, role: data.role };
+}
+
+// ---------- Sesión (en el navegador) ----------
 function getSession() { try { return JSON.parse(sessionStorage.getItem(SS_SESSION)); } catch (e) { return null; } }
 function setSession(s) { sessionStorage.setItem(SS_SESSION, JSON.stringify(s)); }
 function clearSession() { sessionStorage.removeItem(SS_SESSION); }
 
+// ---------- Toast ----------
 let toastTimer;
 function mostrarToast(msg, icono) {
   const t = $('#toast');
@@ -64,8 +147,18 @@ function mostrarToast(msg, icono) {
   toastTimer = setTimeout(() => t.classList.remove('mostrar'), 3200);
 }
 
-function mostrarUsuarios() {
-  const usuarios = DB.getUsers();
+// ---------- Ventana de usuarios ----------
+// Ya no muestra contraseñas: en la BD solo existe el hash.
+async function mostrarUsuarios() {
+  let usuarios = [];
+  try {
+    usuarios = await DB.getCuentas();
+  } catch (e) {
+    console.error(e);
+    mostrarToast('No se pudieron cargar los usuarios', '⚠️');
+    return;
+  }
+
   const ventana = document.createElement('div');
   ventana.id = 'ventanaUsuarios';
   ventana.className = 'fixed inset-y-0 left-0 z-50 flex items-center p-6 pointer-events-none';
@@ -80,7 +173,6 @@ function mostrarUsuarios() {
           <div class="rounded-2xl bg-cielo p-4">
             <p class="font-bold">${escapeHTML(usuario.name || usuario.username)}</p>
             <p class="text-sm text-tinta-suave">@${escapeHTML(usuario.username)} <br>${escapeHTML(usuario.role)}</p>
-            <p class="text-sm text-tinta-suave">Contraseña: ${escapeHTML(usuario.password || '')}</p>
           </div>
         `).join('') : '<p class="text-tinta-suave">No hay usuarios registrados.</p>'}
       </div>

@@ -10,9 +10,9 @@ function preguntarConfirmacion(opciones){
   if(elTitulo) elTitulo.textContent = opciones.titulo || '¿Estás seguro/a?';
   if(elTexto) elTexto.textContent = opciones.texto || '';
   if(elBtnSi) elBtnSi.textContent = opciones.textoSi || 'Sí, continuar';
-  
+
   if(modal){
-    modal.classList.remove('hidden'); 
+    modal.classList.remove('hidden');
     modal.classList.add('flex');
   }
 
@@ -43,18 +43,18 @@ if(btnCerrarAviso){
   });
 }
 
-function abrirModal(id){ 
-  const m = $('#'+id); 
+function abrirModal(id){
+  const m = $('#'+id);
   if(m){ m.classList.remove('hidden'); m.classList.add('flex'); }
 }
 
-function cerrarModal(id){ 
-  const m = $('#'+id); 
+function cerrarModal(id){
+  const m = $('#'+id);
   if(m){ m.classList.add('hidden'); m.classList.remove('flex'); }
 }
 
-$$('[data-cerrar-modal]').forEach(btn=> btn.addEventListener('click', ()=> cerrarModal(btn.dataset.cerrarModal)));$$
-('.fixed.inset-0.bg-black\\/50').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo){ fondo.classList.add('hidden'); fondo.classList.remove('flex'); } }));
+$$('[data-cerrar-modal]').forEach(btn=> btn.addEventListener('click', ()=> cerrarModal(btn.dataset.cerrarModal)));
+$$('.fixed.inset-0.bg-black\\/50').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo){ fondo.classList.add('hidden'); fondo.classList.remove('flex'); } }));
 
 function cerrarSesion(){
   clearSession();
@@ -63,8 +63,8 @@ function cerrarSesion(){
 
 /* =========================================================
    PROTECCIÓN DE ACCESO
+   (ya no existe sembrarDatos(): los datos viven en Supabase)
 ========================================================== */
-sembrarDatos();
 const sesion = getSession();
 if(!sesion || sesion.role !== 'admin'){
   window.location.href = '../index.html';
@@ -97,37 +97,51 @@ function iniciarPanelAdmin(){
 
   const formNuevo = $('#formNuevoEditor');
   if(formNuevo){
-    formNuevo.addEventListener('submit', (e)=>{
+    formNuevo.addEventListener('submit', async (e)=>{
       e.preventDefault();
       const nombre = $('#editorNombre')?.value.trim() || '';
       const usuario = $('#editorUsuario')?.value.trim() || '';
+      const email = $('#editorEmail')?.value.trim() || '';   // opcional: agregá este input si tu tabla lo pide
       const password = $('#editorPassword')?.value || '';
 
-      const usuarios = DB.getUsers();
-      const yaExiste = usuarios.some(u => u.username.toLowerCase() === usuario.toLowerCase());
-      if(yaExiste){
-        mostrarAviso('Ese nombre de usuario ya existe. Elegí otro para crear la cuenta.');
-        return;
-      }
+      try {
+        if(await DB.existeUsername(usuario)){
+          mostrarAviso('Ese nombre de usuario ya existe. Elegí otro para crear la cuenta.');
+          return;
+        }
 
-      usuarios.push({ id: uid('u'), username: usuario, password, role:'editor', name: nombre });
-      DB.setUsers(usuarios);
-      cerrarModal('modalEditor');
-      renderListaEditores();
-      mostrarToast('Cuenta de editor/a creada', '✔️');
+        await DB.crearEditor({ name: nombre, username: usuario, email, password });
+        cerrarModal('modalEditor');
+        await renderListaEditores();
+        mostrarToast('Cuenta de editor/a creada', '✔️');
+      } catch (err) {
+        console.error(err);
+        mostrarAviso('No se pudo crear la cuenta: ' + err.message);
+      }
     });
   }
 }
 
-function renderListaEditores(){
+async function renderListaEditores(){
   const cont = $('#listaEditores');
   if(!cont) return;
 
-  const editores = DB.getUsers().filter(u => u.role === 'editor');
+  cont.innerHTML = '<div class="text-center text-tinta-suave py-8">Cargando...</div>';
+
+  let editores = [];
+  try {
+    editores = await DB.getEditores();
+  } catch (err) {
+    console.error(err);
+    cont.innerHTML = '<div class="text-center text-tinta-suave py-8">⚠️ No se pudieron cargar los editores.</div>';
+    return;
+  }
+
   if(editores.length === 0){
     cont.innerHTML = '<div class="text-center text-tinta-suave py-8">📭 Todavía no creaste ninguna cuenta de editor/a.</div>';
     return;
   }
+
   cont.innerHTML = editores.map(u => `
     <div class="bg-white rounded-2xl p-4 flex items-center justify-between gap-3 flex-wrap">
       <div class="flex items-center gap-3">
@@ -144,28 +158,30 @@ function renderListaEditores(){
   $$('[data-eliminar-editor]', cont).forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const id = btn.dataset.eliminarEditor;
-      const usuario = DB.getUsers().find(u=>u.id===id);
+      const usuario = editores.find(u => String(u.id) === String(id));
       preguntarConfirmacion({
         icono:'🗑️', titulo:'¿Eliminar esta cuenta?',
         texto:`${usuario ? usuario.name : 'Esta persona'} ya no va a poder entrar al panel de noticias. Las noticias que ya publicó quedan en el sitio.`,
         textoSi:'Sí, eliminar',
-        onSi(){
-          DB.setUsers(DB.getUsers().filter(u=>u.id!==id));
-          if(usuario){
-            const drafts = DB.getDrafts();
-            Object.keys(drafts).forEach(key=>{ if(key.startsWith(usuario.username + '__')) delete drafts[key]; });
-            DB.setDrafts(drafts);
+        async onSi(){
+          try {
+            await DB.eliminarCuenta(id);
+
+            // Los borradores siguen en localStorage: se limpian igual que antes
+            if(usuario){
+              const drafts = DB.getDrafts();
+              Object.keys(drafts).forEach(key=>{ if(key.startsWith(usuario.username + '__')) delete drafts[key]; });
+              DB.setDrafts(drafts);
+            }
+
+            await renderListaEditores();
+            mostrarToast('Cuenta eliminada', '🗑️');
+          } catch (err) {
+            console.error(err);
+            mostrarAviso('No se pudo eliminar la cuenta: ' + err.message);
           }
-          renderListaEditores();
-          mostrarToast('Cuenta eliminada', '🗑️');
         }
       });
     });
   });
-}
-
-function escapeHTML(str){
-  const div = document.createElement('div');
-  div.textContent = str || '';
-  return div.innerHTML;
 }

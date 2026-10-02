@@ -21,7 +21,7 @@ if (contenedorIndex) {
 const elAnio = document.getElementById('anioFooter');
 if (elAnio) elAnio.textContent = new Date().getFullYear();
 
-sembrarDatos();
+// (sembrarDatos() ya no existe: los datos viven en Supabase)
 renderGridPublico();
 
 
@@ -37,17 +37,33 @@ renderGridPublico();
 
 /* ---------------- NOTICIAS PÚBLICAS ---------------- */
 
-function renderGridPublico(){
+// Se guardan acá para poder abrir una noticia sin volver a consultar la BD.
+// (window.open tiene que ejecutarse enseguida tras el clic; si esperara una
+// consulta, el navegador podría bloquear la ventana emergente.)
+let noticiasPublicas = [];
+
+async function renderGridPublico(){
   const grid = document.getElementById('gridNoticias');
   if(!grid) return;
-  const noticias = DB.getNews();
+  const pieVacio = document.getElementById('piePublicoVacio');
+
+  let noticias = [];
+  try {
+    noticias = (await DB.getNews()).filter(n => n.enabled !== false);
+  } catch (err) {
+    console.error(err);
+    grid.innerHTML = '';
+    if(pieVacio) pieVacio.innerHTML = '<p class="text-center text-tinta-suave">⚠️ No pudimos cargar las noticias. Probá de nuevo en un rato.</p>';
+    return;
+  }
+
+  noticiasPublicas = noticias;
+
   if(noticias.length === 0){
     grid.innerHTML = '';
-    const pieVacio = document.getElementById('piePublicoVacio');
     if(pieVacio) pieVacio.innerHTML = '<p class="text-center text-tinta-suave">📭 Todavía no hay noticias publicadas. ¡Volvé pronto!</p>';
     return;
   }
-  const pieVacio = document.getElementById('piePublicoVacio');
   if(pieVacio) pieVacio.innerHTML = '';
   grid.innerHTML = noticias.map(n => `
     <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col h-full">
@@ -75,7 +91,7 @@ function renderGridPublico(){
 
 
 function abrirNoticiaCompleta(id) {
-  const noticia = DB.getNews().find(n => n.id === id);
+  const noticia = noticiasPublicas.find(n => String(n.id) === String(id));
   if (!noticia) return;
 
   const parrafos = (noticia.body || '')
@@ -95,7 +111,7 @@ function abrirNoticiaCompleta(id) {
     mediaHTML = noticia.media.map(item => {
     const archivo = item.data || item;
     const src = archivo instanceof File ? URL.createObjectURL(archivo) : archivo;
-      
+
       const esVideo =
         item.type === 'video' ||
         (archivo instanceof File && archivo.type.startsWith('video/')) ||
@@ -153,7 +169,7 @@ function abrirNoticiaCompleta(id) {
     <span class="meta">
       ${formatearFecha(noticia.date)}
       ·
-      ${escapeHTML(noticia.author || 'Equipo Mi Mundo Azul')}
+      ${escapeHTML(typeof noticia.author === 'string' ? noticia.author : 'Equipo Mi Mundo Azul')}
     </span>
     <h1>${escapeHTML(noticia.title)}</h1>
     <div class="media-gallery">${mediaHTML}</div>
@@ -166,7 +182,6 @@ function abrirNoticiaCompleta(id) {
 </html>
 `;
 
-  // 4. Creamos el Blob principal y abrimos la ventana de forma síncrona inmediata
   const blob = new Blob([html], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
   window.open(url, '_blank');
@@ -283,16 +298,11 @@ function abrirBloqueTexto(data) {
 }
 
 
-
-
-
-
-
-
 /* ---------------- LOGIN ---------------- */
 
 function mostrarPantallaLogin(){
-  mostrarUsuarios();
+  // Se quitó mostrarUsuarios(): era una ayuda de pruebas que listaba las
+  // cuentas en pantalla. Con la BD real no debe verse públicamente.
   const cp = document.getElementById('contenidoPublico');
   const hp = document.getElementById('cabeceraPublica');
   const sl = document.getElementById('seccionLogin');
@@ -340,17 +350,26 @@ if(btnPass) {
 
 const formLogin = document.getElementById('formLogin');
 if(formLogin) {
-  formLogin.addEventListener('submit', (e)=>{
+  formLogin.addEventListener('submit', async (e)=>{
     e.preventDefault();
+    const err = document.getElementById('errorLogin');
     const usuario = document.getElementById('loginUsuario')?.value.trim();
     const pass = document.getElementById('loginPassword')?.value;
-    const encontrado = DB.getUsers().find(u => u.username === usuario && u.password === pass);
+
+    let encontrado = null;
+    try {
+      encontrado = await loginCuenta(usuario, pass);
+    } catch (error) {
+      console.error(error);
+      if(err) err.innerHTML = '<div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3 flex gap-2"><span>⚠️</span><span>No pudimos conectarnos. Probá de nuevo en un rato.</span></div>';
+      return;
+    }
+
     if(!encontrado){
-      const err = document.getElementById('errorLogin');
       if(err) err.innerHTML = '<div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3 flex gap-2"><span>⚠️</span><span>Ese usuario o esa contraseña no son correctos. Fijate bien e intentá de nuevo.</span></div>';
       return;
     }
-    const err = document.getElementById('errorLogin');
+
     if(err) err.innerHTML = '';
     setSession({ id:encontrado.id, username:encontrado.username, role:encontrado.role, name:encontrado.name });
     formLogin.reset();
