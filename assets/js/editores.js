@@ -95,7 +95,7 @@
     $('#formNoticia').addEventListener('submit', (e)=>{
       e.preventDefault();
       const s = getSession();
-      const id = $('#noticiaId').value || uid('n');
+      const id = $('#noticiaId').value || 0;
       const titulo = $('#noticiaTitulo').value.trim();
       const extracto = $('#noticiaExtracto').value.trim();
       const cuerpo = $('#noticiaCuerpo').value.trim();
