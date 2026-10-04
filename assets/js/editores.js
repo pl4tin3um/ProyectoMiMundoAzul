@@ -48,7 +48,6 @@
      eso, apenas carga el archivo, se revisa la sesión y si no es
      válida (o no es de un/a editor/a) se redirige a ../../index.html.
   ========================================================== */
-  sembrarDatos();
   const sesion = getSession();
   if(!sesion || sesion.role !== 'editor'){
     alert('No tenés permiso para entrar a esta página. Vas a volver al inicio.');
@@ -186,9 +185,15 @@
     });
   }
 
-  function renderListaNoticiasEditor(){
+function renderListaNoticiasEditor(){
+
     const cont = $('#listaNoticiasEditor');
-    const noticias = DB.getNews();
+    const noticiasGuardadas = DB.getNews();
+    const noticias = Array.isArray(noticiasGuardadas)
+      ? noticiasGuardadas
+      : Array.isArray(noticiasGuardadas?.news)
+        ? noticiasGuardadas.news
+        : [];
     if(noticias.length === 0){
       cont.innerHTML = '<div class="text-center text-tinta-suave py-8">📭 Todavía no hay noticias publicadas. Tocá "+ Crear noticia nueva" para empezar.</div>';
       return;
@@ -220,7 +225,13 @@
           texto:'Va a desaparecer del sitio para siempre.',
           textoSi:'Sí, eliminar',
           onSi(){
-            DB.setNews(DB.getNews().filter(n=>n.id!==id));
+            const noticiasActuales = DB.getNews();
+            const listaActual = Array.isArray(noticiasActuales)
+              ? noticiasActuales
+              : Array.isArray(noticiasActuales?.news)
+                ? noticiasActuales.news
+                : [];
+            DB.setNews(listaActual.filter(n=>n.id!==id));
             renderListaNoticiasEditor();
             mostrarToast('Noticia eliminada', '🗑️');
           }
