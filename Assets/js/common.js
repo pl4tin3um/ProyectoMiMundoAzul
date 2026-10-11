@@ -6,8 +6,8 @@
 ========================================================== */
 
 // ---------- Conexión a Supabase ----------
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_KEY;
+const SUPABASE_URL = 'https://vcphcbrtaddmearotoly.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_8NKHHib_DLmdZYTz3sAEfQ_yJp01pNv';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ---------- Lo que sigue en el navegador ----------
