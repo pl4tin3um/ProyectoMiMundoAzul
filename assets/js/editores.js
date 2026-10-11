@@ -1,4 +1,4 @@
-"use strict";
+
   function preguntarConfirmacion(opciones){
     $('#iconoConfirmar').textContent = opciones.icono || '❓';
     $('#tituloConfirmar').textContent = opciones.titulo || '¿Estás seguro/a?';
