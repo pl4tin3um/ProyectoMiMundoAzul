@@ -1,16 +1,8 @@
-/* =========================================================
-   UTILIDADES COMUNES — Mi Mundo Azul (versión Supabase)
-   Requiere en el HTML, ANTES de este archivo:
-   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-   <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
-========================================================== */
 
-// ---------- Conexión a Supabase ----------
 const SUPABASE_URL = 'https://vcphcbrtaddmearotoly.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_8NKHHib_DLmdZYTz3sAEfQ_yJp01pNv';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ---------- Lo que sigue en el navegador ----------
 const LS_DRAFTS  = 'mma2_drafts';
 const LS_FORMS   = 'mma2_forms';
 const SS_SESSION = 'mma2_session';
@@ -33,11 +25,7 @@ function escapeHTML(str) {
   return div.innerHTML;
 }
 
-// ---------- Acceso a datos ----------
-// Todas las funciones son async: hay que usarlas con await.
 const DB = {
-
-  /* ---------- CUENTAS ---------- */
   async getEditores() {
     const { data, error } = await supabaseClient
       .from('cuentas')
@@ -85,31 +73,25 @@ const DB = {
     if (error) throw error;
   },
 
-  /* ---------- NOTICIAS ---------- */
   async getNews() {
-  const { data, error } = await supabaseClient
-    .from('noticias')
-    .select('*')
-    .eq('enabled', true)
-    .order('date', { ascending: false });
-  if (error) throw error;
-  return data || [];
-},
+    const { data, error } = await supabaseClient
+      .from('noticias')
+      .select('*')
+      .eq('enabled', true)
+      .order('date', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  },
 
-  /* ---------- BORRADORES Y FORMULARIOS (siguen locales) ---------- */
   getDrafts() { return JSON.parse(localStorage.getItem(LS_DRAFTS) || '{}'); },
   setDrafts(d) { localStorage.setItem(LS_DRAFTS, JSON.stringify(d)); },
   getForms() { return JSON.parse(localStorage.getItem(LS_FORMS) || '[]'); },
   setForms(f) { localStorage.setItem(LS_FORMS, JSON.stringify(f)); }
 };
 
-// ---------- Login ----------
-// Devuelve { id, name, username, role } si es correcto, o null si no.
 async function loginCuenta(identificador, password) {
   const columnas = 'id, name, username, role, password';
 
-  // Se busca primero por username y luego por email (dos consultas simples,
-  // sin armar filtros con texto del usuario).
   let { data, error } = await supabaseClient
     .from('cuentas').select(columnas)
     .eq('username', identificador).eq('enabled', true).maybeSingle();
@@ -131,12 +113,10 @@ async function loginCuenta(identificador, password) {
   return { id: data.id, name: data.name, username: data.username, role: data.role };
 }
 
-// ---------- Sesión (en el navegador) ----------
 function getSession() { try { return JSON.parse(sessionStorage.getItem(SS_SESSION)); } catch (e) { return null; } }
 function setSession(s) { sessionStorage.setItem(SS_SESSION, JSON.stringify(s)); }
 function clearSession() { sessionStorage.removeItem(SS_SESSION); }
 
-// ---------- Toast ----------
 let toastTimer;
 function mostrarToast(msg, icono) {
   const t = $('#toast');
@@ -147,8 +127,6 @@ function mostrarToast(msg, icono) {
   toastTimer = setTimeout(() => t.classList.remove('mostrar'), 3200);
 }
 
-// ---------- Ventana de usuarios ----------
-// Ya no muestra contraseñas: en la BD solo existe el hash.
 async function mostrarUsuarios() {
   let usuarios = [];
   try {

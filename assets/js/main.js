@@ -5,10 +5,6 @@ function cerrarSesion(){
   window.location.href = '../index.html?salida=1';
 }
 
-/* =========================================================
-   LÓGICA PRINCIPAL — index.html / main.js
-========================================================== */
-
 const contenedorIndex = document.getElementById('pagina-index');
 if (contenedorIndex) {
   $$('.nav-scroll', contenedorIndex).forEach(a => a.addEventListener('click', (e) => {
@@ -21,8 +17,6 @@ if (contenedorIndex) {
 const elAnio = document.getElementById('anioFooter');
 if (elAnio) elAnio.textContent = new Date().getFullYear();
 
-
-
 (function resolverEstadoInicial(){
   const params = new URLSearchParams(window.location.search);
   if(params.get('salida') === '1'){
@@ -32,12 +26,6 @@ if (elAnio) elAnio.textContent = new Date().getFullYear();
   if(window.location.hash === '#login') mostrarPantallaLogin();
 })();
 
-
-/* ---------------- NOTICIAS PÚBLICAS ---------------- */
-
-// Se guardan acá para poder abrir una noticia sin volver a consultar la BD.
-// (window.open tiene que ejecutarse enseguida tras el clic; si esperara una
-// consulta, el navegador podría bloquear la ventana emergente.)
 let noticiasPublicas = [];
 
 async function renderGridPublico(){
@@ -86,7 +74,6 @@ async function renderGridPublico(){
     btn.addEventListener('click', ()=> abrirNoticiaCompleta(btn.dataset.abrirNoticia));
   });
 }
-
 
 function abrirNoticiaCompleta(id) {
   const noticia = noticiasPublicas.find(n => String(n.id) === String(id));
@@ -184,10 +171,6 @@ function abrirNoticiaCompleta(id) {
   const url = URL.createObjectURL(blob);
   window.open(url, '_blank');
 }
-/* ========================================================
-   Bloques de información
-========================================================== */
-
 
 function abrirBloqueTexto(data) {
   const win = window.open('', '_blank');
@@ -223,7 +206,6 @@ function abrirBloqueTexto(data) {
       padding: 20px;
     }
 
-    /* Tarjeta contenedora para bloques cortos */
     .card {
       background: #ffffff;
       max-width: 500px;
@@ -295,12 +277,7 @@ function abrirBloqueTexto(data) {
   win.document.close();
 }
 
-
-/* ---------------- LOGIN ---------------- */
-
 function mostrarPantallaLogin(){
-  // Se quitó mostrarUsuarios(): era una ayuda de pruebas que listaba las
-  // cuentas en pantalla. Con la BD real no debe verse públicamente.
   const cp = document.getElementById('contenidoPublico');
   const hp = document.getElementById('cabeceraPublica');
   const sl = document.getElementById('seccionLogin');
