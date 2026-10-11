@@ -21,8 +21,6 @@ if (contenedorIndex) {
 const elAnio = document.getElementById('anioFooter');
 if (elAnio) elAnio.textContent = new Date().getFullYear();
 
-// (sembrarDatos() ya no existe: los datos viven en Supabase)
-renderGridPublico();
 
 
 (function resolverEstadoInicial(){
