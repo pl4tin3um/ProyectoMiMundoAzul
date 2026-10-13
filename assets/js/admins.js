@@ -167,7 +167,6 @@ async function renderListaEditores(){
           try {
             await DB.eliminarCuenta(id);
 
-            // Los borradores siguen en localStorage: se limpian igual que antes
             if(usuario){
               const drafts = DB.getDrafts();
               Object.keys(drafts).forEach(key=>{ if(key.startsWith(usuario.username + '__')) delete drafts[key]; });

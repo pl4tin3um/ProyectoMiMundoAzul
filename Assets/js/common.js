@@ -83,6 +83,11 @@ const DB = {
     return data || [];
   },
 
+  async crearNoticias(noticia) {
+    const { error } = await supabaseClient.from('noticias').insert(noticia);
+    if (error) throw error;
+  },
+
   getDrafts() { return JSON.parse(localStorage.getItem(LS_DRAFTS) || '{}'); },
   setDrafts(d) { localStorage.setItem(LS_DRAFTS, JSON.stringify(d)); },
   getForms() { return JSON.parse(localStorage.getItem(LS_FORMS) || '[]'); },

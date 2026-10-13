@@ -95,20 +95,21 @@
     $('#formNoticia').addEventListener('submit', (e)=>{
       e.preventDefault();
       const s = getSession();
-      const id = $('#noticiaId').value || 0;
+      // const id = $('#noticiaId').value || 0;
       const titulo = $('#noticiaTitulo').value.trim();
       const extracto = $('#noticiaExtracto').value.trim();
       const cuerpo = $('#noticiaCuerpo').value.trim();
       const imagenPortada = $('#imagenPortada').files[0] ? URL.createObjectURL($('#imagenPortada').files[0]) : 'https://i.ibb.co/6X0Z3kM/portada-noticia-default.png';
 
-      let noticias = DB.getNews();
-      const existente = noticias.find(n=>n.id===id);
-      if(existente){
-        existente.title = titulo; existente.excerpt = extracto; existente.body = cuerpo; existente.imagenPortada = imagenPortada;
-      } else {
-        noticias.push({ id, title: titulo, excerpt: extracto, body: cuerpo, imagenPortada: imagenPortada, author: s.name, date: new Date().toISOString() });
-      }
-      DB.setNews(noticias);
+      const noticias = {
+        title: titulo,
+        imagenPortada: 0,
+        excerpt: extracto,
+        body: cuerpo,
+        author: s.name,
+        date: new Date().toISOString()
+      };
+      DB.crearNoticias(noticias);
 
       const drafts = DB.getDrafts();
       delete drafts[draftKeyActual];
@@ -116,7 +117,6 @@
 
       cerrarModal('modalNoticia');
       renderPanelEditor();
-      mostrarToast(existente ? 'Noticia actualizada' : 'Noticia publicada', '✔️');
     });
   }
 
