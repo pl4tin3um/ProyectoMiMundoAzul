@@ -34,10 +34,24 @@
   $$('[data-cerrar-modal]').forEach(btn=> btn.addEventListener('click', ()=> cerrarModal(btn.dataset.cerrarModal)));
   $$('.fixed.inset-0.bg-black\\/50').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo){ fondo.classList.add('hidden'); fondo.classList.remove('flex'); } }));
 
-  function cerrarSesion(){
+  async function cerrarSesion() {
+  try {
+    const { error } = await supabaseClient.auth.signOut({
+      scope: 'local'
+    });
+
+    if (error) throw error;
+
     clearSession();
-    window.location.href = '../index.html';
+    window.location.replace('../index.html');
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+    mostrarToast(
+      'No pudimos cerrar la sesión. Intentá nuevamente.',
+      '⚠️'
+    );
   }
+}
 
   /* =========================================================
      PROTECCIÓN DE ACCESO (nueva — necesaria por la navegación real)
@@ -48,11 +62,33 @@
      eso, apenas carga el archivo, se revisa la sesión y si no es
      válida (o no es de un/a editor/a) se redirige a ../../index.html.
   ========================================================== */
-  const sesion = getSession();
-  if(!sesion || sesion.role !== 'editor'){
-    alert('No tenés permiso para entrar a esta página. Vas a volver al inicio.');
-    window.location.href = '../index.html';
+  async function verificarAccesoEditor() {
+  try {
+    const sesion = await obtenerCuentaActual();
+
+    if (!sesion || sesion.role !== 'editor') {
+      window.location.replace('../index.html');
+      return;
+    }
+
+    // Compatibilidad temporal con noticias y borradores.
+    setSession(sesion);
+
+    iniciarPanelEditor();
+    renderFormularios();
+
+    document.body.hidden = false;
+  } catch (error) {
+    console.error('Error al verificar acceso de editor:', error);
+
+    const aviso = document.createElement('p');
+    aviso.textContent =
+      'No pudimos cargar el panel. Recargá para intentar nuevamente.';
+
+    document.body.replaceChildren(aviso);
+    document.body.hidden = false;
   }
+}
 
   /* =========================================================
      PANEL DE EDITOR/A — reciclado del Bloque 3 original.
@@ -318,10 +354,7 @@ function continuarConDatos(usarBorrador){
     $('#textoEstadoGuardado').textContent = 'Guardado automático a las ' + new Date().toLocaleTimeString('es-AR');
     estado.classList.add('activo');
   }
-document.addEventListener('DOMContentLoaded', () => {
-  iniciarPanelEditor();
-  renderFormularios();
-});
+document.addEventListener('DOMContentLoaded', verificarAccesoEditor);
 
 /* =========================================================
    ==================== Formularios ========================

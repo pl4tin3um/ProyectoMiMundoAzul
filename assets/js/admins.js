@@ -56,26 +56,68 @@ function cerrarModal(id){
 $$('[data-cerrar-modal]').forEach(btn=> btn.addEventListener('click', ()=> cerrarModal(btn.dataset.cerrarModal)));
 $$('.fixed.inset-0.bg-black\\/50').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo){ fondo.classList.add('hidden'); fondo.classList.remove('flex'); } }));
 
-function cerrarSesion(){
-  clearSession();
-  window.location.href = '../index.html';
+async function cerrarSesion() {
+  try {
+    const { error } = await supabaseClient.auth.signOut({
+      scope: 'local'
+    });
+
+    if (error) throw error;
+
+    clearSession();
+    window.location.replace('../index.html');
+  } catch {
+    mostrarToast(
+      'No pudimos cerrar la sesión. Intentá nuevamente.',
+      '⚠️'
+    );
+  }
 }
+
+
 
 /* =========================================================
    PROTECCIÓN DE ACCESO
    (ya no existe sembrarDatos(): los datos viven en Supabase)
 ========================================================== */
-const sesion = getSession();
-if(!sesion || sesion.role !== 'admin'){
-  window.location.href = '../index.html';
-} else {
-  const elNombreAdmin = $('#nombreAdmin');
-  if(elNombreAdmin){
-    elNombreAdmin.textContent = sesion.name;
+async function verificarAccesoAdmin() {
+  try {
+    const sesion = await obtenerCuentaActual();
+
+    if (!sesion || sesion.role !== 'admin') {
+      window.location.replace('../index.html');
+      return;
+    }
+
+    const elNombreAdmin = $('#nombreAdmin');
+
+    if (elNombreAdmin) {
+      elNombreAdmin.textContent = sesion.name;
+    }
+
+    mostrarToast(
+      'Bienvenido/a al panel de administración',
+      '🛠️'
+    );
+
+    document.body.hidden = false;
+
+    iniciarPanelAdmin();
+  } catch (error){
+    console.error('Error al verificar acceso:', error);
+    const aviso = document.createElement('p');
+  aviso.textContent =
+    'No pudimos verificar tu acceso. Recargá para intentar nuevamente.';
+
+  document.body.replaceChildren(aviso);
+  document.body.hidden = false;
   }
-  mostrarToast('Bienvenido/a al panel de administración', '🛠️');
-  iniciarPanelAdmin();
 }
+
+verificarAccesoAdmin();
+
+
+
 
 /* =========================================================
    PANEL DE ADMINISTRACIÓN
@@ -91,6 +133,8 @@ function iniciarPanelAdmin(){
       abrirModal('modalEditor');
     });
   }
+
+
 
   const btnLogout = $('#btnLogoutAdmin');
   if(btnLogout) btnLogout.addEventListener('click', cerrarSesion);
@@ -122,65 +166,100 @@ function iniciarPanelAdmin(){
   }
 }
 
-async function renderListaEditores(){
+async function renderListaEditores() {
   const cont = $('#listaEditores');
-  if(!cont) return;
+  const plantilla = $('#plantillaEditor');
+  const aviso = $('#estadoListaEditores');
 
-  cont.innerHTML = '<div class="text-center text-tinta-suave py-8">Cargando...</div>';
+  if (!cont || !plantilla || !aviso) {
+    console.error('Falta el contenedor o la plantilla de editores.');
+    return;
+  }
 
-  let editores = [];
+  cont.replaceChildren();
+  aviso.textContent = 'Cargando...';
+  aviso.hidden = false;
+
+  let editores;
+
   try {
     editores = await DB.getEditores();
-  } catch (err) {
-    console.error(err);
-    cont.innerHTML = '<div class="text-center text-tinta-suave py-8">⚠️ No se pudieron cargar los editores.</div>';
+  } catch (error) {
+    console.error(error);
+    aviso.textContent = 'No se pudieron cargar los editores.';
     return;
   }
 
-  if(editores.length === 0){
-    cont.innerHTML = '<div class="text-center text-tinta-suave py-8">📭 Todavía no creaste ninguna cuenta de editor/a.</div>';
+  if (editores.length === 0) {
+    aviso.textContent = 'Todavía no creaste cuentas de editor.';
     return;
   }
 
-  cont.innerHTML = editores.map(u => `
-    <div class="bg-white rounded-2xl p-4 flex items-center justify-between gap-3 flex-wrap">
-      <div class="flex items-center gap-3">
-        <div class="text-2xl">✍️</div>
-        <div>
-          <h3 class="font-bold">${escapeHTML(u.name)}</h3>
-          <p class="text-sm text-tinta-suave">Usuario: ${escapeHTML(u.username)}</p>
-        </div>
-      </div>
-      <button class="boton boton--rojo boton--chico" data-eliminar-editor="${u.id}">🗑️ Eliminar cuenta</button>
-    </div>
-  `).join('');
+  aviso.hidden = true;
 
-  $$('[data-eliminar-editor]', cont).forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const id = btn.dataset.eliminarEditor;
-      const usuario = editores.find(u => String(u.id) === String(id));
+  for (const editor of editores) {
+    const tarjeta = plantilla.content.cloneNode(true);
+
+    tarjeta.querySelector('[data-nombre]').textContent = editor.name;
+    tarjeta.querySelector('[data-usuario]').textContent = editor.username;
+
+    const estado = tarjeta.querySelector('[data-estado]');
+    estado.textContent = editor.enabled ? 'Activo' : 'Desactivado';
+
+    estado.classList.add(
+      ...(editor.enabled
+        ? ['bg-green-100', 'text-green-800']
+        : ['bg-slate-100', 'text-slate-600'])
+    );
+
+    const btn = tarjeta.querySelector('[data-cambiar-estado]');
+
+    btn.textContent = editor.enabled ? 'Desactivar' : 'Activar';
+    btn.classList.add(
+      editor.enabled ? 'boton--rojo' : 'boton--verde'
+    );
+
+    btn.addEventListener('click', () => {
+      const nuevoEstado = !editor.enabled;
+
       preguntarConfirmacion({
-        icono:'🗑️', titulo:'¿Eliminar esta cuenta?',
-        texto:`${usuario ? usuario.name : 'Esta persona'} ya no va a poder entrar al panel de noticias. Las noticias que ya publicó quedan en el sitio.`,
-        textoSi:'Sí, eliminar',
-        async onSi(){
+        icono: nuevoEstado ? '✅' : '⏸️',
+        titulo: nuevoEstado
+          ? '¿Activar editor?'
+          : '¿Desactivar editor?',
+        texto: nuevoEstado
+          ? `${editor.name} podrá volver a ingresar con su usuario y contraseña.`
+          : `${editor.name} no podrá volver a ingresar. Su cuenta y sus noticias se conservarán.`,
+        textoSi: nuevoEstado ? 'Sí, activar' : 'Sí, desactivar',
+
+        async onSi() {
+          if (btn.disabled) return;
+
+          btn.disabled = true;
+          btn.textContent = 'Guardando...';
+
           try {
-            await DB.eliminarCuenta(id);
+            const actualizado = await DB.cambiarEstadoEditor(
+              editor.id,
+              nuevoEstado
+            );
 
-            if(usuario){
-              const drafts = DB.getDrafts();
-              Object.keys(drafts).forEach(key=>{ if(key.startsWith(usuario.username + '__')) delete drafts[key]; });
-              DB.setDrafts(drafts);
-            }
-
+            mostrarToast(
+              actualizado.enabled
+                ? 'Editor activado'
+                : 'Editor desactivado',
+              actualizado.enabled ? '✅' : '⏸️'
+            );
+          } catch (error) {
+            console.error(error);
+            mostrarAviso(error.message);
+          } finally {
             await renderListaEditores();
-            mostrarToast('Cuenta eliminada', '🗑️');
-          } catch (err) {
-            console.error(err);
-            mostrarAviso('No se pudo eliminar la cuenta: ' + err.message);
           }
         }
       });
     });
-  });
+
+    cont.appendChild(tarjeta);
+  }
 }

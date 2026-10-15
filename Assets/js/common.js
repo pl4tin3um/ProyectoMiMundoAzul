@@ -56,17 +56,82 @@ const DB = {
   },
 
   async crearEditor({ name, username, email, password }) {
-    const hash = await dcodeIO.bcrypt.hash(password, 10);
-    const { error } = await supabaseClient.from('cuentas').insert([{
-      name,
-      username,
-      email: email || null,
-      password: hash,
-      role: 'editor',
-      enabled: true
-    }]);
-    if (error) throw error;
-  },
+  const { data, error } = await supabaseClient.functions.invoke(
+    'crear-editor',
+    {
+      body: {
+        name: name.trim(),
+        username: username.trim(),
+        email: email.trim().toLowerCase(),
+        password
+      }
+    }
+  );
+
+  if (error) {
+    let mensaje = 'No pudimos conectarnos al servicio de creación.';
+
+    if (error.context instanceof Response) {
+      mensaje = 'No se pudo crear la cuenta.';
+
+      try {
+        const respuesta = await error.context.json();
+
+        if (typeof respuesta.error === 'string') {
+          mensaje = respuesta.error;
+        }
+      } catch {
+        // Conservar el mensaje general si no hay respuesta JSON.
+      }
+    }
+
+    throw new Error(mensaje);
+  }
+
+  if (!data?.ok) {
+    throw new Error('El servicio no confirmó la creación de la cuenta.');
+  }
+
+  return data;
+},
+
+  async cambiarEstadoEditor(id, enabled) {
+  const { data, error } = await supabaseClient.functions.invoke(
+    'cambiar-estado-editor',
+    {
+      body: {
+        id: Number(id),
+        enabled
+      }
+    }
+  );
+
+  if (error) {
+    let mensaje =
+      'No pudimos confirmar el cambio. Actualizá el listado.';
+
+    if (error.context instanceof Response) {
+      try {
+        const respuesta = await error.context.json();
+
+        if (typeof respuesta.error === 'string') {
+          mensaje = respuesta.error;
+        }
+      } catch {
+        // Mantener el mensaje general.
+      }
+    }
+
+    throw new Error(mensaje);
+  }
+
+  if (!data?.ok || !data?.editor) {
+    throw new Error('El servicio no confirmó el cambio de estado.');
+  }
+
+  return data.editor;
+},
+
 
   async eliminarCuenta(id) {
     const { error } = await supabaseClient.from('cuentas').delete().eq('id', id);
@@ -95,32 +160,79 @@ const DB = {
 };
 
 async function loginCuenta(identificador, password) {
-  const columnas = 'id, name, username, role, password';
+  const { data, error } = await supabaseClient.functions.invoke(
+    'login-cuenta',
+    {
+      body: {
+        identificador: identificador.trim(),
+        password
+      }
+    }
+  );
 
-  let { data, error } = await supabaseClient
-    .from('cuentas').select(columnas)
-    .eq('username', identificador).eq('enabled', true).maybeSingle();
-  if (error) throw error;
+  if (error) {
+    // Usuario inexistente, deshabilitado o contraseña incorrecta.
+    if (error.context?.status === 401) return null;
 
-  if (!data) {
-    const r = await supabaseClient
-      .from('cuentas').select(columnas)
-      .eq('email', identificador).eq('enabled', true).maybeSingle();
-    if (r.error) throw r.error;
-    data = r.data;
+    throw new Error(
+      error.context?.status === 429
+        ? 'Demasiados intentos. Esperá y volvé a probar.'
+        : 'No pudimos conectarnos al servicio de acceso.'
+    );
   }
 
-  if (!data) return null;
+  if (
+    !data?.session?.access_token ||
+    !data?.session?.refresh_token ||
+    !data?.cuenta
+  ) {
+    throw new Error('El servicio devolvió una respuesta incompleta.');
+  }
 
-  const ok = await dcodeIO.bcrypt.compare(password, data.password);
-  if (!ok) return null;
+  const { error: sessionError } =
+    await supabaseClient.auth.setSession({
+      access_token: data.session.access_token,
+      refresh_token: data.session.refresh_token
+    });
 
-  return { id: data.id, name: data.name, username: data.username, role: data.role };
+  if (sessionError) throw sessionError;
+
+  return data.cuenta;
 }
 
 function getSession() { try { return JSON.parse(sessionStorage.getItem(SS_SESSION)); } catch (e) { return null; } }
 function setSession(s) { sessionStorage.setItem(SS_SESSION, JSON.stringify(s)); }
 function clearSession() { sessionStorage.removeItem(SS_SESSION); }
+
+async function obtenerCuentaActual(){
+  const { data, error } = await supabaseClient.auth.getUser();
+
+  if (error) {
+    if (
+      error.name === 'AuthSessionMissingError' ||
+      error.status === 401 ||
+      error.status === 403
+    ) {
+      return null;
+    }
+
+    throw error;
+  }
+
+  if (!data.user) return null;
+
+  const { data: cuenta, error: errorCuenta } = await supabaseClient
+    .from('cuentas')
+    .select('id, name, username, role, enabled')
+    .eq('auth_user_id', data.user.id)
+    .maybeSingle();
+
+  if (errorCuenta) throw errorCuenta;
+
+  if (!cuenta || !cuenta.enabled) return null;
+
+  return cuenta;
+}
 
 let toastTimer;
 function mostrarToast(msg, icono) {
