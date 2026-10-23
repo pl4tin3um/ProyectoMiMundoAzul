@@ -81,7 +81,7 @@ const DB = {
           mensaje = respuesta.error;
         }
       } catch {
-        // Conservar el mensaje general si no hay respuesta JSON.
+
       }
     }
 
@@ -205,7 +205,7 @@ async function loginCuenta(identificador, password) {
   );
 
   if (error) {
-    // Usuario inexistente, deshabilitado o contraseña incorrecta.
+
     if (error.context?.status === 401) return null;
 
     throw new Error(

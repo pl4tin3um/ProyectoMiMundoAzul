@@ -126,7 +126,7 @@
         class="text-xs text-red-600 hover:underline disabled:text-slate-400 disabled:cursor-not-allowed"
         data-eliminar-editor
         disabled
-        >
+      >
         Eliminar
       </button>
     </div>
@@ -135,46 +135,46 @@
   
 
   <!-- ================= MODAL: CREAR EDITOR ================= -->
-  <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalEditor">
-    <div class="bg-white rounded-3xl shadow-xl w-full max-w-md p-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="font-baloo font-bold text-xl">
+  <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalEditor" role="dialog" aria-modal="true" aria-labelledby="tituloModalEditor">
+    <div class="bg-white rounded-3xl shadow-xl w-[96vw] max-w-none h-[94vh] max-h-none overflow-y-auto p-6 md:p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-baloo font-bold text-2xl" id="tituloModalEditor">
           <i class="bi bi-person-plus"></i>
           Nueva cuenta de editor/a
         </h2>
-        <button class="text-xl text-tinta-suave" data-cerrar-modal="modalEditor">✕</button>
+        <button type="button" class="text-2xl text-tinta-suave p-2 rounded-full hover:bg-gris-claro focus:outline-none focus:ring-2 focus:ring-azul-fuerte" data-cerrar-modal="modalEditor" aria-label="Cerrar ventana">✕</button>
       </div>
-      <form id="formNuevoEditor" class="space-y-4">
-        <div>
+      <form id="formNuevoEditor" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="md:col-span-2">
           <label for="editorNombre" class="block text-sm font-bold mb-1">
             <i class="bi bi-person"></i>
             Nombre completo
           </label>
-          <input type="text" id="editorNombre" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          <input type="text" id="editorNombre" autocomplete="name" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
         </div>
         <div>
           <label for="editorEmail" class="block text-sm font-bold mb-1">
             <i class="bi bi-envelope"></i>
             Email
           </label>
-          <input type="email" id="editorEmail" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          <input type="email" id="editorEmail" autocomplete="email" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
         </div>
         <div>
           <label for="editorUsuario" class="block text-sm font-bold mb-1">
             <i class="bi bi-person-circle"></i>
             Usuario para entrar
           </label>
-          <input type="text" id="editorUsuario" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          <input type="text" id="editorUsuario" autocomplete="username" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
         </div>
-        <div>
+        <div class="md:col-span-2">
           <label for="editorPassword" class="block text-sm font-bold mb-1">
             <i class="bi bi-lock"></i>
             Contraseña
           </label>
-          <input type="password" id="editorPassword" required minlength="8" maxlength="128" class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          <input type="password" id="editorPassword" autocomplete="new-password" required minlength="8" maxlength="128" class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
           <small class="text-xs text-tinta-suave">Se guarda cifrada en la base de datos. Mínimo 8 caracteres.</small>
         </div>
-        <button type="submit" class="boton boton--verde w-full">
+        <button type="submit" class="boton boton--verde w-full md:col-span-2">
           <i class="bi bi-check-circle"></i>
           Crear cuenta
         </button>
