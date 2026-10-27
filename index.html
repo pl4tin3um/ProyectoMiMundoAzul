@@ -92,12 +92,12 @@
         Elegí qué querés hacer. Toca un botón para ir directo a lo que necesitás, sin vueltas.
       </p>
       <div class="mt-14 grid gap-8 sm:grid-cols-3 text-left">
-        <a href="pages/formularios.html" class="nav-Paginas block bg-white rounded-3xl p-8 min-h-56 shadow-md hover:-translate-y-1 transition">
+        <a href="pages/formularios.html" class="nav-Paginas block w-full text-left bg-cielo rounded-3xl border-2 border-azul-suave p-6 min-h-56 shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition cursor-pointer">
           <div class="text-4xl text-azul-fuerte"><i class="bi bi-newspaper" aria-hidden="true"></i></div>
           <h3 class="font-baloo font-bold text-xl mt-4">Visita nuestros formularios</h3>
           <p class="text-base text-tinta-suave mt-2 leading-relaxed">Apoya a nuestra causa completando nuestros formularios</p>
         </a>
-        <button type="button" class="block w-full text-left bg-white rounded-3xl p-8 min-h-56 shadow-md hover:-translate-y-1 transition cursor-pointer"
+        <button type="button" class="block w-full text-left bg-cielo rounded-3xl border-2 border-azul-suave p-6 min-h-56 shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition cursor-pointer"
                 onclick="abrirBloqueTexto({
                   categoria: 'Institucional',
                   titulo: 'Conocer la Asociación',
@@ -107,7 +107,7 @@
           <h3 class="font-baloo font-bold text-xl mt-4">Conocer la asociación</h3>
           <p class="text-base text-tinta-suave mt-2 leading-relaxed">Qué hacemos y cómo acompañamos a las familias</p>
         </button>
-        <button type="button" class="block w-full text-left bg-white rounded-3xl p-8 min-h-56 shadow-md hover:-translate-y-1 transition cursor-pointer"
+        <button type="button" class="block w-full text-left bg-cielo rounded-3xl border-2 border-azul-suave p-6 min-h-56 shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition cursor-pointer"
                 onclick="abrirBloqueTexto({
                   categoria: 'Colaboración',
                   titulo: 'Cómo Donar',
@@ -128,7 +128,7 @@
       </div>
 
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 max-w-5xl mx-auto">
-        <div class="bg-cielo rounded-3xl p-6 text-center cursor-pointer hover:shadow-md transition"
+        <button type="button" class="w-full bg-cielo rounded-3xl border-2 border-azul-suave p-6 text-center cursor-pointer shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition"
             onclick="abrirBloqueTexto({
               categoria: 'Nuestra Labor',
               titulo: 'Terapias y Apoyo',
@@ -137,9 +137,10 @@
           <div class="text-3xl text-azul-fuerte"><i class="bi bi-heart-pulse-fill" aria-hidden="true"></i></div>
           <h3 class="font-baloo font-bold mt-3">Terapias</h3>
           <p class="text-sm text-tinta-suave mt-1">Espacios de acompañamiento y apoyo.</p>
-        </div>
+          <span class="inline-flex items-center gap-2 mt-4 text-sm font-bold text-azul-fuerte">Ver más <i class="bi bi-arrow-right" aria-hidden="true"></i></span>
+        </button>
 
-        <div class="bg-cielo rounded-3xl p-6 text-center cursor-pointer hover:shadow-md transition"
+        <button type="button" class="w-full bg-cielo rounded-3xl border-2 border-azul-suave p-6 text-center cursor-pointer shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition"
             onclick="abrirBloqueTexto({
               categoria: 'Comunidad',
               titulo: 'Hazte Socio',
@@ -148,7 +149,8 @@
           <div class="text-3xl text-azul-fuerte"><i class="bi bi-people-fill" aria-hidden="true"></i></div>
           <h3 class="font-baloo font-bold mt-3">Socios</h3>
           <p class="text-sm text-tinta-suave mt-1">Sumate a nuestra comunidad.</p>
-        </div>
+          <span class="inline-flex items-center gap-2 mt-4 text-sm font-bold text-azul-fuerte">Ver más <i class="bi bi-arrow-right" aria-hidden="true"></i></span>
+        </button>
       </div>
     </section>
 
