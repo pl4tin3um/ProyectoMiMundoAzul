@@ -187,10 +187,22 @@ const DB = {
     if (error) throw error;
   },
 
+    async getForms() {
+    const { data, error } = await supabaseClient
+      .from('formularios')
+      .select('*')
+      .eq('enabled', true)
+      .order('date', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  },
+    async crearFormulario(formulario) {
+    const { error } = await supabaseClient.from('formularios').insert(formulario);
+    if (error) throw error;
+  }
+
   getDrafts() { return JSON.parse(localStorage.getItem(LS_DRAFTS) || '{}'); },
   setDrafts(d) { localStorage.setItem(LS_DRAFTS, JSON.stringify(d)); },
-  getForms() { return JSON.parse(localStorage.getItem(LS_FORMS) || '[]'); },
-  setForms(f) { localStorage.setItem(LS_FORMS, JSON.stringify(f)); }
 };
 
 async function loginCuenta(identificador, password) {
