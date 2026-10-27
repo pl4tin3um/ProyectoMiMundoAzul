@@ -76,7 +76,7 @@
     </div>
     <button class="boton boton--sol" id="btnLogoutAdmin">
       <i class="bi bi-box-arrow-right"></i>
-      Salir
+      Volver al Inicio
     </button>
   </div>
 
@@ -120,14 +120,6 @@
         class="boton boton--chico"
         data-cambiar-estado
       ></button>
-
-      <button
-        type="button"
-        class="text-xs text-slate-400 cursor-not-allowed"
-        title="Pendiente de configurar la eliminación definitiva"
-        disabled
-      >
-      </button>
     </div>
   </div>
 </template>  
@@ -210,6 +202,67 @@
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <dialog id="dialogEliminarEditor" class="rounded-3xl p-6 w-full max-w-md backdrop:bg-black/50" aria-labelledby="tituloEliminarEditor"  aria-describedby="descripcionEliminarEditor">
+  <h2 id="tituloEliminarEditor" class="font-bold text-xl text-red-700 mb-3">
+
+    Eliminar editor definitivamente
+  </h2>
+
+  <p id="descripcionEliminarEditor" class="text-sm mb-4">
+    Se eliminarán su cuenta y su acceso. Esta acción no se puede
+    deshacer. Solo se permite eliminar editores desactivados
+    que no tengan noticias asociadas.
+  </p>
+
+  <p class="text-sm mb-4">
+    Para confirmar, escribí este nombre de usuario:
+    <strong id="usuarioEliminarEditor"></strong>
+  </p>
+
+  <form id="formEliminarEditor">
+    <label for="confirmacionUsuarioEliminar" class="block text-sm font-bold mb-1">
+      Nombre de usuario exacto
+    </label>
+
+    <input id="confirmacionUsuarioEliminar" type="text" required autocomplete="off" autocapitalize="none" spellcheck="false" class="w-full rounded-xl border border-slate-300 px-4 py-3">
+
+    <label class="flex items-start gap-2 text-sm mt-4">
+      <input 
+        id="aceptarEliminarEditor"
+        type="checkbox"
+        required
+        class="mt-1"
+      >
+      <span>Entiendo que la eliminación es permanente.</span>
+    </label>
+
+    <p
+      id="errorEliminarEditor"
+      class="text-sm text-red-700 mt-3"
+      role="alert"
+    ></p>
+
+    <div class="flex justify-end gap-3 mt-5">
+      <button
+        id="cancelarEliminarEditor"
+        type="button"
+        class="boton boton--chico"
+      >
+        Cancelar
+      </button>
+
+      <button
+        id="confirmarEliminarEditor"
+        type="submit"
+        class="boton boton--rojo boton--chico disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled
+      >
+        Eliminar definitivamente
+      </button>
+    </div>
+  </form>
+</dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>

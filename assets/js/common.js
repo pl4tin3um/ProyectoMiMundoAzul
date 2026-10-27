@@ -133,10 +133,44 @@ const DB = {
 },
 
 
-  async eliminarCuenta(id) {
-    const { error } = await supabaseClient.from('cuentas').delete().eq('id', id);
-    if (error) throw error;
-  },
+ async eliminarCuenta(id, confirmacionUsuario) {
+  const { data, error } = await supabaseClient.functions.invoke(
+    'eliminar-editor',
+    {
+      body: {
+        id: Number(id),
+        confirmacionUsuario
+      }
+    }
+  );
+
+  if (error) {
+    let mensaje =
+      'No pudimos confirmar la eliminación. Actualizá el listado antes de reintentar.';
+
+    if (error.context instanceof Response) {
+      try {
+        const respuesta = await error.context.json();
+
+        if (typeof respuesta.error === 'string') {
+          mensaje = respuesta.error;
+        }
+      } catch {
+        // Mantener el mensaje general.
+      }
+    }
+
+    throw new Error(mensaje);
+  }
+
+  if (!data?.ok || data.id !== Number(id)) {
+    throw new Error(
+      'El servicio no confirmó la eliminación. Actualizá el listado.'
+    );
+  }
+
+  return data;
+},
 
   async getNews() {
     const { data, error } = await supabaseClient
