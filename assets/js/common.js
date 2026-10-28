@@ -201,8 +201,8 @@ const DB = {
     if (error) throw error;
   }
 
-  getDrafts() { return JSON.parse(localStorage.getItem(LS_DRAFTS) || '{}'); },
-  setDrafts(d) { localStorage.setItem(LS_DRAFTS, JSON.stringify(d)); },
+ // getDrafts() { return JSON.parse(localStorage.getItem(LS_DRAFTS) || '{}'); },
+ // setDrafts(d) { localStorage.setItem(LS_DRAFTS, JSON.stringify(d)); },
 };
 
 async function loginCuenta(identificador, password) {
