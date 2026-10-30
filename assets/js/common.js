@@ -199,10 +199,10 @@ const DB = {
     async crearFormulario(formulario) {
     const { error } = await supabaseClient.from('formularios').insert(formulario);
     if (error) throw error;
-  }
+    },
 
- // getDrafts() { return JSON.parse(localStorage.getItem(LS_DRAFTS) || '{}'); },
- // setDrafts(d) { localStorage.setItem(LS_DRAFTS, JSON.stringify(d)); },
+ getDrafts() { return JSON.parse(localStorage.getItem(LS_DRAFTS) || '{}'); },
+ setDrafts(d) { localStorage.setItem(LS_DRAFTS, JSON.stringify(d)); },
 };
 
 async function loginCuenta(identificador, password) {
