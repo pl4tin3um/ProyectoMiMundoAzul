@@ -26,14 +26,14 @@
         Creamos espacios de apoyo y acompañamiento para personas autistas y sus familias.
       </p>
       <div class="flex gap-3 mt-5">
-        <a href="#" aria-label="Facebook" class="w-10 h-10 rounded-full border border-azul-medio grid place-items-center text-white hover:bg-sol hover:text-tinta hover:border-sol transition">
-          <i class="bi bi-facebook" aria-hidden="true"></i>
+        <a href="https://www.facebook.com/p/MI-MUNDO-AZUL-100058705302009/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="w-10 h-10 rounded-full border border-azul-medio grid place-items-center text-white hover:bg-sol hover:text-tinta hover:border-sol transition">
+        <i class="bi bi-facebook" aria-hidden="true"></i>
         </a>
-        <a href="#" aria-label="Instagram" class="w-10 h-10 rounded-full border border-azul-medio grid place-items-center text-white hover:bg-sol hover:text-tinta hover:border-sol transition">
-          <i class="bi bi-instagram" aria-hidden="true"></i>
+        <a href="https://www.instagram.com/mimundoazultrinidad/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="w-10 h-10 rounded-full border border-azul-medio grid place-items-center text-white hover:bg-sol hover:text-tinta hover:border-sol transition">
+        <i class="bi bi-instagram" aria-hidden="true"></i>
         </a>
-        <a href="#" aria-label="WhatsApp" class="w-10 h-10 rounded-full border border-azul-medio grid place-items-center text-white hover:bg-sol hover:text-tinta hover:border-sol transition">
-          <i class="bi bi-whatsapp" aria-hidden="true"></i>
+        <a href="https://wa.me/59898992258" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" class="w-10 h-10 rounded-full border border-azul-medio grid place-items-center text-white hover:bg-sol hover:text-tinta hover:border-sol transition">
+        <i class="bi bi-whatsapp" aria-hidden="true"></i>
         </a>
       </div>
     </div>
