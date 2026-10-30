@@ -69,11 +69,13 @@
         </li>
         <li class="flex items-start gap-3">
           <i class="bi bi-telephone-fill text-sol mt-0.5" aria-hidden="true"></i>
-          <span>+598 000 000 00</span>
+          <span>+598 098 095 310</span> 
+          <span>+598 098 992 258</span>
         </li>
         <li class="flex items-start gap-3">
           <i class="bi bi-envelope-fill text-sol mt-0.5" aria-hidden="true"></i>
-          <a href="mailto:hola@mimundoazul.org" class="hover:text-sol transition">hola@mimundoazul.org</a>
+          <a href="mailto:asociacionmimundoazultrinidad@gmail.com" class="hover:text-sol transition">
+          asociacionmimundoazultrinidad@gmail.com</a>
         </li>
       </ul>
     </div>
