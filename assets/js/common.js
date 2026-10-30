@@ -191,8 +191,8 @@ const DB = {
     const { data, error } = await supabaseClient
       .from('formularios')
       .select('*')
-      .eq('enabled', true)
-      .order('date', { ascending: false });
+      .eq('enable', true)
+      .order('created_at', { ascending: false })
     if (error) throw error;
     return data || [];
   },

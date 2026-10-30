@@ -370,11 +370,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function renderFormularios() {
+async function renderFormularios() {
   const container = document.getElementById('gridFormularios');
   if (!container) return;
 
-  const formularios = DB.getForms();
+  const formularios = await DB.getForms(); 
 
   if (!formularios || formularios.length === 0) {
     container.innerHTML = `
