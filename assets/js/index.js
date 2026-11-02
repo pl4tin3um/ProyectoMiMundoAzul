@@ -172,7 +172,59 @@ function abrirNoticiaCompleta(id) {
   window.open(url, '_blank');
 }
 
+
+
 function abrirBloqueTexto(data) {
+  const modalExistente = $('#modal-bloque-texto');
+  if (modalExistente) modalExistente.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'modal-bloque-texto';
+  overlay.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity duration-300';
+
+  overlay.innerHTML = `
+    <div class="bg-white max-w-lg w-full p-8 rounded-3xl shadow-2xl border-2 border-azul-suave transform transition-all scale-95 opacity-0 animate-fade-in" style="animation: modalIn 0.25s forwards;">
+      ${data.categoria ? `<span class="text-xs font-extrabold text-tinta-suave uppercase tracking-wider mb-2 block">${escapeHTML(data.categoria)}</span>` : ''}
+      <h3 class="font-baloo font-bold text-2xl text-azul-oscuro mb-4 leading-tight">${escapeHTML(data.titulo || 'Nota')}</h3>
+      
+      <div class="text-base text-tinta-suave leading-relaxed mb-6">
+        ${escapeHTML(data.texto || '').replace(/\n/g, '<br>')}
+      </div>
+
+      <button type="button" class="w-full bg-azul-fuerte text-white font-bold py-3 px-4 rounded-xl hover:opacity-90 transition cursor-pointer" id="btn-cerrar-modal">
+        Salir
+      </button>
+    </div>
+  `;
+
+  if (!$('#estilos-modal-animacion')) {
+    const style = document.createElement('style');
+    style.id = 'estilos-modal-animacion';
+    style.innerHTML = `
+      @keyframes modalIn {
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  const cerrarModal = () => {
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 250);
+  };
+
+  overlay.querySelector('#btn-cerrar-modal').addEventListener('click', cerrarModal);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) cerrarModal();
+  });
+
+  document.body.appendChild(overlay);
+}
+
+/* function abrirBloqueTexto(data) {
   const win = window.open('', '_blank');
   if (!win) return;
 
@@ -275,7 +327,7 @@ function abrirBloqueTexto(data) {
 
   win.document.write(html);
   win.document.close();
-}
+} */
 
 function mostrarPantallaLogin(){
   const cp = document.getElementById('contenidoPublico');
