@@ -16,7 +16,7 @@
     <!-- Marca -->
     <div>
       <div class="flex items-center gap-3">
-        <img src="${root}assets/Imgs/logo.jpeg" alt="Mi Mundo Azul" class="w-12 h-12 rounded-full object-cover border-2 border-sol">
+        <img src="${root}assets/imgs/logo.jpeg" alt="Mi Mundo Azul" class="w-12 h-12 rounded-full object-cover border-2 border-sol">
         <div class="font-baloo font-bold text-white leading-tight">
           Mi Mundo Azul
           <small class="block font-nunito font-normal text-azul-suave text-sm">Asociación Autista de Flores</small>
