@@ -448,7 +448,7 @@ function extraerUrlForm(entrada) {
   return url.href;
 }
 
-function AgregarForm(e) {
+async function AgregarForm(e) {
   e.preventDefault();
 
   const inputTitulo = document.getElementById('tituloForm');
@@ -476,25 +476,22 @@ function AgregarForm(e) {
     (!titulo ? inputTitulo : inputUrl)?.focus();
     return;
   }
-  const storedForms = DB.getForms();
-  const nuevos = Array.isArray(storedForms) ? storedForms : [];
-  
-  nuevos.push({
-    id: typeof uid === 'function' ? uid('f') : Date.now().toString(),
-    title: titulo,
-    url: urlLimpia
-  });
+  const editor = getSession();
+  try {
+    await DB.crearFormulario({
+      editor_ID: editor.id,
+      title: titulo,
+      google_URL: urlLimpia,
+      enable: true
+    });
 
-  DB.setForms(nuevos);
+    if (inputTitulo) inputTitulo.value = '';
+    if (inputUrl) inputUrl.value = '';
 
-  if (inputTitulo) inputTitulo.value = '';
-  if (inputUrl) inputUrl.value = '';
-
-  if (typeof renderFormularios === 'function') {
-    renderFormularios();
-  }
-
-  if (typeof mostrarToast === 'function') {
+    await renderFormularios();
     mostrarToast('¡Tarjeta de formulario agregada!', '✨');
+  } catch (error) {
+    console.error('Error al crear el formulario:', error);
+    mostrarToast('No se pudo crear el formulario. Intentá nuevamente.', '⚠️');
   }
 }
