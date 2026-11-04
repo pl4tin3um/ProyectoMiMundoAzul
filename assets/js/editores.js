@@ -476,8 +476,9 @@ function AgregarForm(e) {
     (!titulo ? inputTitulo : inputUrl)?.focus();
     return;
   }
-
-  const nuevos = DB.getForms() || [];
+  const storedForms = DB.getForms();
+  const nuevos = Array.isArray(storedForms) ? storedForms : [];
+  
   nuevos.push({
     id: typeof uid === 'function' ? uid('f') : Date.now().toString(),
     title: titulo,
