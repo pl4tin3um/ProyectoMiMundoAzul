@@ -162,13 +162,14 @@ function mostrarSitioPublico(){
   if(hp) hp.classList.remove('hidden');
 }
 
-const btnIrLogin = document.getElementById('btnIrLogin');
-if(btnIrLogin) {
-  btnIrLogin.addEventListener('click', ()=>{
-    window.location.hash = 'login';
-    mostrarPantallaLogin();
-  });
-}
+document.addEventListener('click', (event) => {
+  const acceso = event.target.closest('[data-acceso-equipo]');
+  if (!acceso) return;
+
+  event.preventDefault();
+  window.location.hash = 'login';
+  mostrarPantallaLogin();
+});
 
 const btnVolver = document.getElementById('volverSitioLogin');
 if(btnVolver) {

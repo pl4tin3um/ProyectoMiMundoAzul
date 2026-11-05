@@ -87,6 +87,19 @@
     <div class="max-w-6xl mx-auto px-[6vw] py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-azul-suave">
       <p>© ${new Date().getFullYear()} Mi Mundo Azul · Asociación civil.</p>
       <p>Hecho con <i class="bi bi-heart-fill text-sol" aria-hidden="true"></i> para nuestra comunidad</p>
+      <a href="${root}index.html#login"
+        data-acceso-equipo
+        class="inline-flex items-center justify-center gap-2
+          rounded-xl bg-cielo text-azul-oscuro
+          border-2 border-azul-suave px-5 py-3
+          font-bold shadow-sm
+          hover:bg-white hover:border-white
+          transition-colors
+          focus-visible:outline focus-visible:outline-2
+          focus-visible:outline-offset-4 focus-visible:outline-white">
+        <i class="bi bi-key-fill text-lg" aria-hidden="true"></i>
+           Acceso equipo
+        </a>
     </div>
   </div>
 </footer>`;
