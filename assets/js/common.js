@@ -172,19 +172,19 @@ const DB = {
   return data;
 },
 
+
   async getNews() {
     const { data, error } = await supabaseClient
       .from('noticias')
       .select('*')
       .eq('enabled', true)
-      .order('date', { ascending: false });
-    if (error) throw error;
+      .order('created_at', { ascending: false, nullsFirst: false }); 
+    
+    if (error) {
+      console.error('Error fetching noticias de Supabase:', error);
+      throw error;
+    }
     return data || [];
-  },
-
-  async crearNoticias(noticia) {
-    const { error } = await supabaseClient.from('noticias').insert(noticia);
-    if (error) throw error;
   },
 
     async getForms() {

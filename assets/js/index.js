@@ -35,49 +35,45 @@ function fuenteImagen(url, ancho){
   return u;
 }
 
-// Si index.html también la llama, no se piden las noticias dos veces
-let gridEnCurso = null;
-function renderGridPublico(){
-  if (!gridEnCurso) gridEnCurso = cargarGridPublico().finally(() => { gridEnCurso = null; });
-  return gridEnCurso;
-}
 
-async function cargarGridPublico(){
+async function cargarGridPublico() {
   const grid = document.getElementById('gridNoticias');
-  if(!grid) return;
+  if (!grid) return;
   const pieVacio = document.getElementById('piePublicoVacio');
 
   let noticias = [];
   try {
-    noticias = (await DB.getNews()).filter(n => n.enabled !== false);
+    // getNews() ya trae solo las enabled = true desde Supabase
+    noticias = await DB.getNews();
   } catch (err) {
-    console.error(err);
+    console.error('Error al cargar la grilla:', err);
     grid.innerHTML = '';
-    if(pieVacio) pieVacio.innerHTML = '<p class="text-center text-tinta-suave">⚠️ No pudimos cargar las noticias. Probá de nuevo en un rato.</p>';
+    if (pieVacio) pieVacio.innerHTML = '<p class="text-center text-tinta-suave">⚠️ No pudimos cargar las noticias. Probá de nuevo en un rato.</p>';
     return;
   }
 
   noticiasPublicas = noticias;
 
-  if(noticias.length === 0){
+  if (noticias.length === 0) {
     grid.innerHTML = '';
-    if(pieVacio) pieVacio.innerHTML = '<p class="text-center text-tinta-suave">📭 Todavía no hay noticias publicadas. ¡Volvé pronto!</p>';
+    if (pieVacio) pieVacio.innerHTML = '<p class="text-center text-tinta-suave">📭 Todavía no hay noticias publicadas. ¡Volvé pronto!</p>';
     return;
   }
-  if(pieVacio) pieVacio.innerHTML = '';
+  
+  if (pieVacio) pieVacio.innerHTML = '';
 
   grid.innerHTML = noticias.map(n => {
-    const portadaSrc = fuenteImagen(n.imagen_portada || n.imagenPortada || n.image, 800);
+    const portadaSrc = fuenteImagen(n.imagen_portada, 800);
     const estiloPortada = portadaSrc ? `background-image:url('${portadaSrc}')` : 'background-color:#D5ECF8';
     
     return `
       <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col h-full">
-        <div class="tarjeta-noticia__imagen h-44 relative" style="${estiloPortada}">
-          <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date)}</span>
+        <div class="tarjeta-noticia__imagen h-44 relative bg-cover bg-center" style="${estiloPortada}">
+          <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date || n.created_at)}</span>
         </div>
         <div class="p-5 flex flex-col flex-1 gap-3">
           <h3 class="font-baloo font-bold text-lg text-azul-oscuro break-words" style="overflow-wrap:anywhere;">${escapeHTML(n.title)}</h3>
-          <p class="text-sm text-tinta-suave mt-0 flex-1 break-words leading-relaxed" style="min-height:0;">${escapeHTML(n.excerpt)}</p>
+          <p class="text-sm text-tinta-suave mt-0 flex-1 break-words leading-relaxed" style="min-height:0;">${escapeHTML(n.excerpt || '')}</p>
           <button class="boton boton--azul self-start mt-auto" data-abrir-noticia="${n.id}">
             <i class="bi bi-book" aria-hidden="true"></i> Leer noticia completa
           </button>
@@ -86,15 +82,9 @@ async function cargarGridPublico(){
     `;
   }).join('');
 
-  $$('[data-abrir-noticia]', grid).forEach(btn=>{
-    btn.addEventListener('click', ()=> abrirNoticiaCompleta(btn.dataset.abrirNoticia));
+  grid.querySelectorAll('[data-abrir-noticia]').forEach(btn => {
+    btn.addEventListener('click', () => abrirNoticiaCompleta(btn.dataset.abrirNoticia));
   });
-}
-
-function abrirNoticiaCompleta(id) {
-  // Página propia con enlace real: se puede compartir y YouTube deja incrustar
-  // videos en ella (en una pestaña blob: no).
-  window.open(`pages/noticia.html?id=${encodeURIComponent(id)}`, '_blank');
 }
 
 
@@ -149,110 +139,9 @@ function abrirBloqueTexto(data) {
   document.body.appendChild(overlay);
 }
 
-/* function abrirBloqueTexto(data) {
-  const win = window.open('', '_blank');
-  if (!win) return;
-
-  const html = `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${escapeHTML(data.titulo || 'Información')} · Mi Mundo Azul</title>
-  
-  <style>
-    :root {
-      --azul-fuerte: #1B5E8C;
-      --cielo: #EAF4FB;
-      --tinta: #16324A;
-      --tinta-suave: #3F5A72;
-    }
-    
-    * { box-sizing: border-box; }
-    
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-      background: var(--cielo);
-      color: var(--tinta);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .card {
-      background: #ffffff;
-      max-width: 500px;
-      width: 100%;
-      padding: 32px;
-      border-radius: 24px;
-      box-shadow: 0 10px 25px rgba(27, 94, 140, 0.1);
-    }
-
-    .categoria {
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: var(--tinta-suave);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    h1 {
-      margin: 0 0 16px;
-      color: var(--azul-fuerte);
-      font-size: 1.5rem;
-      line-height: 1.3;
-    }
-
-    .contenido {
-      font-size: 1rem;
-      line-height: 1.6;
-      margin-bottom: 24px;
-    }
-
-    .btn-cerrar {
-      width: 100%;
-      background: var(--azul-fuerte);
-      color: #ffffff;
-      border: none;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-
-    .btn-cerrar:hover {
-      opacity: 0.9;
-    }
-  </style>
-</head>
-<body>
-
-  <main class="card">
-    ${data.categoria ? `<span class="categoria">${escapeHTML(data.categoria)}</span>` : ''}
-    <h1>${escapeHTML(data.titulo || 'Nota')}</h1>
-    
-    <div class="contenido">
-      ${escapeHTML(data.texto || '').replace(/\n/g, '<br>')}
-    </div>
-
-    <button class="btn-cerrar" onclick="window.close()">Entendido</button>
-  </main>
-
-</body>
-</html>
-  `;
-
-  win.document.write(html);
-  win.document.close();
-} */
+function abrirNoticiaCompleta(id) {
+  window.open(`pages/noticia.html?id=${encodeURIComponent(id)}`, '_blank');
+}
 
 function mostrarPantallaLogin(){
   const cp = document.getElementById('contenidoPublico');
@@ -330,6 +219,5 @@ if(formLogin) {
 }
 
 // Cargar las noticias apenas esté listo el documento
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderGridPublico);
-else renderGridPublico();
- 
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cargarGridPublico);
+else cargarGridPublico();
