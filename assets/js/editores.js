@@ -612,8 +612,8 @@ function extraerUrlForm(entrada) {
   url.searchParams.set('embedded', 'true');
   return url.href;
 }
- 
-function AgregarForm(e) {
+
+async function AgregarForm(e) {
   e.preventDefault();
  
   const inputTitulo = document.getElementById('tituloForm');
@@ -660,5 +660,8 @@ function AgregarForm(e) {
  
   if (typeof mostrarToast === 'function') {
     mostrarToast('¡Tarjeta de formulario agregada!', '✨');
+  } catch (error) {
+    console.error('Error al crear el formulario:', error);
+    mostrarToast('No se pudo crear el formulario. Intentá nuevamente.', '⚠️');
   }
 }
