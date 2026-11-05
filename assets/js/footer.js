@@ -65,7 +65,8 @@
       <ul class="space-y-3 text-sm">
         <li class="flex items-start gap-3">
           <i class="bi bi-geo-alt-fill text-sol mt-0.5" aria-hidden="true"></i>
-          <span>Dirección, Trinidad, Flores</span>
+          <span>Dirección, Flores, Trinidad. 
+          Av. Brasil 358 </span>
         </li>
         <li class="flex items-start gap-3">
           <i class="bi bi-telephone-fill text-sol mt-0.5" aria-hidden="true"></i>

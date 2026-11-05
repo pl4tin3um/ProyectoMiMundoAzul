@@ -190,31 +190,79 @@ if(btnPass) {
 }
 
 const formLogin = document.getElementById('formLogin');
-if(formLogin) {
-  formLogin.addEventListener('submit', async (e)=>{
+
+if (formLogin) {
+  let validando = false;
+
+  formLogin.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (validando) return;
+
     const err = document.getElementById('errorLogin');
+    const estado = document.getElementById('estadoLogin');
+    const boton = formLogin.querySelector('button[type="submit"]');
     const usuario = document.getElementById('loginUsuario')?.value.trim();
     const pass = document.getElementById('loginPassword')?.value;
 
-    let encontrado = null;
+    validando = true;
+    boton.disabled = true;
+    boton.textContent = 'Validando usuario…';
+    formLogin.setAttribute('aria-busy', 'true');
+
+    if (err) err.textContent = '';
+    if (estado) estado.textContent = 'Estamos comprobando tus datos. Un momento…';
+
+    let redirigiendo = false;
+
     try {
-      encontrado = await loginCuenta(usuario, pass);
+      const encontrado = await loginCuenta(usuario, pass);
+
+      if (!encontrado) {
+        if (err) {
+          err.innerHTML = `
+            <div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3">
+              ⚠️ Ese usuario o esa contraseña no son correctos.
+              Fijate bien e intentá de nuevo.
+            </div>`;
+        }
+        return;
+      }
+
+      setSession({
+        id: encontrado.id,
+        username: encontrado.username,
+        role: encontrado.role,
+        name: encontrado.name
+      });
+
+      boton.textContent = 'Ingresando…';
+      if (estado) estado.textContent = 'Datos correctos. Abriendo tu panel…';
+
+      formLogin.reset();
+      window.location.href = encontrado.role === 'admin'
+        ? 'pages/admins.html'
+        : 'pages/editores.html';
+
+      redirigiendo = true;
     } catch (error) {
       console.error(error);
-      if(err) err.innerHTML = '<div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3 flex gap-2"><span>⚠️</span><span>No pudimos conectarnos. Probá de nuevo en un rato.</span></div>';
-      return;
+      if (err) {
+        err.innerHTML = `
+          <div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3">
+            ⚠️ No pudimos conectarnos. Probá de nuevo en un rato.
+          </div>`;
+      }
+    } finally {
+      // Si hay un error, permitir otro intento.
+      // Si va a abrir el panel, mantener el indicador de carga.
+      if (!redirigiendo) {
+        validando = false;
+        boton.disabled = false;
+        boton.textContent = 'Entrar';
+        formLogin.removeAttribute('aria-busy');
+        if (estado) estado.textContent = '';
+      }
     }
-
-    if(!encontrado){
-      if(err) err.innerHTML = '<div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3 flex gap-2"><span>⚠️</span><span>Ese usuario o esa contraseña no son correctos. Fijate bien e intentá de nuevo.</span></div>';
-      return;
-    }
-
-    if(err) err.innerHTML = '';
-    setSession({ id:encontrado.id, username:encontrado.username, role:encontrado.role, name:encontrado.name });
-    formLogin.reset();
-    window.location.href = (encontrado.role === 'admin') ? 'pages/admins.html' : 'pages/editores.html';
   });
 }
 
