@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,7 +78,6 @@
           Volver al Inicio
         </button>
       </div>
-    </div>
 
   <div class="max-w-4xl mx-auto px-[5vw] md:px-6 py-10">
     <div class="mb-8">
@@ -128,12 +129,28 @@
           <input type="text" id="noticiaTitulo" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
         </div>
         <div>
-         <label for="noticiaImagen" class="block text-sm font-bold mb-1">
-                <i class="bi bi-image"></i>
-            Sube una Imagen de portada
+          <label for="imagenPortada" class="block text-sm font-bold mb-1">
+            <i class="bi bi-image"></i> Imagen de portada
           </label>
-          <input type="file" id="imagenPortada" accept="image/*" single class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
-          <small class="text-xs text-tinta-suave">Si no subís ninguna, se usará la imagen por defecto.</small>
+          <img id="previewImagenPortada" alt="Vista previa de la portada" class="hidden w-full max-h-48 object-cover rounded-xl mb-2">
+          <input type="file" id="imagenPortada" accept="image/*" class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          <small class="text-xs text-tinta-suave">Seleccioná la imagen principal de la noticia.</small>
+        </div>
+
+        <div>
+          <label for="noticiaMedia" class="block text-sm font-bold mb-1">
+            <i class="bi bi-collection-play"></i> Más fotos y videos (opcional)
+          </label>
+          <input type="file" id="noticiaMedia" accept="image/*,video/*" multiple class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          <small class="text-xs text-tinta-suave">Podés elegir varios a la vez. Los videos se publican solos en YouTube y las fotos en nuestro servidor de imágenes.</small>
+          <ul id="listaArchivosElegidos" class="mt-2 space-y-1 text-sm text-tinta-suave"></ul>
+        </div>
+
+        <div id="bloqueProgreso" class="hidden rounded-xl bg-cielo p-4" aria-live="polite">
+          <p id="textoProgreso" class="text-sm font-bold mb-2"></p>
+          <div class="w-full h-3 bg-white rounded-full overflow-hidden">
+            <div id="barraProgreso" class="h-3 bg-azul-fuerte rounded-full transition-all" style="width:0%"></div>
+          </div>
         </div>
         <div>
           <label for="noticiaExtracto" class="block text-sm font-bold mb-1">

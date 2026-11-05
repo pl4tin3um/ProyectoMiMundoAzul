@@ -51,24 +51,25 @@ async function renderGridPublico(){
     return;
   }
   if(pieVacio) pieVacio.innerHTML = '';
-  grid.innerHTML = noticias.map(n => `
-    <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col h-full">
-      <div class="tarjeta-noticia__imagen h-44 relative" style="background-image:url('${(() => {
-        const imgSrc = n.imagenPortada || n.image;
-        if (!imgSrc) return '';
-        return imgSrc instanceof File ? URL.createObjectURL(imgSrc) : imgSrc;
-      })()}')">
-        <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date)}</span>
-      </div>
-      <div class="p-5 flex flex-col flex-1 gap-3">
-        <h3 class="font-baloo font-bold text-lg text-azul-oscuro break-words" style="overflow-wrap:anywhere;">${escapeHTML(n.title)}</h3>
-        <p class="text-sm text-tinta-suave mt-0 flex-1 break-words leading-relaxed" style="min-height:0;">${escapeHTML(n.excerpt)}</p>
-        <button class="boton boton--azul self-start mt-auto" data-abrir-noticia="${n.id}">
-          <i class="bi bi-book" aria-hidden="true"></i> Leer noticia completa
-        </button>
-      </div>
-    </article>
-  `).join('');
+
+  grid.innerHTML = noticias.map(n => {
+    const portadaSrc = n.imagen_portada || n.imagenPortada || n.image || '';
+    
+    return `
+      <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col h-full">
+        <div class="tarjeta-noticia__imagen h-44 relative" style="background-image:url('${portadaSrc}')">
+          <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date)}</span>
+        </div>
+        <div class="p-5 flex flex-col flex-1 gap-3">
+          <h3 class="font-baloo font-bold text-lg text-azul-oscuro break-words" style="overflow-wrap:anywhere;">${escapeHTML(n.title)}</h3>
+          <p class="text-sm text-tinta-suave mt-0 flex-1 break-words leading-relaxed" style="min-height:0;">${escapeHTML(n.excerpt)}</p>
+          <button class="boton boton--azul self-start mt-auto" data-abrir-noticia="${n.id}">
+            <i class="bi bi-book" aria-hidden="true"></i> Leer noticia completa
+          </button>
+        </div>
+      </article>
+    `;
+  }).join('');
 
   $$('[data-abrir-noticia]', grid).forEach(btn=>{
     btn.addEventListener('click', ()=> abrirNoticiaCompleta(btn.dataset.abrirNoticia));
@@ -85,34 +86,35 @@ function abrirNoticiaCompleta(id) {
     .join('');
 
   let portadaHTML = '';
-  const imagenPortadaSrc = noticia.imagenPortada || noticia.image;
+  const imagenPortadaSrc = noticia.imagen_portada || noticia.imagenPortada || noticia.image;
   if (imagenPortadaSrc) {
-    const src = imagenPortadaSrc instanceof File ? URL.createObjectURL(imagenPortadaSrc) : imagenPortadaSrc;
-    portadaHTML = `<img class="portada" src="${src}" alt="">`;
+    portadaHTML = `<img class="portada" src="${imagenPortadaSrc}" alt="">`;
   }
 
-  let mediaHTML = '';
+let mediaHTML = '';
   if (Array.isArray(noticia.media) && noticia.media.length > 0) {
     mediaHTML = noticia.media.map(item => {
-    const archivo = item.data || item;
-    const src = archivo instanceof File ? URL.createObjectURL(archivo) : archivo;
-
-      const esVideo =
-        item.type === 'video' ||
-        (archivo instanceof File && archivo.type.startsWith('video/')) ||
-        (typeof archivo === 'string' && archivo.startsWith('data:video/'));
-
-      if (esVideo) {
-        const tipoVideo = archivo instanceof File ? archivo.type : 'video/mp4';
+      // Si es un archivo de video subido con su URL
+      if (item.type === 'video' && item.url) {
         return `
-          <video class="media-item" controls preload="metadata">
-            <source src="${src}" type="${tipoVideo}">
-            Tu navegador no soporta la reproducción de video.
-          </video>
+          <div style="margin-bottom: 20px;">
+            <video class="media-item" src="${item.url}" controls style="width: 100%; border-radius: 24px; background: #000; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);"></video>
+          </div>
         `;
       }
 
-      return `<img class="media-item" src="${src}" alt="" loading="lazy">`;
+      // Por si quedó algún video antiguo basado en ID de YouTube
+      if (item.youtubeId) {
+        return `
+          <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 24px; background: #000; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+            <iframe src="https://www.youtube.com/embed/${item.youtubeId}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen></iframe>
+          </div>
+        `;
+      }
+
+      // Si es una imagen
+      const imgSrc = item.url || item;
+      return `<img class="media-item" src="${imgSrc}" alt="" loading="lazy">`;
     }).join('');
   }
 
@@ -138,7 +140,6 @@ function abrirNoticiaCompleta(id) {
     h1 { font-family: 'Baloo 2', sans-serif; font-size: clamp(1.6rem, 4vw, 2.5rem); color: var(--azul-oscuro); line-height: 1.3; margin: 0 0 26px; }
     .media-gallery { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
     .media-item { width: 100%; border-radius: 24px; max-height: 500px; object-fit: cover; background: #000; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
-    video.media-item { aspect-ratio: 16 / 9; }
     article p { margin-bottom: 20px; font-size: 1.1rem; }
     footer { text-align: center; padding: 20px 6vw 70px; }
     footer button { background: var(--sol); color: var(--tinta); border: none; padding: 16px 32px; border-radius: 999px; font-weight: 700; font-size: 1.05rem; cursor: pointer; font-family: 'Baloo 2', sans-serif; min-height: 56px; }
