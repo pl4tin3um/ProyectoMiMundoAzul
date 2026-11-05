@@ -400,7 +400,7 @@ async function renderListaNoticiasEditor(){
           <div class="text-2xl">📰</div>
           <div>
             <h3 class="font-bold">${escapeHTML(n.title)}</h3>
-            <p class="text-sm text-tinta-suave">${formatearFecha(n.date)} · ${escapeHTML(n.author || '')}</p>
+            <p class="text-sm text-tinta-suave">${formatearFecha(n.date)}</p>
           </div>
         </div>
         <div class="flex gap-2">
@@ -612,8 +612,8 @@ function extraerUrlForm(entrada) {
   url.searchParams.set('embedded', 'true');
   return url.href;
 }
-
-async function AgregarForm(e) {
+ 
+function AgregarForm(e) {
   e.preventDefault();
  
   const inputTitulo = document.getElementById('tituloForm');
@@ -660,8 +660,5 @@ async function AgregarForm(e) {
  
   if (typeof mostrarToast === 'function') {
     mostrarToast('¡Tarjeta de formulario agregada!', '✨');
-  } catch (error) {
-    console.error('Error al crear el formulario:', error);
-    mostrarToast('No se pudo crear el formulario. Intentá nuevamente.', '⚠️');
   }
 }
