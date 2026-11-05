@@ -1,5 +1,3 @@
-
-
 function cerrarSesion(){
   clearSession();
   window.location.href = '../index.html?salida=1';
@@ -28,7 +26,23 @@ if (elAnio) elAnio.textContent = new Date().getFullYear();
 
 let noticiasPublicas = [];
 
-async function renderGridPublico(){
+// Solo URLs https. Si son de ImageKit y se pide un ancho, llegan ya redimensionadas
+// (las tarjetas no necesitan la foto original de varios MB).
+function fuenteImagen(url, ancho){
+  if (typeof url !== 'string' || !/^https:\/\//i.test(url)) return '';
+  let u = url.replace(/[<>"'() ]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+  if (ancho && /^https:\/\/ik\.imagekit\.io\//i.test(u) && !u.includes('?')) u += `?tr=w-${ancho},q-80`;
+  return u;
+}
+
+// Si index.html también la llama, no se piden las noticias dos veces
+let gridEnCurso = null;
+function renderGridPublico(){
+  if (!gridEnCurso) gridEnCurso = cargarGridPublico().finally(() => { gridEnCurso = null; });
+  return gridEnCurso;
+}
+
+async function cargarGridPublico(){
   const grid = document.getElementById('gridNoticias');
   if(!grid) return;
   const pieVacio = document.getElementById('piePublicoVacio');
@@ -51,24 +65,26 @@ async function renderGridPublico(){
     return;
   }
   if(pieVacio) pieVacio.innerHTML = '';
-  grid.innerHTML = noticias.map(n => `
-    <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col h-full">
-      <div class="tarjeta-noticia__imagen h-44 relative" style="background-image:url('${(() => {
-        const imgSrc = n.imagenPortada || n.image;
-        if (!imgSrc) return '';
-        return imgSrc instanceof File ? URL.createObjectURL(imgSrc) : imgSrc;
-      })()}')">
-        <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date)}</span>
-      </div>
-      <div class="p-5 flex flex-col flex-1 gap-3">
-        <h3 class="font-baloo font-bold text-lg text-azul-oscuro break-words" style="overflow-wrap:anywhere;">${escapeHTML(n.title)}</h3>
-        <p class="text-sm text-tinta-suave mt-0 flex-1 break-words leading-relaxed" style="min-height:0;">${escapeHTML(n.excerpt)}</p>
-        <button class="boton boton--azul self-start mt-auto" data-abrir-noticia="${n.id}">
-          <i class="bi bi-book" aria-hidden="true"></i> Leer noticia completa
-        </button>
-      </div>
-    </article>
-  `).join('');
+
+  grid.innerHTML = noticias.map(n => {
+    const portadaSrc = fuenteImagen(n.imagen_portada || n.imagenPortada || n.image, 800);
+    const estiloPortada = portadaSrc ? `background-image:url('${portadaSrc}')` : 'background-color:#D5ECF8';
+    
+    return `
+      <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col h-full">
+        <div class="tarjeta-noticia__imagen h-44 relative" style="${estiloPortada}">
+          <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date)}</span>
+        </div>
+        <div class="p-5 flex flex-col flex-1 gap-3">
+          <h3 class="font-baloo font-bold text-lg text-azul-oscuro break-words" style="overflow-wrap:anywhere;">${escapeHTML(n.title)}</h3>
+          <p class="text-sm text-tinta-suave mt-0 flex-1 break-words leading-relaxed" style="min-height:0;">${escapeHTML(n.excerpt)}</p>
+          <button class="boton boton--azul self-start mt-auto" data-abrir-noticia="${n.id}">
+            <i class="bi bi-book" aria-hidden="true"></i> Leer noticia completa
+          </button>
+        </div>
+      </article>
+    `;
+  }).join('');
 
   $$('[data-abrir-noticia]', grid).forEach(btn=>{
     btn.addEventListener('click', ()=> abrirNoticiaCompleta(btn.dataset.abrirNoticia));
@@ -76,100 +92,9 @@ async function renderGridPublico(){
 }
 
 function abrirNoticiaCompleta(id) {
-  const noticia = noticiasPublicas.find(n => String(n.id) === String(id));
-  if (!noticia) return;
-
-  const parrafos = (noticia.body || '')
-    .split(/\n\s*\n/)
-    .map(p => `<p>${escapeHTML(p).replace(/\n/g, '<br>')}</p>`)
-    .join('');
-
-  let portadaHTML = '';
-  const imagenPortadaSrc = noticia.imagenPortada || noticia.image;
-  if (imagenPortadaSrc) {
-    const src = imagenPortadaSrc instanceof File ? URL.createObjectURL(imagenPortadaSrc) : imagenPortadaSrc;
-    portadaHTML = `<img class="portada" src="${src}" alt="">`;
-  }
-
-  let mediaHTML = '';
-  if (Array.isArray(noticia.media) && noticia.media.length > 0) {
-    mediaHTML = noticia.media.map(item => {
-    const archivo = item.data || item;
-    const src = archivo instanceof File ? URL.createObjectURL(archivo) : archivo;
-
-      const esVideo =
-        item.type === 'video' ||
-        (archivo instanceof File && archivo.type.startsWith('video/')) ||
-        (typeof archivo === 'string' && archivo.startsWith('data:video/'));
-
-      if (esVideo) {
-        const tipoVideo = archivo instanceof File ? archivo.type : 'video/mp4';
-        return `
-          <video class="media-item" controls preload="metadata">
-            <source src="${src}" type="${tipoVideo}">
-            Tu navegador no soporta la reproducción de video.
-          </video>
-        `;
-      }
-
-      return `<img class="media-item" src="${src}" alt="" loading="lazy">`;
-    }).join('');
-  }
-
-  const html = `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${escapeHTML(noticia.title)}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root { --azul-fuerte: #1B5E8C; --azul-oscuro: #123A56; --cielo: #EAF4FB; --sol: #FFC857; --tinta: #16324A; --tinta-suave: #3F5A72; }
-    * { box-sizing: border-box; }
-    html { font-size: 19px; }
-    body { margin: 0; font-family: 'Nunito', sans-serif; background: var(--cielo); color: var(--tinta); line-height: 1.8; }
-    header { display: flex; align-items: center; justify-content: space-between; padding: 20px 5vw; background: var(--azul-fuerte); flex-wrap: wrap; gap: 14px; }
-    header .marca { display: flex; align-items: center; gap: 12px; color: #fff; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.15rem; }
-    header button { background: #fff; color: var(--azul-fuerte); border: none; padding: 14px 26px; border-radius: 999px; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; min-height: 52px; }
-    main { max-width: 740px; margin: 0 auto; padding: 50px 6vw 60px; }
-    .portada { width: 100%; border-radius: 32px; aspect-ratio: 16 / 10; object-fit: cover; margin-bottom: 30px; }
-    .meta { display: block; font-size: 0.9rem; color: var(--tinta-suave); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 800; margin-bottom: 14px; }
-    h1 { font-family: 'Baloo 2', sans-serif; font-size: clamp(1.6rem, 4vw, 2.5rem); color: var(--azul-oscuro); line-height: 1.3; margin: 0 0 26px; }
-    .media-gallery { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
-    .media-item { width: 100%; border-radius: 24px; max-height: 500px; object-fit: cover; background: #000; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
-    video.media-item { aspect-ratio: 16 / 9; }
-    article p { margin-bottom: 20px; font-size: 1.1rem; }
-    footer { text-align: center; padding: 20px 6vw 70px; }
-    footer button { background: var(--sol); color: var(--tinta); border: none; padding: 16px 32px; border-radius: 999px; font-weight: 700; font-size: 1.05rem; cursor: pointer; font-family: 'Baloo 2', sans-serif; min-height: 56px; }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="marca">Mi Mundo Azul</div>
-    <button onclick="window.close()">Volver</button>
-  </header>
-  <main>
-    ${portadaHTML}
-    <span class="meta">
-      ${formatearFecha(noticia.date)}
-      ·
-      ${escapeHTML(typeof noticia.author === 'string' ? noticia.author : 'Equipo Mi Mundo Azul')}
-    </span>
-    <h1>${escapeHTML(noticia.title)}</h1>
-    <div class="media-gallery">${mediaHTML}</div>
-    <article>${parrafos}</article>
-  </main>
-  <footer>
-    <button onclick="window.close()">Volver</button>
-  </footer>
-</body>
-</html>
-`;
-
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  window.open(url, '_blank');
+  // Página propia con enlace real: se puede compartir y YouTube deja incrustar
+  // videos en ella (en una pestaña blob: no).
+  window.open(`pages/noticia.html?id=${encodeURIComponent(id)}`, '_blank');
 }
 
 
@@ -451,3 +376,8 @@ if (formLogin) {
     }
   });
 }
+
+// Cargar las noticias apenas esté listo el documento
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderGridPublico);
+else renderGridPublico();
+ 

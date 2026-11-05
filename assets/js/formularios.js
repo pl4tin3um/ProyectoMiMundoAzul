@@ -14,9 +14,10 @@ function renderFormularios() {
   const container = document.getElementById('gridFormularios');
   if (!container) return;
 
-  const formularios = DB.getForms();
+  const rawForms = DB.getForms();
+  const formularios = Array.isArray(rawForms) ? rawForms : [];
 
-  if (!formularios || formularios.length === 0) {
+  if (formularios.length === 0) {
     container.innerHTML = `
       <div class="col-span-full text-center text-tinta-suave py-8 bg-white/50 rounded-3xl border border-dashed border-cielo-oscuro">
         <p><i class="bi bi-inbox-fill me-2" aria-hidden="true"></i>No hay formularios disponibles en este momento.</p>
@@ -40,11 +41,11 @@ function renderFormularios() {
     </article>
   `).join('');
 
-  // Eventos para abrir modal
   container.querySelectorAll('[data-abrir-form]').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.abrirForm;
-      const form = DB.getForms().find(f => f.id === id);
+      const currentForms = Array.isArray(DB.getForms()) ? DB.getForms() : [];
+      const form = currentForms.find(f => f.id === id);
       if (form) abrirModalFormulario(form);
     });
   });
