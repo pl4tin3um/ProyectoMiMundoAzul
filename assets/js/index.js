@@ -1,5 +1,3 @@
-
-
 function cerrarSesion(){
   clearSession();
   window.location.href = '../index.html?salida=1';
@@ -28,148 +26,65 @@ if (elAnio) elAnio.textContent = new Date().getFullYear();
 
 let noticiasPublicas = [];
 
-async function renderGridPublico(){
+// Solo URLs https. Si son de ImageKit y se pide un ancho, llegan ya redimensionadas
+// (las tarjetas no necesitan la foto original de varios MB).
+function fuenteImagen(url, ancho){
+  if (typeof url !== 'string' || !/^https:\/\//i.test(url)) return '';
+  let u = url.replace(/[<>"'() ]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+  if (ancho && /^https:\/\/ik\.imagekit\.io\//i.test(u) && !u.includes('?')) u += `?tr=w-${ancho},q-80`;
+  return u;
+}
+
+
+async function cargarGridPublico() {
   const grid = document.getElementById('gridNoticias');
-  if(!grid) return;
+  if (!grid) return;
   const pieVacio = document.getElementById('piePublicoVacio');
 
   let noticias = [];
   try {
-    noticias = (await DB.getNews()).filter(n => n.enabled !== false);
+    // getNews() ya trae solo las enabled = true desde Supabase
+    noticias = await DB.getNews();
   } catch (err) {
-    console.error(err);
+    console.error('Error al cargar la grilla:', err);
     grid.innerHTML = '';
-    if(pieVacio) pieVacio.innerHTML = '<p class="text-center text-tinta-suave">⚠️ No pudimos cargar las noticias. Probá de nuevo en un rato.</p>';
+    if (pieVacio) pieVacio.innerHTML = '<p class="text-center text-tinta-suave">⚠️ No pudimos cargar las noticias. Probá de nuevo en un rato.</p>';
     return;
   }
 
   noticiasPublicas = noticias;
 
-  if(noticias.length === 0){
+  if (noticias.length === 0) {
     grid.innerHTML = '';
-    if(pieVacio) pieVacio.innerHTML = '<p class="text-center text-tinta-suave">📭 Todavía no hay noticias publicadas. ¡Volvé pronto!</p>';
+    if (pieVacio) pieVacio.innerHTML = '<p class="text-center text-tinta-suave">📭 Todavía no hay noticias publicadas. ¡Volvé pronto!</p>';
     return;
   }
-  if(pieVacio) pieVacio.innerHTML = '';
-  grid.innerHTML = noticias.map(n => `
-    <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col h-full">
-      <div class="tarjeta-noticia__imagen h-44 relative" style="background-image:url('${(() => {
-        const imgSrc = n.imagenPortada || n.image;
-        if (!imgSrc) return '';
-        return imgSrc instanceof File ? URL.createObjectURL(imgSrc) : imgSrc;
-      })()}')">
-        <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date)}</span>
-      </div>
-      <div class="p-5 flex flex-col flex-1 gap-3">
-        <h3 class="font-baloo font-bold text-lg text-azul-oscuro break-words" style="overflow-wrap:anywhere;">${escapeHTML(n.title)}</h3>
-        <p class="text-sm text-tinta-suave mt-0 flex-1 break-words leading-relaxed" style="min-height:0;">${escapeHTML(n.excerpt)}</p>
-        <button class="boton boton--azul self-start mt-auto" data-abrir-noticia="${n.id}">
-          <i class="bi bi-book" aria-hidden="true"></i> Leer noticia completa
-        </button>
-      </div>
-    </article>
-  `).join('');
+  
+  if (pieVacio) pieVacio.innerHTML = '';
 
-  $$('[data-abrir-noticia]', grid).forEach(btn=>{
-    btn.addEventListener('click', ()=> abrirNoticiaCompleta(btn.dataset.abrirNoticia));
+  grid.innerHTML = noticias.map(n => {
+    const portadaSrc = fuenteImagen(n.imagen_portada, 800);
+    const estiloPortada = portadaSrc ? `background-image:url('${portadaSrc}')` : 'background-color:#D5ECF8';
+    
+    return `
+      <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col h-full">
+        <div class="tarjeta-noticia__imagen h-44 relative bg-cover bg-center" style="${estiloPortada}">
+          <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date || n.created_at)}</span>
+        </div>
+        <div class="p-5 flex flex-col flex-1 gap-3">
+          <h3 class="font-baloo font-bold text-lg text-azul-oscuro break-words" style="overflow-wrap:anywhere;">${escapeHTML(n.title)}</h3>
+          <p class="text-sm text-tinta-suave mt-0 flex-1 break-words leading-relaxed" style="min-height:0;">${escapeHTML(n.excerpt || '')}</p>
+          <button class="boton boton--azul self-start mt-auto" data-abrir-noticia="${n.id}">
+            <i class="bi bi-book" aria-hidden="true"></i> Leer noticia completa
+          </button>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  grid.querySelectorAll('[data-abrir-noticia]').forEach(btn => {
+    btn.addEventListener('click', () => abrirNoticiaCompleta(btn.dataset.abrirNoticia));
   });
-}
-
-function abrirNoticiaCompleta(id) {
-  const noticia = noticiasPublicas.find(n => String(n.id) === String(id));
-  if (!noticia) return;
-
-  const parrafos = (noticia.body || '')
-    .split(/\n\s*\n/)
-    .map(p => `<p>${escapeHTML(p).replace(/\n/g, '<br>')}</p>`)
-    .join('');
-
-  let portadaHTML = '';
-  const imagenPortadaSrc = noticia.imagenPortada || noticia.image;
-  if (imagenPortadaSrc) {
-    const src = imagenPortadaSrc instanceof File ? URL.createObjectURL(imagenPortadaSrc) : imagenPortadaSrc;
-    portadaHTML = `<img class="portada" src="${src}" alt="">`;
-  }
-
-  let mediaHTML = '';
-  if (Array.isArray(noticia.media) && noticia.media.length > 0) {
-    mediaHTML = noticia.media.map(item => {
-    const archivo = item.data || item;
-    const src = archivo instanceof File ? URL.createObjectURL(archivo) : archivo;
-
-      const esVideo =
-        item.type === 'video' ||
-        (archivo instanceof File && archivo.type.startsWith('video/')) ||
-        (typeof archivo === 'string' && archivo.startsWith('data:video/'));
-
-      if (esVideo) {
-        const tipoVideo = archivo instanceof File ? archivo.type : 'video/mp4';
-        return `
-          <video class="media-item" controls preload="metadata">
-            <source src="${src}" type="${tipoVideo}">
-            Tu navegador no soporta la reproducción de video.
-          </video>
-        `;
-      }
-
-      return `<img class="media-item" src="${src}" alt="" loading="lazy">`;
-    }).join('');
-  }
-
-  const html = `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${escapeHTML(noticia.title)}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root { --azul-fuerte: #1B5E8C; --azul-oscuro: #123A56; --cielo: #EAF4FB; --sol: #FFC857; --tinta: #16324A; --tinta-suave: #3F5A72; }
-    * { box-sizing: border-box; }
-    html { font-size: 19px; }
-    body { margin: 0; font-family: 'Nunito', sans-serif; background: var(--cielo); color: var(--tinta); line-height: 1.8; }
-    header { display: flex; align-items: center; justify-content: space-between; padding: 20px 5vw; background: var(--azul-fuerte); flex-wrap: wrap; gap: 14px; }
-    header .marca { display: flex; align-items: center; gap: 12px; color: #fff; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.15rem; }
-    header button { background: #fff; color: var(--azul-fuerte); border: none; padding: 14px 26px; border-radius: 999px; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; min-height: 52px; }
-    main { max-width: 740px; margin: 0 auto; padding: 50px 6vw 60px; }
-    .portada { width: 100%; border-radius: 32px; aspect-ratio: 16 / 10; object-fit: cover; margin-bottom: 30px; }
-    .meta { display: block; font-size: 0.9rem; color: var(--tinta-suave); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 800; margin-bottom: 14px; }
-    h1 { font-family: 'Baloo 2', sans-serif; font-size: clamp(1.6rem, 4vw, 2.5rem); color: var(--azul-oscuro); line-height: 1.3; margin: 0 0 26px; }
-    .media-gallery { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
-    .media-item { width: 100%; border-radius: 24px; max-height: 500px; object-fit: cover; background: #000; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
-    video.media-item { aspect-ratio: 16 / 9; }
-    article p { margin-bottom: 20px; font-size: 1.1rem; }
-    footer { text-align: center; padding: 20px 6vw 70px; }
-    footer button { background: var(--sol); color: var(--tinta); border: none; padding: 16px 32px; border-radius: 999px; font-weight: 700; font-size: 1.05rem; cursor: pointer; font-family: 'Baloo 2', sans-serif; min-height: 56px; }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="marca">Mi Mundo Azul</div>
-    <button onclick="window.close()">Volver</button>
-  </header>
-  <main>
-    ${portadaHTML}
-    <span class="meta">
-      ${formatearFecha(noticia.date)}
-      ·
-      ${escapeHTML(typeof noticia.author === 'string' ? noticia.author : 'Equipo Mi Mundo Azul')}
-    </span>
-    <h1>${escapeHTML(noticia.title)}</h1>
-    <div class="media-gallery">${mediaHTML}</div>
-    <article>${parrafos}</article>
-  </main>
-  <footer>
-    <button onclick="window.close()">Volver</button>
-  </footer>
-</body>
-</html>
-`;
-
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  window.open(url, '_blank');
 }
 
 
@@ -224,110 +139,9 @@ function abrirBloqueTexto(data) {
   document.body.appendChild(overlay);
 }
 
-/* function abrirBloqueTexto(data) {
-  const win = window.open('', '_blank');
-  if (!win) return;
-
-  const html = `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${escapeHTML(data.titulo || 'Información')} · Mi Mundo Azul</title>
-  
-  <style>
-    :root {
-      --azul-fuerte: #1B5E8C;
-      --cielo: #EAF4FB;
-      --tinta: #16324A;
-      --tinta-suave: #3F5A72;
-    }
-    
-    * { box-sizing: border-box; }
-    
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-      background: var(--cielo);
-      color: var(--tinta);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .card {
-      background: #ffffff;
-      max-width: 500px;
-      width: 100%;
-      padding: 32px;
-      border-radius: 24px;
-      box-shadow: 0 10px 25px rgba(27, 94, 140, 0.1);
-    }
-
-    .categoria {
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: var(--tinta-suave);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    h1 {
-      margin: 0 0 16px;
-      color: var(--azul-fuerte);
-      font-size: 1.5rem;
-      line-height: 1.3;
-    }
-
-    .contenido {
-      font-size: 1rem;
-      line-height: 1.6;
-      margin-bottom: 24px;
-    }
-
-    .btn-cerrar {
-      width: 100%;
-      background: var(--azul-fuerte);
-      color: #ffffff;
-      border: none;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-
-    .btn-cerrar:hover {
-      opacity: 0.9;
-    }
-  </style>
-</head>
-<body>
-
-  <main class="card">
-    ${data.categoria ? `<span class="categoria">${escapeHTML(data.categoria)}</span>` : ''}
-    <h1>${escapeHTML(data.titulo || 'Nota')}</h1>
-    
-    <div class="contenido">
-      ${escapeHTML(data.texto || '').replace(/\n/g, '<br>')}
-    </div>
-
-    <button class="btn-cerrar" onclick="window.close()">Entendido</button>
-  </main>
-
-</body>
-</html>
-  `;
-
-  win.document.write(html);
-  win.document.close();
-} */
+function abrirNoticiaCompleta(id) {
+  window.open(`pages/noticia.html?id=${encodeURIComponent(id)}`, '_blank');
+}
 
 function mostrarPantallaLogin(){
   const cp = document.getElementById('contenidoPublico');
@@ -348,13 +162,14 @@ function mostrarSitioPublico(){
   if(hp) hp.classList.remove('hidden');
 }
 
-const btnIrLogin = document.getElementById('btnIrLogin');
-if(btnIrLogin) {
-  btnIrLogin.addEventListener('click', ()=>{
-    window.location.hash = 'login';
-    mostrarPantallaLogin();
-  });
-}
+document.addEventListener('click', (event) => {
+  const acceso = event.target.closest('[data-acceso-equipo]');
+  if (!acceso) return;
+
+  event.preventDefault();
+  window.location.hash = 'login';
+  mostrarPantallaLogin();
+});
 
 const btnVolver = document.getElementById('volverSitioLogin');
 if(btnVolver) {
@@ -376,30 +191,82 @@ if(btnPass) {
 }
 
 const formLogin = document.getElementById('formLogin');
-if(formLogin) {
-  formLogin.addEventListener('submit', async (e)=>{
+
+if (formLogin) {
+  let validando = false;
+
+  formLogin.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (validando) return;
+
     const err = document.getElementById('errorLogin');
+    const estado = document.getElementById('estadoLogin');
+    const boton = formLogin.querySelector('button[type="submit"]');
     const usuario = document.getElementById('loginUsuario')?.value.trim();
     const pass = document.getElementById('loginPassword')?.value;
 
-    let encontrado = null;
+    validando = true;
+    boton.disabled = true;
+    boton.textContent = 'Validando usuario…';
+    formLogin.setAttribute('aria-busy', 'true');
+
+    if (err) err.textContent = '';
+    if (estado) estado.textContent = 'Estamos comprobando tus datos. Un momento…';
+
+    let redirigiendo = false;
+
     try {
-      encontrado = await loginCuenta(usuario, pass);
+      const encontrado = await loginCuenta(usuario, pass);
+
+      if (!encontrado) {
+        if (err) {
+          err.innerHTML = `
+            <div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3">
+              ⚠️ Ese usuario o esa contraseña no son correctos.
+              Fijate bien e intentá de nuevo.
+            </div>`;
+        }
+        return;
+      }
+
+      setSession({
+        id: encontrado.id,
+        username: encontrado.username,
+        role: encontrado.role,
+        name: encontrado.name
+      });
+
+      boton.textContent = 'Ingresando…';
+      if (estado) estado.textContent = 'Datos correctos. Abriendo tu panel…';
+
+      formLogin.reset();
+      window.location.href = encontrado.role === 'admin'
+        ? 'pages/admins.html'
+        : 'pages/editores.html';
+
+      redirigiendo = true;
     } catch (error) {
       console.error(error);
-      if(err) err.innerHTML = '<div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3 flex gap-2"><span>⚠️</span><span>No pudimos conectarnos. Probá de nuevo en un rato.</span></div>';
-      return;
+      if (err) {
+        err.innerHTML = `
+          <div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3">
+            ⚠️ No pudimos conectarnos. Probá de nuevo en un rato.
+          </div>`;
+      }
+    } finally {
+      // Si hay un error, permitir otro intento.
+      // Si va a abrir el panel, mantener el indicador de carga.
+      if (!redirigiendo) {
+        validando = false;
+        boton.disabled = false;
+        boton.textContent = 'Entrar';
+        formLogin.removeAttribute('aria-busy');
+        if (estado) estado.textContent = '';
+      }
     }
-
-    if(!encontrado){
-      if(err) err.innerHTML = '<div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3 flex gap-2"><span>⚠️</span><span>Ese usuario o esa contraseña no son correctos. Fijate bien e intentá de nuevo.</span></div>';
-      return;
-    }
-
-    if(err) err.innerHTML = '';
-    setSession({ id:encontrado.id, username:encontrado.username, role:encontrado.role, name:encontrado.name });
-    formLogin.reset();
-    window.location.href = (encontrado.role === 'admin') ? 'pages/admins.html' : 'pages/editores.html';
   });
 }
+
+// Cargar las noticias apenas esté listo el documento
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cargarGridPublico);
+else cargarGridPublico();

@@ -1,14 +1,16 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Editor</title>
-
+ 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-
+ 
   <script src="https://cdn.tailwindcss.com"></script>
-
+ 
   <script>
     tailwind.config = {
       theme: {
@@ -52,17 +54,17 @@
       }
     };
   </script>
-
+ 
   <link rel="stylesheet" href="../assets/css/common.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
-
+ 
 <body class="bg-cielo-oscuro text-tinta font-nunito antialiased" id="pagina-editor" hidden>
-
+ 
 <section class="bg-cielo-oscuro">
       <div class="flex items-center justify-between gap-4 flex-wrap px-[5vw] py-5 bg-azul-suave shadow-sm sticky top-0 z-40 border-4 border-azul-fuerte rounded-3xl">
       <div class="flex items-center gap-3">
-        <img src="../assets/imgs/logo.jpeg" alt="Mi Mundo Azul" class="w-11 h-11 rounded-full object-cover">
+        <img src="../assets/Imgs/logo.jpeg" alt="Mi Mundo Azul" class="w-11 h-11 rounded-full object-cover">
         <div class="font-baloo font-bold leading-tight">
           Mi Mundo Azul
           <small class="block font-nunito font-normal text-tinta-suave text-sm">Asociación Autista de flores</small>
@@ -76,28 +78,27 @@
           Volver al Inicio
         </button>
       </div>
-    </div>
-
+ 
   <div class="max-w-4xl mx-auto px-[5vw] md:px-6 py-10">
     <div class="mb-8">
       <h1 class="font-baloo font-extrabold text-2xl text-azul-oscuro">Tus noticias</h1>
       <p class="text-tinta-suave mt-1">Creá, editá o eliminá las noticias que se ven en el sitio.</p>
     </div>
-
+ 
     <button class="boton boton--sol mb-8" id="btnNuevaNoticia">
           <i class="bi bi-plus-circle"></i>
         Crear noticia nueva
     </button>
-
+ 
     <div id="bloqueBorradores"></div>
-
+ 
     <h2 class="font-baloo font-bold text-xl mb-4">
           <i class="bi bi-megaphone"></i>
       Noticias publicadas
     </h2>
     <div class="space-y-3" id="listaNoticiasEditor"></div>
   </div>
-
+ 
   <!-- ================= MODAL: CREAR/EDITAR NOTICIA ================= -->
   <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalNoticia">
     <div class="bg-white rounded-3xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6">
@@ -128,12 +129,28 @@
           <input type="text" id="noticiaTitulo" required class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
         </div>
         <div>
-         <label for="noticiaImagen" class="block text-sm font-bold mb-1">
-                <i class="bi bi-image"></i>
-            Sube una Imagen de portada
+          <label for="imagenPortada" class="block text-sm font-bold mb-1">
+            <i class="bi bi-image"></i> Imagen de portada
           </label>
-          <input type="file" id="imagenPortada" accept="image/*" single class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
-          <small class="text-xs text-tinta-suave">Si no subís ninguna, se usará la imagen por defecto.</small>
+          <img id="previewImagenPortada" alt="Vista previa de la portada" class="hidden w-full max-h-48 object-cover rounded-xl mb-2">
+          <input type="file" id="imagenPortada" accept="image/*" class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          <small class="text-xs text-tinta-suave">Seleccioná la imagen principal de la noticia.</small>
+        </div>
+ 
+        <div>
+          <label for="noticiaMedia" class="block text-sm font-bold mb-1">
+            <i class="bi bi-collection-play"></i> Más fotos y videos (opcional)
+          </label>
+          <input type="file" id="noticiaMedia" accept="image/*,video/*" multiple class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-fuerte">
+          <small class="text-xs text-tinta-suave">Podés elegir varios a la vez. Los videos se publican solos en YouTube y las fotos en nuestro servidor de imágenes.</small>
+          <ul id="listaArchivosElegidos" class="mt-2 space-y-1 text-sm text-tinta-suave"></ul>
+        </div>
+ 
+        <div id="bloqueProgreso" class="hidden rounded-xl bg-cielo p-4" aria-live="polite">
+          <p id="textoProgreso" class="text-sm font-bold mb-2"></p>
+          <div class="w-full h-3 bg-white rounded-full overflow-hidden">
+            <div id="barraProgreso" class="h-3 bg-azul-fuerte rounded-full transition-all" style="width:0%"></div>
+          </div>
         </div>
         <div>
           <label for="noticiaExtracto" class="block text-sm font-bold mb-1">
@@ -165,9 +182,9 @@
   
   <!-- ================= Formularios =================
        =============================================== -->
-
+ 
 <div class="max-w-4xl mx-auto space-y-8">
-
+ 
   <details class="group bg-white rounded-3xl border-2 border-cielo-oscuro shadow-md overflow-hidden transition-all duration-300">
     
     <summary class="flex items-center justify-between p-5 cursor-pointer list-none select-none bg-white hover:bg-cielo transition-colors">
@@ -182,7 +199,7 @@
         <i class="bi bi-chevron-down text-sm" aria-hidden="true"></i>
       </div>
     </summary>
-
+ 
     <div class="p-6 border-t border-cielo-medio bg-cielo/30">
       <form id="formNuevoGoogle" class="space-y-4" onsubmit="event.preventDefault();">
         
@@ -194,7 +211,7 @@
                    class="w-full pl-10 pr-4 py-2.5 bg-white rounded-xl border border-cielo-oscuro text-tinta placeholder-tinta-clara focus:outline-none focus:ring-2 focus:ring-azul-fuerte text-sm transition">
           </div>
         </div>
-
+ 
         <div>
           <label for="inputGoogleForm" class="block text-sm font-bold text-tinta mb-1.5">Enlace de Google Forms</label>
           <div class="relative flex items-center">
@@ -203,7 +220,7 @@
                    class="w-full pl-10 pr-4 py-2.5 bg-white rounded-xl border border-cielo-oscuro text-tinta placeholder-tinta-clara focus:outline-none focus:ring-2 focus:ring-azul-fuerte text-sm transition">
           </div>
         </div>
-
+ 
         <button type="submit" id="btnAgregar" 
                 class="boton boton--azul w-full py-3 font-bold rounded-xl flex items-center justify-center gap-2 shadow-sm">
           <i class="bi bi-plus-circle-fill text-lg" aria-hidden="true"></i>
@@ -212,17 +229,17 @@
       </form>
     </div>
   </details>
-
+ 
   <section class="space-y-4">
     <div class="flex items-center gap-2 border-b border-cielo-oscuro pb-3">
       <i class="bi bi-journal-text text-azul-fuerte text-2xl" aria-hidden="true"></i>
       <h3 class="font-baloo font-bold text-xl text-azul-oscuro">Formularios Disponibles</h3>
     </div>
     <div id="gridFormularios" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-
+ 
     </div>
   </section>
-
+ 
   <!-- Instertación de tutoriales -->
  <section class="max-w-4xl mx-auto px-[5vw] md:px-6 py-10 space-y-1">
   <div class="flex items-center gap-2 border-b border-cielo-oscuro pb-3">
@@ -241,7 +258,7 @@
   </div>
  </section>
 </div>
-
+ 
   <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalConfirmar">
     <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 text-center">
       <div class="text-4xl" id="iconoConfirmar">
@@ -255,7 +272,7 @@
       </div>
     </div>
   </div>
-
+ 
   <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalAviso">
     <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 text-center">
       <div class="text-4xl">
@@ -268,7 +285,7 @@
       </div>
     </div>
   </div>
-
+ 
   <div class="toast" id="toast"></div>
 </section>
 <div id="footer"></div>
@@ -279,3 +296,4 @@
 <script src="../assets/js/footer.js" data-root="../"></script>
 </body>
 </html>
+ 

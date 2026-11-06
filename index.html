@@ -65,17 +65,33 @@
      GRUPO DE PÁGINA: SITIO PÚBLICO (index.html + index.css + index.js)
 ====================================================================== -->
 <section id="pagina-index">
-<header class="flex items-center justify-between gap-4 flex-wrap px-[5vw] py-5 bg-morado-claro shadow-sm sticky top-0 z-40 border-4 border-azul-fuerte rounded-3xl" id="cabeceraPublica">
+<header id="cabeceraPublica" class="flex items-center justify-between gap-4 flex-wrap px-[5vw] py-4 bg-morado-claro shadow-sm sticky top-0 z-40">
     <div class="flex items-center gap-3">
-      <img src="assets/imgs/logo.jpeg" alt="Mi Mundo Azul" class="w-11 h-11 rounded-full object-cover">
+      <img src="assets/imgs/logo.png" alt="Mi Mundo Azul" class="w-14 h-14 rounded-full object-cover">
       <div class="font-baloo font-bold leading-tight">
         Mi Mundo Azul
-        <small class="block font-nunito font-normal text-tinta-suave text-sm">Asociación Autista de Flores</small>
+        <small class="block font-nunito font-normal text-tinta-suave text-sm">Asociación Autista de flores</small>
       </div>
     </div>
-    <button class="boton boton--azul" id="btnIrLogin">
-      <span><i class="bi bi-key-fill text-xl text-azul-claro" aria-hidden="true"></i></span> Entrar al panel del equipo
-    </button>
+    <nav aria-label="Navegación principal"
+     class="flex flex-wrap items-center gap-2 text-sm font-semibold text-azul-oscuro">
+  <a href="#inicio"
+     class="px-4 py-2 rounded-xl hover:bg-cielo transition-colors">
+    Inicio
+  </a>
+  <a href="#nosotros"
+     class="px-4 py-2 rounded-xl hover:bg-cielo transition-colors">
+    Nosotros
+  </a>
+  <a href="#noticias"
+     class="px-4 py-2 rounded-xl hover:bg-cielo transition-colors">
+    Noticias
+  </a>
+  <a href="pages/formularios.html"
+     class="px-4 py-2 rounded-xl hover:bg-cielo transition-colors">
+    Formularios
+  </a>
+</nav>
   </header>
 
   <!-- ================= CONTENIDO PÚBLICO ================= -->
@@ -84,11 +100,11 @@
 
     <section class="px-[6vw] py-28 text-center max-w-6xl mx-auto" id="inicio">
       <h1 class="font-baloo font-extrabold text-4xl md:text-6xl text-azul-oscuro leading-tight">
-        Creamos espacios de apoyo y acompañamiento para personas autistas.
+          Un espacio de apoyo para personas autistas y sus familias.
       </h1>
       <p class="mt-6 text-xl text-tinta-suave max-w-3xl mx-auto leading-relaxed">
-        Elegí qué querés hacer. Toca un botón para ir directo a lo que necesitás, sin vueltas.
-      </p>
+        Somos Mi Mundo Azul, una asociación de Flores que acompaña a personas autistas y sus familias. Generamos espacios de encuentro, escucha y apoyo, y trabajamos por una sociedad más inclusiva, donde cada persona sea escuchada, respetada y pueda participar a su manera.
+        </p>
       <div class="mt-14 grid gap-8 sm:grid-cols-3 text-left">
         <a href="pages/formularios.html" class="nav-Paginas block w-full text-left bg-cielo rounded-3xl border-2 border-azul-suave p-6 min-h-56 shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition cursor-pointer">
           <div class="text-4xl text-azul-fuerte"><i class="bi bi-newspaper" aria-hidden="true"></i></div>
@@ -105,12 +121,11 @@
           <h3 class="font-baloo font-bold text-xl mt-4">Conocer la asociación</h3>
           <p class="text-base text-tinta-suave mt-2 leading-relaxed">Qué hacemos y cómo acompañamos a las familias</p>
         </button>
-       
         <button type="button" class="block w-full text-left bg-cielo rounded-3xl border-2 border-azul-suave p-6 min-h-56 shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition cursor-pointer"
                 onclick="abrirBloqueTexto({
                   categoria: 'Colaboración',
                   titulo: 'Cómo Donar',
-                  texto: 'Tu donación nos permite seguir brindando talleres, terapias y contención gratuita.\n\nPuedes aportar a través de transferencia bancaria o Mercado Pago. \n\nDonaciones materiales: Comunicarse con los teléfonos de:\nAlejandra: 098 095 310 --- Monica: 098 992 258. \n\n Donaciones monetarias:\n Nombre de la cuenta: Mi Mundo Azul. \nNúmero: 110579614-00001 BROU'
+                  texto: 'Tu donación nos permite seguir brindando talleres, terapias y contención gratuita.\n\nPuedes aportar a través de transferencia bancaria \n\nDonaciones materiales: Comunicarse con los teléfonos:\nAlejandra: 098 095 310 --- Monica: 098 992 258. \n\n Donaciones monetarias:\n Nombre de la cuenta: Mi Mundo Azul. \nNúmero: 110579614-00001 BROU'
                 })">
           <div class="text-4xl text-azul-fuerte"><i class="bi bi-envelope-fill" aria-hidden="true"></i></div>
           <h3 class="font-baloo font-bold text-xl mt-4">Dona!</h3>
@@ -197,6 +212,10 @@
               class="absolute right-3 top-[38px] text-lg"><i class="bi bi-eye-fill" aria-hidden="true"></i></button>
           </div>
           <button type="submit" class="boton boton--azul w-full">Entrar</button>
+          <p id="estadoLogin"
+             role="status"
+             aria-live="polite"
+             class="text-sm text-center text-tinta-suave"></p>
         </form>
         <button class="boton boton--blanco w-full mt-5" id="volverSitioLogin"><i class="bi bi-arrow-left" aria-hidden="true"></i> Volver al sitio</button>
       </div>
@@ -211,5 +230,5 @@
   <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
   <script src="assets/js/common.js"></script>
   <script src="assets/js/index.js"></script>
-  <script src="js/footer.js" data-root="../"></script>
+  <script src="assets/js/footer.js" data-root="../../"></script>
 </html>
