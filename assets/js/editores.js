@@ -524,26 +524,6 @@ document.addEventListener('DOMContentLoaded', verificarAccesoEditor);
    ==================== Formularios ========================
    ========================================================= */
 /* ---------------- CREACIÓN DE FORMULARIOS ---------------- */
-
-// Comprobación de interfaz; los permisos reales también deben imponerse con RLS
-// o dentro de Edge Functions, ya que el código del navegador puede modificarse.
-async function asegurarEditor() {
-  try {
-    const cuenta = await obtenerCuentaActual();
-    if (!cuenta || cuenta.role !== 'editor') {
-      clearSession();
-      window.location.replace('../index.html');
-      return null;
-    }
-    setSession(cuenta);
-    return cuenta;
-  } catch (error) {
-    console.error('No se pudo validar la sesión del editor:', error);
-    clearSession();
-    window.location.replace('../index.html');
-    return null;
-  }
-}
  
 // Inicializa el evento en el botón de agregar
 document.addEventListener('DOMContentLoaded', () => {
@@ -557,8 +537,6 @@ document.addEventListener('DOMContentLoaded', () => {
 async function renderFormularios() {
   const container = document.getElementById('gridFormularios');
   if (!container) return;
-
-  if (!await asegurarEditor()) return;
  
   const { data: formularios, error } = await supabaseClient
     .from('formularios')
@@ -593,18 +571,19 @@ async function renderFormularios() {
  
   container.querySelectorAll('[data-eliminar-form]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const eliminar = async () => {
-        if (!await asegurarEditor()) return;
-        const { error } = await supabaseClient
+      const eliminar = () => {
+        supabaseClient
           .from('formularios')
           .delete()
-          .eq('id', btn.dataset.eliminarForm);
-        if (error) {
-          console.error('Error al eliminar formulario:', error);
-          mostrarToast('No se pudo eliminar el formulario.', '⚠️');
-          return;
-        }
-        await renderFormularios();
+          .eq('id', btn.dataset.eliminarForm)
+          .then(({ error }) => {
+            if (error) {
+              console.error('Error al eliminar formulario:', error);
+              mostrarToast('No se pudo eliminar el formulario.', '⚠️');
+              return;
+            }
+            renderFormularios();
+          });
       };
  
       if (typeof preguntarConfirmacion === 'function') {
@@ -651,9 +630,6 @@ function extraerUrlForm(entrada) {
 async function AgregarForm(e) {
   e.preventDefault();
 
-  const cuenta = await asegurarEditor();
-  if (!cuenta) return;
-
   const form = e.currentTarget;
   const botonEnviar = form?.querySelector('[type="submit"]');
   if (botonEnviar?.disabled) return;
@@ -692,7 +668,7 @@ async function AgregarForm(e) {
       .insert([{
         title: titulo,
         google_URL: urlLimpia,
-        editor_ID: cuenta.id,
+        editor_ID: getSession()?.id,
         enable: true
       }]);
     if (error) throw error;

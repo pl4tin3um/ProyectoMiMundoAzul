@@ -149,12 +149,12 @@ function iniciarPanelAdmin(){
       const password = $('#editorPassword')?.value || '';
 
       try {
-        if(await DB.existeUsername(usuario)){
+        if(await PanelDB.existeUsername(usuario)){
           mostrarAviso('Ese nombre de usuario ya existe. Elegí otro para crear la cuenta.');
           return;
         }
 
-        await DB.crearEditor({ name: nombre, username: usuario, email, password });
+        await PanelDB.crearEditor({ name: nombre, username: usuario, email, password });
         cerrarModal('modalEditor');
         await renderListaEditores();
         mostrarToast('Cuenta de editor/a creada', '✔️');
@@ -183,7 +183,7 @@ async function renderListaEditores() {
   let editores;
 
   try {
-    editores = await DB.getEditores();
+    editores = await PanelDB.getEditores();
   } catch (error) {
     console.error(error);
     aviso.textContent = 'No se pudieron cargar los editores.';
@@ -239,7 +239,7 @@ async function renderListaEditores() {
           btn.textContent = 'Guardando...';
 
           try {
-            const actualizado = await DB.cambiarEstadoEditor(
+            const actualizado = await PanelDB.cambiarEstadoEditor(
               editor.id,
               nuevoEstado
             );
