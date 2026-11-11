@@ -70,7 +70,6 @@ function preguntarConfirmacion(opciones){
       return;
     }
  
-    // Compatibilidad temporal con noticias y borradores.
     setSession(sesion);
  
     iniciarPanelEditor();
@@ -525,6 +524,26 @@ document.addEventListener('DOMContentLoaded', verificarAccesoEditor);
    ==================== Formularios ========================
    ========================================================= */
 /* ---------------- CREACIÓN DE FORMULARIOS ---------------- */
+
+// Comprobación de interfaz; los permisos reales también deben imponerse con RLS
+// o dentro de Edge Functions, ya que el código del navegador puede modificarse.
+async function asegurarEditor() {
+  try {
+    const cuenta = await obtenerCuentaActual();
+    if (!cuenta || cuenta.role !== 'editor') {
+      clearSession();
+      window.location.replace('../index.html');
+      return null;
+    }
+    setSession(cuenta);
+    return cuenta;
+  } catch (error) {
+    console.error('No se pudo validar la sesión del editor:', error);
+    clearSession();
+    window.location.replace('../index.html');
+    return null;
+  }
+}
  
 // Inicializa el evento en el botón de agregar
 document.addEventListener('DOMContentLoaded', () => {
@@ -538,8 +557,15 @@ document.addEventListener('DOMContentLoaded', () => {
 async function renderFormularios() {
   const container = document.getElementById('gridFormularios');
   if (!container) return;
+
+  if (!await asegurarEditor()) return;
  
-  const formularios = await DB.getForms(); 
+  const { data: formularios, error } = await supabaseClient
+    .from('formularios')
+    .select('id, created_at, title, google_URL, editor_ID, enable')
+    .eq('enable', true)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
  
   if (!formularios || formularios.length === 0) {
     container.innerHTML = `
@@ -567,9 +593,18 @@ async function renderFormularios() {
  
   container.querySelectorAll('[data-eliminar-form]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const eliminar = () => {
-        DB.setForms(DB.getForms().filter(form => form.id !== btn.dataset.eliminarForm));
-        renderFormularios();
+      const eliminar = async () => {
+        if (!await asegurarEditor()) return;
+        const { error } = await supabaseClient
+          .from('formularios')
+          .delete()
+          .eq('id', btn.dataset.eliminarForm);
+        if (error) {
+          console.error('Error al eliminar formulario:', error);
+          mostrarToast('No se pudo eliminar el formulario.', '⚠️');
+          return;
+        }
+        await renderFormularios();
       };
  
       if (typeof preguntarConfirmacion === 'function') {
@@ -588,11 +623,11 @@ async function renderFormularios() {
 }
  
 function extraerUrlForm(entrada) {
-  let valor = entrada.trim();
-  
-  if (entrada.includes('<iframe')) {
-    const match = entrada.match(/src=["']([^"']+)["']/);
-    valor = match ? match[1] : '';
+  let valor = typeof entrada === 'string' ? entrada.trim() : '';
+
+  if (/<iframe\b/i.test(valor)) {
+    const match = valor.match(/<iframe\b[^>]*\bsrc\s*=\s*(["'])(.*?)\1/i);
+    valor = match ? match[2].trim() : '';
   }
  
   let url;
@@ -602,7 +637,7 @@ function extraerUrlForm(entrada) {
     return null;
   }
  
-  if (url.protocol !== 'https:' && url.protocol !== 'http:') return null;
+  if ((url.protocol !== 'https:' && url.protocol !== 'http:') || url.username || url.password) return null;
   if (url.hostname === 'forms.gle' && /^\/[\w-]+\/?$/.test(url.pathname)) return url.href;
   if (url.hostname !== 'docs.google.com') return null;
  
@@ -613,8 +648,15 @@ function extraerUrlForm(entrada) {
   return url.href;
 }
  
-function AgregarForm(e) {
+async function AgregarForm(e) {
   e.preventDefault();
+
+  const cuenta = await asegurarEditor();
+  if (!cuenta) return;
+
+  const form = e.currentTarget;
+  const botonEnviar = form?.querySelector('[type="submit"]');
+  if (botonEnviar?.disabled) return;
  
   const inputTitulo = document.getElementById('tituloForm');
   const inputUrl = document.getElementById('inputGoogleForm');
@@ -642,23 +684,27 @@ function AgregarForm(e) {
     return;
   }
  
-  const nuevos = DB.getForms() || [];
-  nuevos.push({
-    id: typeof uid === 'function' ? uid('f') : Date.now().toString(),
-    title: titulo,
-    url: urlLimpia
-  });
- 
-  DB.setForms(nuevos);
- 
-  if (inputTitulo) inputTitulo.value = '';
-  if (inputUrl) inputUrl.value = '';
- 
-  if (typeof renderFormularios === 'function') {
-    renderFormularios();
-  }
- 
-  if (typeof mostrarToast === 'function') {
+  if (botonEnviar) botonEnviar.disabled = true;
+  form?.setAttribute('aria-busy', 'true');
+  try {
+    const { error } = await supabaseClient
+      .from('formularios')
+      .insert([{
+        title: titulo,
+        google_URL: urlLimpia,
+        editor_ID: cuenta.id,
+        enable: true
+      }]);
+    if (error) throw error;
+    if (inputTitulo) inputTitulo.value = '';
+    if (inputUrl) inputUrl.value = '';
+    await renderFormularios();
     mostrarToast('¡Tarjeta de formulario agregada!', '✨');
+  } catch (error) {
+    console.error('Error al guardar formulario:', error);
+    mostrarToast('No se pudo guardar el formulario.', '⚠️');
+  } finally {
+    if (botonEnviar) botonEnviar.disabled = false;
+    form?.removeAttribute('aria-busy');
   }
 }

@@ -26,8 +26,6 @@ if (elAnio) elAnio.textContent = new Date().getFullYear();
 
 let noticiasPublicas = [];
 
-// Solo URLs https. Si son de ImageKit y se pide un ancho, llegan ya redimensionadas
-// (las tarjetas no necesitan la foto original de varios MB).
 function fuenteImagen(url, ancho){
   if (typeof url !== 'string' || !/^https:\/\//i.test(url)) return '';
   let u = url.replace(/[<>"'() ]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
@@ -52,7 +50,6 @@ async function cargarGridPublico() {
 
   let noticias = [];
   try {
-    // getNews() ya trae solo las enabled = true desde Supabase
     noticias = await DB.getNews();
   } catch (err) {
     console.error('Error al cargar la grilla:', err);
@@ -289,8 +286,6 @@ if (formLogin) {
           </div>`;
       }
     } finally {
-      // Si hay un error, permitir otro intento.
-      // Si va a abrir el panel, mantener el indicador de carga.
       if (!redirigiendo) {
         validando = false;
         boton.disabled = false;
@@ -302,6 +297,5 @@ if (formLogin) {
   });
 }
 
-// Cargar las noticias apenas esté listo el documento
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cargarGridPublico);
 else cargarGridPublico();

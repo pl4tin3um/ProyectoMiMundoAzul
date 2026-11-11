@@ -10,12 +10,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-function renderFormularios() {
+async function renderFormularios() {
   const container = document.getElementById('gridFormularios');
   if (!container) return;
 
-  const rawForms = DB.getForms();
-  const formularios = Array.isArray(rawForms) ? rawForms : [];
+  container.innerHTML = `
+    <div class="col-span-full text-center text-tinta-suave py-8" role="status">
+      Cargando formularios...
+    </div>`;
+
+  let formularios;
+  try {
+    const rawForms = await DB.getForms();
+    formularios = Array.isArray(rawForms) ? rawForms : [];
+  } catch (error) {
+    console.error('Error al cargar formularios:', error);
+    container.innerHTML = `
+      <div class="col-span-full text-center text-tinta-suave py-8" role="alert">
+        No pudimos cargar los formularios. Recargá la página para intentar nuevamente.
+      </div>`;
+    return;
+  }
 
   if (formularios.length === 0) {
     container.innerHTML = `
@@ -34,7 +49,7 @@ function renderFormularios() {
         <h3 class="font-baloo font-bold text-xl text-azul-oscuro break-words [overflow-wrap:anywhere]">${escapeHTML(form.title)}</h3>
       </div>
       <div class="mt-6 flex gap-2">
-        <button type="button" class="boton boton--azul flex-1 py-2.5 text-sm" data-abrir-form="${form.id}">
+        <button type="button" class="boton boton--azul flex-1 py-2.5 text-sm" data-abrir-form="${escapeHTML(String(form.id))}">
           <i class="bi bi-pencil-square" aria-hidden="true"></i> Completar
         </button>
       </div>
@@ -42,10 +57,11 @@ function renderFormularios() {
   `).join('');
 
   container.querySelectorAll('[data-abrir-form]').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const id = btn.dataset.abrirForm;
-      const currentForms = Array.isArray(DB.getForms()) ? DB.getForms() : [];
-      const form = currentForms.find(f => f.id === id);
+      const currentForms = await DB.getForms();
+      const form = (Array.isArray(currentForms) ? currentForms : [])
+        .find(f => String(f.id) === id);
       if (form) abrirModalFormulario(form);
     });
   });
