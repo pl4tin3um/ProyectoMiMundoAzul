@@ -59,11 +59,62 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="shortcut icon" type="image/png" href="assets/imgs/logo.png">
 <style>
-  /* ImageKit background slot: set --imagekit-bg to a URL on any .imagekit-bg element. */
   .imagekit-bg {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)), var(--imagekit-bg, none);
+    background-image: linear-gradient(rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.28)), var(--imagekit-bg, none);
     background-position: center;
     background-size: cover;
+  }
+  #pagina-index #inicio,
+  #pagina-index #nosotros {
+    position: relative;
+    isolation: isolate;
+    background: none;
+  }
+  #pagina-index #inicio::before,
+  #pagina-index #nosotros::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0 auto 0 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+  }
+  #pagina-index #inicio::before {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.28)), var(--imagekit-bg, none);
+    background-position: center;
+    background-size: cover;
+  }
+  #pagina-index #nosotros::before {
+    background:
+      radial-gradient(ellipse at 12% 18%, rgba(255, 255, 255, 0.72), transparent 38%),
+      linear-gradient(135deg, #d9edf8 0%, #c1e0f0 52%, #d2eaf6 100%);
+    border-top: 4px solid #1B5E8C;
+  }
+  .texto-legible {
+    display: inline-block;
+    padding: 0.55rem 1rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 10px rgba(18, 58, 86, 0.1);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  #pagina-index .fondo-labor {
+    background: none;
+  }
+  #pagina-index .fondo-noticias {
+    background:
+      radial-gradient(ellipse at 88% 12%, rgba(255, 255, 255, 0.85), transparent 34%),
+      linear-gradient(160deg, #eef7fc 0%, #dceef8 58%, #eaf4fb 100%);
+  }
+  #pagina-index .tarjeta-inicio,
+  #pagina-index .tarjeta-labor {
+    background: #EAF4FB;
+    box-shadow: 0 12px 28px -20px rgba(18, 58, 86, 0.45);
+  }
+  #pagina-index .tarjeta-inicio:hover,
+  #pagina-index .tarjeta-labor:hover {
+    background: #fff;
   }
   .skip-link {
     position: fixed;
@@ -84,35 +135,30 @@
 </style>
 </head>
 
-<body class="bg-cielo text-tinta font-nunito antialiased">
+<body class="bg-cielo-oscuro text-tinta font-nunito antialiased">
 <a href="#contenido-principal" class="skip-link rounded-lg bg-white px-4 py-3 font-bold text-azul-oscuro shadow-lg focus-visible:outline focus-visible:outline-4 focus-visible:outline-azul-oscuro">Saltar al contenido principal</a>
 
-<!-- ======================================================================
-     GRUPO DE PÁGINA: SITIO PÚBLICO (index.html + index.css + index.js)
-====================================================================== -->
 <section id="pagina-index">
   <div id="header" class="sticky top-0 z-40" role="navigation" aria-label="Navegación principal"></div>
   <script src="assets/js/header.js" data-root=""></script>
 
-  <!-- ================= CONTENIDO PÚBLICO ================= -->
   <div id="contenidoPublico">
     <main id="contenido-principal" tabindex="-1">
 
-    <!-- ImageKit: para una imagen decorativa, añade style="--imagekit-bg: url('https://ik.imagekit.io/TU_ID/imagen.jpg')" a esta sección. -->
-    <section class="imagekit-bg px-[6vw] py-28 text-center max-w-6xl mx-auto" id="inicio" aria-labelledby="titulo-inicio">
-      <h1 id="titulo-inicio" class="font-baloo font-extrabold text-4xl md:text-6xl text-azul-oscuro leading-tight">
+    <section class="imagekit-bg px-[6vw] py-28 text-center max-w-6xl mx-auto" id="inicio" aria-labelledby="titulo-inicio" style="--imagekit-bg: url('https://ik.imagekit.io/fprbc8phkn/Visuales%20Generales/sede1.webp')">
+      <h1 id="titulo-inicio" class="texto-legible font-baloo font-extrabold text-4xl md:text-6xl text-azul-oscuro leading-tight">
           Un espacio de apoyo para personas autistas y sus familias.
       </h1>
-      <p class="mt-6 text-xl text-tinta-suave max-w-3xl mx-auto leading-relaxed">
+      <p class="texto-legible mt-6 text-xl text-tinta-suave max-w-3xl mx-auto leading-relaxed">
         Somos Mi Mundo Azul, una asociación de Flores que acompaña a personas autistas y sus familias. Generamos espacios de encuentro, escucha y apoyo, y trabajamos por una sociedad más inclusiva, donde cada persona sea escuchada, respetada y pueda participar a su manera.
         </p>
       <div class="mt-14 grid gap-8 sm:grid-cols-3 text-left">
-        <a href="pages/formularios.html" class="nav-Paginas block w-full text-left bg-cielo rounded-3xl border-2 border-azul-suave p-6 min-h-56 shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition cursor-pointer">
+        <a href="pages/formularios.html" class="tarjeta-inicio nav-Paginas block w-full text-left bg-cielo rounded-3xl border-2 border-azul-suave p-6 min-h-56 shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition cursor-pointer">
           <div class="text-4xl text-azul-fuerte"><i class="bi bi-newspaper" aria-hidden="true"></i></div>
           <h3 class="font-baloo font-bold text-xl mt-4">Visita nuestros formularios</h3>
           <p class="text-base text-tinta-suave mt-2 leading-relaxed">Apoya a nuestra causa completando nuestros formularios</p>
         </a>
-        <button type="button" class="block w-full text-left bg-cielo rounded-3xl border-2 border-azul-suave p-6 min-h-56 shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition cursor-pointer"
+        <button type="button" class="tarjeta-inicio block w-full text-left bg-cielo rounded-3xl border-2 border-azul-suave p-6 min-h-56 shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition cursor-pointer"
                 onclick="abrirBloqueTexto({
                   categoria: 'Institucional',
                   titulo: 'Conocer la Asociación',
@@ -122,7 +168,7 @@
           <h3 class="font-baloo font-bold text-xl mt-4">Conocer la asociación</h3>
           <p class="text-base text-tinta-suave mt-2 leading-relaxed">Qué hacemos y cómo acompañamos a las familias</p>
         </button>
-        <button type="button" class="block w-full text-left bg-cielo rounded-3xl border-2 border-azul-suave p-6 min-h-56 shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition cursor-pointer"
+        <button type="button" class="tarjeta-inicio block w-full text-left bg-cielo rounded-3xl border-2 border-azul-suave p-6 min-h-56 shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition cursor-pointer"
                 onclick="abrirBloqueTexto({
                   categoria: 'Colaboración',
                   titulo: 'Cómo Donar',
@@ -135,16 +181,15 @@
       </div>
     </section>
 
-    <!-- ImageKit: añade style="--imagekit-bg: url('https://ik.imagekit.io/TU_ID/imagen.jpg')" para definir un fondo decorativo. -->
-    <section class="imagekit-bg px-[6vw] py-16 bg-morado-claro max-w-6xl mx-auto" id="nosotros" aria-labelledby="titulo-nosotros">
+    <section class="fondo-labor px-[6vw] py-16 w-full border-t-4 border-azul-fuerte" id="nosotros" aria-labelledby="titulo-nosotros">
       <div class="max-w-2xl mx-auto text-center mb-12">
-        <span class="inline-block bg-cielo text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Nuestra labor</span>
+        <span class="inline-block bg-white text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Nuestra labor</span> <br>
         <h2 id="titulo-nosotros" class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Así acompañamos a cada familia</h2>
         <p class="text-tinta-suave mt-2">Un equipo, muchas formas de ayudar.</p>
       </div>
 
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 max-w-5xl mx-auto">
-        <button type="button" class="w-full bg-cielo rounded-3xl border-2 border-azul-suave p-6 text-center cursor-pointer shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition"
+        <button type="button" class="tarjeta-labor w-full bg-cielo rounded-3xl border-2 border-azul-suave p-6 text-center cursor-pointer shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition"
             onclick="abrirBloqueTexto({
               categoria: 'Nuestra Labor',
               titulo: 'Terapias y Apoyo',
@@ -156,7 +201,7 @@
           <span class="inline-flex items-center gap-2 mt-4 text-sm font-bold text-azul-fuerte">Ver más <i class="bi bi-arrow-right" aria-hidden="true"></i></span>
         </button>
 
-        <button type="button" class="w-full bg-cielo rounded-3xl border-2 border-azul-suave p-6 text-center cursor-pointer shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition"
+        <button type="button" class="tarjeta-labor w-full bg-cielo rounded-3xl border-2 border-azul-suave p-6 text-center cursor-pointer shadow-sm hover:bg-white hover:border-azul-fuerte hover:shadow-lg hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-azul-claro transition"
             onclick="abrirBloqueTexto({
               categoria: 'Comunidad',
               titulo: 'Hazte Socio',
@@ -170,7 +215,7 @@
       </div>
     </section>
 
-      <section class="px-[6vw] py-16" id="noticias" aria-labelledby="titulo-noticias">
+      <section class="fondo-noticias px-[6vw] py-16" id="noticias" aria-labelledby="titulo-noticias">
         <div class="max-w-2xl mx-auto text-center mb-12">
           <span class="inline-block bg-white text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Novedades</span>
           <h2 id="titulo-noticias" class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Últimas noticias</h2>
@@ -180,19 +225,12 @@
         <div class="max-w-6xl mx-auto mt-6" id="piePublicoVacio"></div>
       </section>
 
-     <!-- <section class="px-[6vw] py-20 text-center bg-azul-fuerte text-white" id="contacto">
-        <h2 class="font-baloo font-extrabold text-3xl">¿Querés sumarte a Mi Mundo Azul?</h2>
-        <p class="mt-3 text-white/85 max-w-xl mx-auto">Escribinos y te respondemos a la brevedad. Estamos para ayudarte.</p>
-        <a href="mailto:hola@mimundoazul.org" class="boton boton--sol mt-8"><span>✉️</span> Escribinos ahora</a>
-      </section> -->
-
     </main>
 
     <div id="footer" role="contentinfo"></div>
 
   </div>
 
-  <!-- ================= LOGIN ================= -->
   <div class="hidden fixed inset-0 bg-cielo z-30 overflow-y-auto" id="seccionLogin">
     <div class="min-h-full flex items-center justify-center px-6 py-12">
       <div class="bg-white rounded-3xl shadow-xl p-8 w-full max-w-md">

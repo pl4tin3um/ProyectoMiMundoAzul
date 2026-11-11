@@ -90,10 +90,10 @@
       <a href="${root}index.html#login"
         data-acceso-equipo
         class="inline-flex items-center justify-center gap-2
-          rounded-xl bg-cielo text-azul-oscuro
-          border-2 border-azul-suave px-5 py-3
+          rounded-xl bg-azul-medio text-white
+          border-2 border-azul-medio px-5 py-3
           font-bold shadow-sm
-          hover:bg-white hover:border-white
+          hover:bg-azul-fuerte hover:border-azul-fuerte
           transition-colors
           focus-visible:outline focus-visible:outline-2
           focus-visible:outline-offset-4 focus-visible:outline-white">

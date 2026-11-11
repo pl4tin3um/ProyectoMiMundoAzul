@@ -59,19 +59,19 @@
   <link rel="stylesheet" href="../assets/css/common.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
-    /* Fondos opcionales de ImageKit: reemplazá TU_ID y la ruta por tus imágenes.
-       Para activarlos, quitá los comentarios de background-image.
-       Conservá un color de fondo con buen contraste para que el contenido siga legible. */
-    .fondo-imagekit-principal {
-      /* background-image: url("https://ik.imagekit.io/TU_ID/ruta/imagen-de-fondo.jpg"); */
-      background-size: cover;
-      background-position: center;
+    #pagina-editor {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #7faec8 0%, #8dbbd3 48%, #a5cde0 100%);
     }
 
-    .fondo-imagekit-formularios {
-      /* background-image: url("https://ik.imagekit.io/TU_ID/ruta/fondo-formularios.jpg"); */
-      background-size: cover;
-      background-position: center;
+    .editor-fondo-principal {
+      background:
+        radial-gradient(ellipse at 12% 8%, rgba(255, 255, 255, .45), transparent 38%),
+        linear-gradient(160deg, #719fba 0%, #89b6ce 55%, #a2c9dc 100%);
+    }
+
+    .editor-fondo-contenido {
+      background: linear-gradient(180deg, rgba(194, 221, 235, .62), rgba(225, 239, 247, .35));
     }
 
     .enlace-saltar {
@@ -101,11 +101,11 @@
 <body class="bg-cielo-oscuro text-tinta font-nunito antialiased" id="pagina-editor" hidden>
  
 <a class="enlace-saltar" href="#contenido-principal">Saltar al contenido principal</a>
-<section class="bg-cielo-oscuro fondo-imagekit-principal">
+<section class="editor-fondo-principal">
       <div id="header" class="sticky top-0 z-40"></div>
 <script src="../assets/js/header.js" data-root="../"></script>
  
-  <main id="contenido-principal" tabindex="-1" class="fondo-imagekit-formularios">
+  <main id="contenido-principal" tabindex="-1" class="editor-fondo-contenido">
   <div class="max-w-4xl mx-auto px-[5vw] md:px-6 py-10">
     <div class="mb-8">
       <h1 class="font-baloo font-extrabold text-2xl text-azul-oscuro">Tus noticias</h1>

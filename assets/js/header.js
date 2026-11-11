@@ -12,6 +12,19 @@
     if (!destino) return;
 
     destino.innerHTML = `
+      <style>
+        #cabeceraPublica nav a {
+          transition: background-color .2s ease, color .2s ease;
+        }
+        #cabeceraPublica nav a:hover {
+          background-color: var(--cielo);
+          color: var(--azul-oscuro);
+        }
+        #cabeceraPublica nav a:first-child:hover {
+          background-color: var(--azul-oscuro);
+          color: #fff;
+        }
+      </style>
       <header id="cabeceraPublica"
               class="flex items-center justify-between gap-4 flex-wrap
                      px-[5vw] py-4 rounded-2xl border border-[#d9c6f5]
@@ -35,7 +48,7 @@
              class="flex flex-wrap items-center gap-2
                   text-lg font-semibold text-azul-oscuro">
            <a href="${root}index.html"
-             class="px-4 py-2 rounded-xl bg-azul-oscuro text-white font-bold hover:bg-cielo hover:text-azul-oscuro focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-azul-oscuro transition-colors">
+             class="px-4 py-2 rounded-xl bg-cielo text-azul-oscuro font-bold hover:bg-azul-oscuro hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-azul-oscuro transition-colors">
             Inicio
           </a>
           <a href="${root}index.html#nosotros"

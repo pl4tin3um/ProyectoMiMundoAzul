@@ -6,6 +6,7 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Noticia · Mi Mundo Azul</title>
   <link rel="icon" type="image/png" href="../assets/imgs/logo.png">
+  <link rel="stylesheet" href="../assets/css/common.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -14,9 +15,6 @@
     * { box-sizing: border-box; }
     html { font-size: 19px; }
      body { margin: 0; font-family: 'Nunito', sans-serif; background-color: var(--cielo); color: var(--tinta); line-height: 1.8; overflow-wrap: anywhere; }
-     /* Imagen de fondo opcional: sustituye la URL por una imagen de ImageKit.
-       Ejemplo: background-image: url('https://ik.imagekit.io/TU_ID/imagen.jpg');
-       Añádela como regla en body y conserva un color de fondo de respaldo. */
      a { color: var(--azul-fuerte); }
      :focus-visible { outline: 3px solid #9A5A00; outline-offset: 3px; }
      .salto-contenido { position: absolute; z-index: 2000; top: 8px; left: 8px; padding: 10px 16px; background: #fff; color: var(--azul-oscuro); border-radius: 8px; transform: translateY(-150%); }
@@ -50,10 +48,14 @@
     @media (max-width: 460px) { .media-gallery { grid-template-columns: 1fr; } }
     footer { text-align: center; padding: 20px 6vw 70px; }
     footer button { background: var(--sol); color: var(--tinta); border: none; padding: 16px 32px; border-radius: 999px; font-weight: 700; font-size: 1.05rem; cursor: pointer; font-family: 'Baloo 2', sans-serif; min-height: 56px; }
+    .compartir-noticia { position: fixed; z-index: 1100; right: max(20px, env(safe-area-inset-right)); bottom: max(20px, env(safe-area-inset-bottom)); min-height: 54px; padding: 12px 22px; border: 0; border-radius: 999px; background: var(--azul-fuerte); color: #fff; box-shadow: 0 4px 14px rgba(18, 58, 86, 0.3); font: 700 1rem 'Baloo 2', sans-serif; cursor: pointer; }
+    .compartir-noticia:hover { background: var(--azul-oscuro); }
+    .compartir-noticia:focus-visible { outline-color: #FFC857; }
   </style>
 </head>
-<body>
+<body id="pagina-index">
   <a class="salto-contenido" href="#contenido">Saltar al contenido principal</a>
+  <button class="compartir-noticia" type="button" data-compartir aria-label="Compartir enlace de la noticia">Compartir</button>
 
   <main id="contenido" tabindex="-1" aria-label="Contenido de la noticia">
     <p class="estado" role="status" aria-live="polite">Cargando la noticia…</p>
@@ -101,6 +103,23 @@
         else window.location.href = '../index.html';
       }
       document.querySelectorAll('[data-volver]').forEach(b => b.addEventListener('click', volver));
+
+      document.querySelector('[data-compartir]').addEventListener('click', async event => {
+        const boton = event.currentTarget;
+        const enlace = window.location.href;
+        try {
+          if (navigator.share) {
+            await navigator.share({ title: document.title, url: enlace });
+            return;
+          }
+          await navigator.clipboard.writeText(enlace);
+          boton.textContent = 'Enlace copiado';
+          window.setTimeout(() => { boton.textContent = 'Compartir'; }, 2000);
+        } catch (error) {
+          if (error.name === 'AbortError') return;
+          window.prompt('Copiá el enlace de la noticia:', enlace);
+        }
+      });
 
       function urlSegura(url, ancho) {
         if (typeof url !== 'string' || !/^https:\/\//i.test(url)) return '';

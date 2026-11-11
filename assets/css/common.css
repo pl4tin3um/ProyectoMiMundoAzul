@@ -47,10 +47,107 @@
     --morado-medio: #8C7FC1;
     --morado-claro: #E5E1F3;
 
+    --radio-xl: 1.75rem;
+    --radio-lg: 1.25rem;
+    --radio-md: 1rem;
+    --sombra-suave: 0 14px 28px -18px rgba(18, 58, 86, .4);
+    --sombra-media: 0 18px 35px -20px rgba(18, 58, 86, .35);
+
     background: var(--cielo-oscuro);
+    color: var(--tinta);
 }
 #pagina-formularios {
     background: var(--azul-fuerte);
+}
+
+#pagina-index,
+#pagina-admin,
+#pagina-editor,
+#pagina-formularios {
+    font-family: 'Nunito', sans-serif;
+}
+
+#pagina-index *,
+#pagina-admin *,
+#pagina-editor *,
+#pagina-formularios *,
+#pagina-index *::before,
+#pagina-admin *::before,
+#pagina-editor *::before,
+#pagina-formularios *::before,
+#pagina-index *::after,
+#pagina-admin *::after,
+#pagina-editor *::after,
+#pagina-formularios *::after {
+    box-sizing: border-box;
+}
+
+#pagina-index a,
+#pagina-admin a,
+#pagina-editor a,
+#pagina-formularios a {
+    color: inherit;
+    text-decoration: none;
+}
+
+#pagina-index img,
+#pagina-admin img,
+#pagina-editor img,
+#pagina-formularios img {
+    display: block;
+    max-width: 100%;
+}
+
+#pagina-index button,
+#pagina-admin button,
+#pagina-editor button,
+#pagina-formularios button,
+#pagina-index input,
+#pagina-admin input,
+#pagina-editor input,
+#pagina-formularios input,
+#pagina-index select,
+#pagina-admin select,
+#pagina-editor select,
+#pagina-formularios select,
+#pagina-index textarea,
+#pagina-admin textarea,
+#pagina-editor textarea,
+#pagina-formularios textarea {
+    font: inherit;
+}
+
+#pagina-index .panel,
+#pagina-admin .panel,
+#pagina-editor .panel,
+#pagina-formularios .panel {
+    background: rgba(255, 255, 255, .96);
+    border: 1px solid rgba(17, 38, 55, .08);
+    border-radius: var(--radio-xl);
+    box-shadow: var(--sombra-suave);
+}
+
+#pagina-index .titulo-seccion,
+#pagina-admin .titulo-seccion,
+#pagina-editor .titulo-seccion,
+#pagina-formularios .titulo-seccion {
+    font-family: 'Baloo 2', sans-serif;
+    letter-spacing: .01em;
+    color: var(--azul-oscuro);
+}
+
+#pagina-index .badge,
+#pagina-admin .badge,
+#pagina-editor .badge,
+#pagina-formularios .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .35rem .8rem;
+    border-radius: 999px;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .02em;
 }
 
 
@@ -72,12 +169,23 @@
 
     font-family: 'Baloo 2', sans-serif;
     font-weight: 700;
+    letter-spacing: .01em;
 
     cursor: pointer;
+    user-select: none;
 
     transition:
         transform .15s ease,
-        box-shadow .15s ease;
+        box-shadow .15s ease,
+        filter .15s ease,
+        opacity .15s ease;
+}
+
+#pagina-index .boton:active,
+#pagina-admin .boton:active,
+#pagina-editor .boton:active,
+#pagina-formularios .boton:active {
+    transform: translateY(0);
 }
 
 
@@ -108,6 +216,7 @@
 #pagina-editor .boton:hover,
 #pagina-formularios .boton:hover {
     transform: translateY(-2px);
+    filter: brightness(1.02);
 }
 
 
@@ -119,6 +228,25 @@
 #pagina-formularios .boton:focus-visible {
     outline: 3px solid var(--sol);
     outline-offset: 2px;
+}
+
+#pagina-index .boton:disabled,
+#pagina-admin .boton:disabled,
+#pagina-editor .boton:disabled,
+#pagina-formularios .boton:disabled {
+    opacity: .7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+@media (max-width: 640px) {
+    #pagina-index .boton,
+    #pagina-admin .boton,
+    #pagina-editor .boton,
+    #pagina-formularios .boton {
+        width: 100%;
+    }
 }
 
 
