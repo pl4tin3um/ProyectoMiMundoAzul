@@ -281,12 +281,13 @@ async function obtenerCuentaActual(){
 }
 
 async function verificarSesion() {
-  if (window.location.pathname.endsWith('/login.html')) return;
+  const path = window.location.pathname;
+  if (path === '/' || path.endsWith('/index.html') || path === '') return;
 
   const { data: { user }, error } = await supabaseClient.auth.getUser();
 
   if (error || !user) {
-    window.location.replace('/login.html');
+    window.location.replace('/');
   }
 }
 
