@@ -124,6 +124,11 @@
     transform: translateY(-200%);
   }
   .skip-link:focus { transform: translateY(0); }
+  @media (max-width: 767px) {
+    #pagina-index #inicio::before {
+      background: #d9edf8;
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       scroll-behavior: auto !important;
