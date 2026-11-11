@@ -66,7 +66,24 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/common.js"></script>
+  <script>
+    const supabaseClient = window.supabase.createClient(
+      'https://vcphcbrtaddmearotoly.supabase.co',
+      'sb_publishable_8NKHHib_DLmdZYTz3sAEfQ_yJp01pNv'
+    );
+
+    function escapeHTML(value) {
+      const element = document.createElement('div');
+      element.textContent = value || '';
+      return element.innerHTML;
+    }
+
+    function formatearFecha(iso) {
+      return new Date(iso).toLocaleDateString('es-AR', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+    }
+  </script>
   <script src="../assets/js/header.js" data-root="../"></script>
   <script>
     (function () {
