@@ -25,11 +25,23 @@ async function renderFormularios() {
     formularios = Array.isArray(rawForms) ? rawForms : [];
   } catch (error) {
     console.error('Error al cargar formularios:', error);
-    container.innerHTML = `
-      <div class="col-span-full text-center text-tinta-suave py-8" role="alert">
-        No pudimos cargar los formularios. Recargá la página para intentar nuevamente.
-      </div>`;
-    return;
+    try {
+      const { data, error: fallbackError } = await supabaseClient
+        .from('formularios')
+        .select('*')
+        .order('created_at', { ascending: false, nullsLast: true });
+      if (fallbackError) throw fallbackError;
+      formularios = (Array.isArray(data) ? data : []).filter(
+        form => form.enable === true || form.enabled === true
+      );
+    } catch (fallbackError) {
+      console.error('Error al cargar formularios (consulta alternativa):', fallbackError);
+      container.innerHTML = `
+        <div class="col-span-full text-center text-tinta-suave py-8" role="alert">
+          No pudimos cargar los formularios. Recargá la página para intentar nuevamente.
+        </div>`;
+      return;
+    }
   }
 
   if (formularios.length === 0) {
@@ -69,7 +81,7 @@ async function renderFormularios() {
 
 
 function abrirModalFormulario(form) {
-  const urlFormulario = obtenerUrlFormularioValida(form?.url);
+  const urlFormulario = obtenerUrlFormularioValida(form?.url || form?.google_URL);
   if (!urlFormulario) {
     mostrarErrorUrlFormulario();
     return;
