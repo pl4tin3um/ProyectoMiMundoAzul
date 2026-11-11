@@ -57,23 +57,50 @@
 
 <link rel="stylesheet" href="assets/css/common.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="shortcut icon" type="image/png" href="assets/imgs/logo.png">
+<style>
+  /* ImageKit background slot: set --imagekit-bg to a URL on any .imagekit-bg element. */
+  .imagekit-bg {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)), var(--imagekit-bg, none);
+    background-position: center;
+    background-size: cover;
+  }
+  .skip-link {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 100;
+    transform: translateY(-200%);
+  }
+  .skip-link:focus { transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
 </head>
 
 <body class="bg-cielo text-tinta font-nunito antialiased">
+<a href="#contenido-principal" class="skip-link rounded-lg bg-white px-4 py-3 font-bold text-azul-oscuro shadow-lg focus-visible:outline focus-visible:outline-4 focus-visible:outline-azul-oscuro">Saltar al contenido principal</a>
 
 <!-- ======================================================================
      GRUPO DE PÁGINA: SITIO PÚBLICO (index.html + index.css + index.js)
 ====================================================================== -->
 <section id="pagina-index">
-  <div id="header" class="sticky top-0 z-40"></div>
+  <div id="header" class="sticky top-0 z-40" role="navigation" aria-label="Navegación principal"></div>
   <script src="assets/js/header.js" data-root=""></script>
 
   <!-- ================= CONTENIDO PÚBLICO ================= -->
   <div id="contenidoPublico">
-    <main>
+    <main id="contenido-principal" tabindex="-1">
 
-    <section class="px-[6vw] py-28 text-center max-w-6xl mx-auto" id="inicio">
-      <h1 class="font-baloo font-extrabold text-4xl md:text-6xl text-azul-oscuro leading-tight">
+    <!-- ImageKit: para una imagen decorativa, añade style="--imagekit-bg: url('https://ik.imagekit.io/TU_ID/imagen.jpg')" a esta sección. -->
+    <section class="imagekit-bg px-[6vw] py-28 text-center max-w-6xl mx-auto" id="inicio" aria-labelledby="titulo-inicio">
+      <h1 id="titulo-inicio" class="font-baloo font-extrabold text-4xl md:text-6xl text-azul-oscuro leading-tight">
           Un espacio de apoyo para personas autistas y sus familias.
       </h1>
       <p class="mt-6 text-xl text-tinta-suave max-w-3xl mx-auto leading-relaxed">
@@ -108,10 +135,11 @@
       </div>
     </section>
 
-    <section class="px-[6vw] py-16 bg-morado-claro" id="nosotros">
+    <!-- ImageKit: añade style="--imagekit-bg: url('https://ik.imagekit.io/TU_ID/imagen.jpg')" para definir un fondo decorativo. -->
+    <section class="imagekit-bg px-[6vw] py-16 bg-morado-claro max-w-6xl mx-auto" id="nosotros" aria-labelledby="titulo-nosotros">
       <div class="max-w-2xl mx-auto text-center mb-12">
         <span class="inline-block bg-cielo text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Nuestra labor</span>
-        <h2 class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Así acompañamos a cada familia</h2>
+        <h2 id="titulo-nosotros" class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Así acompañamos a cada familia</h2>
         <p class="text-tinta-suave mt-2">Un equipo, muchas formas de ayudar.</p>
       </div>
 
@@ -142,10 +170,10 @@
       </div>
     </section>
 
-      <section class="px-[6vw] py-16" id="noticias">
+      <section class="px-[6vw] py-16" id="noticias" aria-labelledby="titulo-noticias">
         <div class="max-w-2xl mx-auto text-center mb-12">
           <span class="inline-block bg-white text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Novedades</span>
-          <h2 class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Últimas noticias</h2>
+          <h2 id="titulo-noticias" class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-4">Últimas noticias</h2>
           <p class="text-tinta-suave mt-2">Tocá "Leer noticia completa" para ver la nota entera.</p>
         </div>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto" id="gridNoticias"></div>
@@ -160,7 +188,7 @@
 
     </main>
 
-    <div id="footer"></div>
+    <div id="footer" role="contentinfo"></div>
 
   </div>
 
@@ -168,7 +196,7 @@
   <div class="hidden fixed inset-0 bg-cielo z-30 overflow-y-auto" id="seccionLogin">
     <div class="min-h-full flex items-center justify-center px-6 py-12">
       <div class="bg-white rounded-3xl shadow-xl p-8 w-full max-w-md">
-        <div class="logo-circulo mx-auto"></div>
+        <div class="logo-circulo mx-auto" role="img" aria-label="Logo de Mi Mundo Azul"></div>
         <h2 class="font-baloo font-extrabold text-2xl text-azul-oscuro text-center mt-4">Entrar al panel</h2>
         <p class="text-tinta-suave text-center text-sm mt-1">Este espacio es solo para el equipo que administra y publica noticias.</p>
         <div id="errorLogin" class="mt-4"></div>

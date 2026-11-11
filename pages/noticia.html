@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Noticia · Mi Mundo Azul</title>
+  <link rel="icon" type="image/png" href="../assets/imgs/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -12,7 +13,14 @@
     :root { --azul-fuerte: #1B5E8C; --azul-oscuro: #123A56; --cielo: #EAF4FB; --sol: #FFC857; --tinta: #16324A; --tinta-suave: #3F5A72; }
     * { box-sizing: border-box; }
     html { font-size: 19px; }
-    body { margin: 0; font-family: 'Nunito', sans-serif; background: var(--cielo); color: var(--tinta); line-height: 1.8; overflow-wrap: anywhere; }
+     body { margin: 0; font-family: 'Nunito', sans-serif; background-color: var(--cielo); color: var(--tinta); line-height: 1.8; overflow-wrap: anywhere; }
+     /* Imagen de fondo opcional: sustituye la URL por una imagen de ImageKit.
+       Ejemplo: background-image: url('https://ik.imagekit.io/TU_ID/imagen.jpg');
+       Añádela como regla en body y conserva un color de fondo de respaldo. */
+     a { color: var(--azul-fuerte); }
+     :focus-visible { outline: 3px solid #9A5A00; outline-offset: 3px; }
+     .salto-contenido { position: absolute; z-index: 2000; top: 8px; left: 8px; padding: 10px 16px; background: #fff; color: var(--azul-oscuro); border-radius: 8px; transform: translateY(-150%); }
+     .salto-contenido:focus { transform: translateY(0); }
     header { display: flex; align-items: center; justify-content: space-between; padding: 20px 5vw; background: var(--azul-fuerte); flex-wrap: wrap; gap: 14px; }
     header .marca { display: flex; align-items: center; gap: 12px; color: #fff; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.15rem; }
     header button { background: #fff; color: var(--azul-fuerte); border: none; padding: 14px 26px; border-radius: 999px; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; min-height: 52px; }
@@ -45,13 +53,10 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="marca">Mi Mundo Azul</div>
-    <button type="button" data-volver>Volver</button>
-  </header>
+  <a class="salto-contenido" href="#contenido">Saltar al contenido principal</a>
 
-  <main id="contenido">
-    <p class="estado">Cargando la noticia…</p>
+  <main id="contenido" tabindex="-1" aria-label="Contenido de la noticia">
+    <p class="estado" role="status" aria-live="polite">Cargando la noticia…</p>
   </main>
 
   <footer>
@@ -60,6 +65,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/header.js" data-root="../"></script>
   <script>
     (function () {
       const cont = document.getElementById('contenido');
@@ -129,7 +135,10 @@
         }
 
         const src = urlSegura(typeof item === 'string' ? item : item && item.url, 1400);
-        return src ? `<img class="media-item" src="${src}" alt="" loading="lazy">` : '';
+        const alt = item && typeof item === 'object' && (item.alt || item.description)
+          ? item.alt || item.description
+          : 'Imagen relacionada con la noticia';
+        return src ? `<img class="media-item" src="${src}" alt="${escapeHTML(alt)}" loading="lazy">` : '';
       }
 
       function mostrarEstado(mensaje) {
@@ -145,7 +154,7 @@
           .join('');
 
         const portadaSrc = urlSegura(n.imagen_portada, 1400);
-        const portadaHTML = portadaSrc ? `<img class="portada" src="${portadaSrc}" alt="">` : '';
+        const portadaHTML = portadaSrc ? `<img class="portada" src="${portadaSrc}" alt="Imagen de portada: ${escapeHTML(n.title)}">` : '';
         const mediaHTML = Array.isArray(n.media) ? n.media.map(renderItemMedia).join('') : '';
 
         cont.innerHTML = `

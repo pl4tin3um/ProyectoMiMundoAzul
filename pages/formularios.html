@@ -5,11 +5,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mi Mundo Azul</title>
+<link rel="icon" type="image/png" href="../assets/imgs/logo.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-
+<link rel="icon" type="image/png" href="../assets/imgs/logo.png">
 <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -60,50 +61,67 @@
 
   <link rel="stylesheet" href="../assets/css/common.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+  /* ImageKit: sustituye none por url("https://ik.imagekit.io/TU_ID/imagen-fondo.webp"). */
+  #pagina-formularios {
+    --fondo-formularios: none;
+    background-image: linear-gradient(rgba(234, 244, 251, .82), rgba(193, 224, 240, .9)), var(--fondo-formularios);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+  /* ImageKit alternativo para pantallas pequeñas; reemplaza none por la URL optimizada para móvil. */
+  @media (max-width: 640px) {
+    #pagina-formularios {
+      --fondo-formularios: none;
+      background-attachment: scroll;
+    }
+  }
+
+  .salto-contenido {
+    position: absolute;
+    left: 1rem;
+    top: -5rem;
+    z-index: 100;
+    padding: .75rem 1rem;
+    background: #fff;
+    color: #123A56;
+    border: 2px solid #123A56;
+    border-radius: .75rem;
+  }
+  .salto-contenido:focus { top: 1rem; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; }
+  }
+</style>
 </head>
 
 <body class="bg-cielo text-tinta font-nunito antialiased" id="pagina-formularios">
-
-
-  <div class="flex items-center justify-between gap-4 flex-wrap px-[5vw] py-5 bg-azul-suave shadow-sm sticky top-0 z-40 border-4 border-azul-fuerte rounded-3xl">
-    <div class="flex items-center gap-3">
-      <img src="../assets/imgs/logo.jpeg" alt="Mi Mundo Azul" class="w-11 h-11 rounded-full object-cover">
-      <div class="font-baloo font-bold leading-tight">
-        Mi Mundo Azul
-        <small class="block font-nunito font-normal text-tinta-suave text-sm">Asociación Autista de flores</small>
-      </div>
-    </div>
-    <div class="flex items-center gap-3">
-      <div class="absolute left-1/2 -translate-x-1/2 font-baloo font-bold text-lg whitespace-nowrap">Formularios</div>
-    </div>
-      <button class="boton boton--sol" id="btnirIndex" onclick="window.location.href='../index.html'">
-            <i class="bi bi-box-arrow-right"></i>
-        Volver
-      </button>
-    </div>
-  </div>
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido principal</a>
+  <div id="header"></div>
 
   <!-- ================= CONTENIDO PRINCIPAL DE ESTA PÁGINA ================= -->
-  <main class="min-h-[70vh] bg-cielo-oscuro py-12">
+  <main id="contenido-principal" class="min-h-[70vh] bg-cielo-oscuro/90 py-12" tabindex="-1">
     <section class="px-[6vw] py-12 max-w-6xl mx-auto" id="seccion-formularios">
   <div class="max-w-2xl mx-auto text-center mb-10">
     <span class="inline-block bg-white text-azul-fuerte text-sm font-bold px-4 py-1.5 rounded-full">Comunidad</span>
-    <h2 class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-3">Formularios Disponibles</h2>
+    <h1 class="font-baloo font-extrabold text-3xl text-azul-oscuro mt-3">Formularios Disponibles</h1>
     <p class="text-tinta-suave mt-2">Completa los formularios de Google fácilmente.</p>
   </div>
 
-  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" id="gridFormularios">
+  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" id="gridFormularios" aria-live="polite" aria-label="Formularios disponibles">
   </div>
 </section>
 
-<div id="modalFormulario" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+<div id="modalFormulario" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modalTitulo" aria-hidden="true">
   <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
     <div class="flex justify-between items-center px-6 py-4 border-b border-slate-100 bg-cielo">
       <h3 id="modalTitulo" class="font-baloo font-bold text-lg text-azul-oscuro">Formulario</h3>
-      <button id="btnCerrarModal"class="text-tinta-suave hover:text-rojo text-2xl font-bold">&times;</button>
+      <button type="button" id="btnCerrarModal" class="text-tinta-suave hover:text-rojo text-2xl font-bold" aria-label="Cerrar formulario">&times;</button>
     </div>
     <div class="p-2 flex-1 overflow-hidden">
-      <iframe id="iframeModal" src="" class="w-full h-full min-h-[500px] border-0 rounded-b-2xl"></iframe>
+      <iframe id="iframeModal" src="" title="Formulario de Google" class="w-full h-full min-h-[500px] border-0 rounded-b-2xl"></iframe>
     </div>
   </div>
 </div>
@@ -112,6 +130,7 @@
 <div id="footer"></div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/header.js" data-root="../"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/formularios.js"></script>
   <script src="../assets/js/footer.js" data-root="../"></script>

@@ -58,18 +58,68 @@
 
 <link rel="stylesheet" href="../assets/css/common.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="icon" type="image/png" href="../assets/imgs/logo.png">
+<style>
+  /* Fondo decorativo: reemplazá none por url("https://ik.imagekit.io/TU_ID/imagen.jpg").
+     Usá una imagen optimizada y mantené el degradado para conservar la legibilidad. */
+  :root {
+    --admin-imagekit-background: none;
+  }
+
+  body#pagina-admin {
+    background-image:
+      linear-gradient(rgba(234, 244, 251, 0.88), rgba(193, 224, 240, 0.92)),
+      var(--admin-imagekit-background);
+    background-position: center, center;
+    background-size: cover, 100% 100%;
+    background-repeat: no-repeat, no-repeat;
+    background-attachment: fixed;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 3px solid #123A56;
+    outline-offset: 3px;
+  }
+
+  .enlace-saltar {
+    position: absolute;
+    left: 1rem;
+    top: -5rem;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    background: #123A56;
+    border-radius: 0.75rem;
+  }
+
+  .enlace-saltar:focus {
+    top: 1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
 </head>
 
 <body class="bg-cielo-oscuro text-tinta font-nunito antialiased" id="pagina-admin" hidden>
 
-
+    <a class="enlace-saltar" href="#contenido-principal">Saltar al contenido principal</a>
     <div id="header" class="sticky top-0 z-40"></div>
     <script src="../assets/js/header.js" data-root="../"></script>
 
-  <div class="max-w-4xl mx-auto px-[5vw] md:px-6 py-10">
+  <main id="contenido-principal" class="max-w-4xl mx-auto px-[5vw] md:px-6 py-10" tabindex="-1">
     <div class="mb-8">
-      <h1 class="font-baloo font-extrabold text-2xl text-azul-oscuro">Cuentas del equipo editorial</h1>
-      <p class="text-tinta-suave mt-1">Acá creás y eliminás las cuentas de las personas que publican noticias.</p>
+      <h1 class="font-baloo font-extrabold text-3xl text-azul-oscuro">Cuentas del equipo editorial</h1>
+      <p class="text-lg text-tinta-suave mt-1">Acá creás y eliminás las cuentas de las personas que publican noticias.</p>
     </div>
     <button class="boton boton--sol mb-8" id="btnNuevoEditor">
       <i class="bi bi-plus-circle"></i>
@@ -80,6 +130,7 @@
   id="estadoListaEditores"
   class="text-center text-tinta-suave py-8"
   role="status"
+  aria-live="polite"
   hidden
 ></p>
 
@@ -110,7 +161,7 @@
   </div>
 </template>  
 
-</div>
+</main>
   
 
   <!-- ================= MODAL: CREAR EDITOR ================= -->
@@ -162,7 +213,7 @@
   </div>
 
   <!-- ================= MODALES GENÉRICOS (confirmar / aviso) + TOAST ================= -->
-  <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalConfirmar">
+  <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalConfirmar" role="dialog" aria-modal="true" aria-labelledby="tituloConfirmar" aria-describedby="textoConfirmar">
     <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 text-center">
       <div class="text-4xl" id="iconoConfirmar">
         <i class="bi bi-question-circle"></i>
@@ -176,12 +227,12 @@
     </div>
   </div>
 
-  <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalAviso">
+  <div class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4" id="modalAviso" role="dialog" aria-modal="true" aria-labelledby="tituloAviso" aria-describedby="textoAviso">
     <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 text-center">
       <div class="text-4xl">
         <i class="bi bi-info-circle"></i>
       </div>
-      <h2 class="font-baloo font-bold text-lg mt-2">Aviso</h2>
+      <h2 class="font-baloo font-bold text-lg mt-2" id="tituloAviso">Aviso</h2>
       <p class="text-tinta-suave text-sm mt-2" id="textoAviso"></p>
       <div class="flex justify-center mt-6">
         <button class="boton boton--azul" id="btnCerrarAviso">Entendido</button>
@@ -189,7 +240,7 @@
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <dialog id="dialogEliminarEditor" class="rounded-3xl p-6 w-full max-w-md backdrop:bg-black/50" aria-labelledby="tituloEliminarEditor"  aria-describedby="descripcionEliminarEditor">
   <h2 id="tituloEliminarEditor" class="font-bold text-xl text-red-700 mb-3">

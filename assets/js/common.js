@@ -280,6 +280,19 @@ async function obtenerCuentaActual(){
   return cuenta;
 }
 
+async function verificarSesion() {
+  if (window.location.pathname.endsWith('/login.html')) return;
+
+  const { data: { user }, error } = await supabaseClient.auth.getUser();
+
+  if (error || !user) {
+    window.location.replace('/login.html');
+  }
+}
+
+verificarSesion();
+window.addEventListener('pageshow', verificarSesion);
+
 let toastTimer;
 function mostrarToast(msg, icono) {
   const t = $('#toast');
