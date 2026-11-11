@@ -40,6 +40,15 @@ async function cargarGridPublico() {
   const grid = document.getElementById('gridNoticias');
   if (!grid) return;
   const pieVacio = document.getElementById('piePublicoVacio');
+  const noticiasPorPagina = 9;
+  let paginacion = document.getElementById('paginacionNoticias');
+  if (!paginacion) {
+    paginacion = document.createElement('nav');
+    paginacion.id = 'paginacionNoticias';
+    paginacion.className = 'flex flex-wrap justify-center gap-2 mt-8';
+    paginacion.setAttribute('aria-label', 'Paginación de noticias');
+    grid.insertAdjacentElement('afterend', paginacion);
+  }
 
   let noticias = [];
   try {
@@ -48,6 +57,7 @@ async function cargarGridPublico() {
   } catch (err) {
     console.error('Error al cargar la grilla:', err);
     grid.innerHTML = '';
+    paginacion.innerHTML = '';
     if (pieVacio) pieVacio.innerHTML = '<p class="text-center text-tinta-suave">⚠️ No pudimos cargar las noticias. Probá de nuevo en un rato.</p>';
     return;
   }
@@ -56,35 +66,60 @@ async function cargarGridPublico() {
 
   if (noticias.length === 0) {
     grid.innerHTML = '';
+    paginacion.innerHTML = '';
     if (pieVacio) pieVacio.innerHTML = '<p class="text-center text-tinta-suave">📭 Todavía no hay noticias publicadas. ¡Volvé pronto!</p>';
     return;
   }
   
   if (pieVacio) pieVacio.innerHTML = '';
 
-  grid.innerHTML = noticias.map(n => {
-    const portadaSrc = fuenteImagen(n.imagen_portada, 800);
-    const estiloPortada = portadaSrc ? `background-image:url('${portadaSrc}')` : 'background-color:#D5ECF8';
-    
-    return `
-      <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col h-full">
-        <div class="tarjeta-noticia__imagen h-44 relative bg-cover bg-center" style="${estiloPortada}">
-          <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date || n.created_at)}</span>
-        </div>
-        <div class="p-5 flex flex-col flex-1 gap-3">
-          <h3 class="font-baloo font-bold text-lg text-azul-oscuro break-words" style="overflow-wrap:anywhere;">${escapeHTML(n.title)}</h3>
-          <p class="text-sm text-tinta-suave mt-0 flex-1 break-words leading-relaxed" style="min-height:0;">${escapeHTML(n.excerpt || '')}</p>
-          <button class="boton boton--azul self-start mt-auto" data-abrir-noticia="${n.id}">
-            <i class="bi bi-book" aria-hidden="true"></i> Leer noticia completa
-          </button>
-        </div>
-      </article>
-    `;
-  }).join('');
+  let paginaActual = 1;
+  const totalPaginas = Math.ceil(noticias.length / noticiasPorPagina);
 
-  grid.querySelectorAll('[data-abrir-noticia]').forEach(btn => {
-    btn.addEventListener('click', () => abrirNoticiaCompleta(btn.dataset.abrirNoticia));
-  });
+  const mostrarPagina = (pagina) => {
+    paginaActual = pagina;
+    const inicio = (paginaActual - 1) * noticiasPorPagina;
+    grid.innerHTML = noticias.slice(inicio, inicio + noticiasPorPagina).map(n => {
+      const portadaSrc = fuenteImagen(n.imagen_portada, 800);
+      const estiloPortada = portadaSrc ? `background-image:url('${portadaSrc}')` : 'background-color:#D5ECF8';
+
+      return `
+        <article class="bg-white rounded-3xl overflow-hidden shadow-md flex flex-col h-full">
+          <div class="tarjeta-noticia__imagen h-44 relative bg-cover bg-center" style="${estiloPortada}">
+            <span class="absolute bottom-3 left-3 bg-white/90 text-xs font-bold px-3 py-1 rounded-full">${formatearFecha(n.date || n.created_at)}</span>
+          </div>
+          <div class="p-5 flex flex-col flex-1 gap-3">
+            <h3 class="font-baloo font-bold text-lg text-azul-oscuro break-words" style="overflow-wrap:anywhere;">${escapeHTML(n.title)}</h3>
+            <p class="text-sm text-tinta-suave mt-0 flex-1 break-words leading-relaxed" style="min-height:0;">${escapeHTML(n.excerpt || '')}</p>
+            <button class="boton boton--azul self-start mt-auto" data-abrir-noticia="${n.id}">
+              <i class="bi bi-book" aria-hidden="true"></i> Leer noticia completa
+            </button>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    grid.querySelectorAll('[data-abrir-noticia]').forEach(btn => {
+      btn.addEventListener('click', () => abrirNoticiaCompleta(btn.dataset.abrirNoticia));
+    });
+
+    paginacion.innerHTML = totalPaginas > 1
+      ? Array.from({ length: totalPaginas }, (_, i) => {
+          const numero = i + 1;
+          const actual = numero === paginaActual;
+          return `<button type="button" class="rounded-xl px-4 py-2 font-bold ${actual ? 'bg-azul-fuerte text-white' : 'bg-white text-azul-oscuro hover:bg-cielo'}" data-pagina-noticias="${numero}"${actual ? ' aria-current="page"' : ''}>${numero}</button>`;
+        }).join('')
+      : '';
+  };
+
+  paginacion.onclick = (event) => {
+    const boton = event.target.closest('[data-pagina-noticias]');
+    if (!boton) return;
+    mostrarPagina(Number(boton.dataset.paginaNoticias));
+    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  mostrarPagina(1);
 }
 
 
