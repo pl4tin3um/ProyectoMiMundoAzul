@@ -34,7 +34,7 @@ function renderFormularios() {
         <h3 class="font-baloo font-bold text-xl text-azul-oscuro break-words [overflow-wrap:anywhere]">${escapeHTML(form.title)}</h3>
       </div>
       <div class="mt-6 flex gap-2">
-        <button class="boton boton--azul flex-1 py-2.5 text-sm" data-abrir-form="${form.id}">
+        <button type="button" class="boton boton--azul flex-1 py-2.5 text-sm" data-abrir-form="${form.id}">
           <i class="bi bi-pencil-square" aria-hidden="true"></i> Completar
         </button>
       </div>
