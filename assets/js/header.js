@@ -24,6 +24,28 @@
           background-color: var(--azul-oscuro);
           color: #fff;
         }
+        @media (max-width: 600px) {
+          #cabeceraPublica {
+            align-items: stretch;
+            flex-direction: column;
+            padding: 1rem;
+          }
+          #cabeceraPublica > a {
+            align-self: center;
+          }
+          #cabeceraPublica img {
+            width: 3.5rem;
+            height: 3.5rem;
+          }
+          #cabeceraPublica nav {
+            justify-content: center;
+            gap: .25rem;
+            font-size: 1rem;
+          }
+          #cabeceraPublica nav a {
+            padding: .5rem .65rem;
+          }
+        }
       </style>
       <header id="cabeceraPublica"
               class="flex items-center justify-between gap-4 flex-wrap
