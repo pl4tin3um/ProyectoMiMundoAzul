@@ -282,7 +282,14 @@ async function obtenerCuentaActual(){
 
 async function verificarSesion() {
   const path = window.location.pathname;
-  if (path === '/' || path.endsWith('/index.html') || path === '') return;
+  const pagina = path.split('/').pop().toLowerCase();
+  if (
+    path === '/' ||
+    path === '' ||
+    pagina === 'index.html' ||
+    pagina === 'noticia.html' ||
+    pagina === 'formularios.html'
+  ) return;
 
   const { data: { user }, error } = await supabaseClient.auth.getUser();
 
