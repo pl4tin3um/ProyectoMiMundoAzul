@@ -1,33 +1,3 @@
-function preguntarConfirmacion(opciones){
-  const elIcono = $('#iconoConfirmar');
-  const elTitulo = $('#tituloConfirmar');
-  const elTexto = $('#textoConfirmar');
-  const elBtnSi = $('#btnConfirmarSi');
-  const elBtnNo = $('#btnConfirmarNo');
-  const modal = $('#modalConfirmar');
-
-  if(elIcono) elIcono.textContent = opciones.icono || '❓';
-  if(elTitulo) elTitulo.textContent = opciones.titulo || '¿Estás seguro/a?';
-  if(elTexto) elTexto.textContent = opciones.texto || '';
-  if(elBtnSi) elBtnSi.textContent = opciones.textoSi || 'Sí, continuar';
-
-  if(modal){
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-  }
-
-  function limpiar(){
-    if(modal){ modal.classList.add('hidden'); modal.classList.remove('flex'); }
-    if(elBtnSi) elBtnSi.removeEventListener('click', alConfirmar);
-    if(elBtnNo) elBtnNo.removeEventListener('click', alCancelar);
-  }
-  function alConfirmar(){ limpiar(); if(opciones.onSi) opciones.onSi(); }
-  function alCancelar(){ limpiar(); }
-
-  if(elBtnSi) elBtnSi.addEventListener('click', alConfirmar);
-  if(elBtnNo) elBtnNo.addEventListener('click', alCancelar);
-}
-
 function mostrarAviso(texto){
   const elTexto = $('#textoAviso');
   const modal = $('#modalAviso');
@@ -49,12 +19,16 @@ function abrirModal(id){
 }
 
 function cerrarModal(id){
+  if(id === 'modalConfirmar'){
+    cancelarConfirmacion();
+    return;
+  }
   const m = $('#'+id);
   if(m){ m.classList.add('hidden'); m.classList.remove('flex'); }
 }
 
 $$('[data-cerrar-modal]').forEach(btn=> btn.addEventListener('click', ()=> cerrarModal(btn.dataset.cerrarModal)));
-$$('.fixed.inset-0.bg-black\\/50').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo){ fondo.classList.add('hidden'); fondo.classList.remove('flex'); } }));
+$$('.fixed.inset-0.bg-black\\/50').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo) cerrarModal(fondo.id); }));
 
 async function cerrarSesion() {
   try {
@@ -155,6 +129,7 @@ function iniciarPanelAdmin(){
         }
 
         await PanelDB.crearEditor({ name: nombre, username: usuario, email, password });
+        formNuevo.reset();
         cerrarModal('modalEditor');
         await renderListaEditores();
         mostrarToast('Cuenta de editor/a creada', '✔️');

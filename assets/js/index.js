@@ -252,11 +252,8 @@ if (formLogin) {
 
       if (!encontrado) {
         if (err) {
-          err.innerHTML = `
-            <div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3">
-              ⚠️ Ese usuario o esa contraseña no son correctos.
-              Fijate bien e intentá de nuevo.
-            </div>`;
+          err.className = 'mt-4 bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3';
+          err.textContent = '⚠️ Ese usuario o esa contraseña no son correctos. Fijate bien e intentá de nuevo.';
         }
         return;
       }
@@ -280,10 +277,12 @@ if (formLogin) {
     } catch (error) {
       console.error(error);
       if (err) {
-        err.innerHTML = `
-          <div class="bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3">
-            ⚠️ No pudimos conectarnos. Probá de nuevo en un rato.
-          </div>`;
+        err.className = 'mt-4 bg-red-50 text-red-700 text-sm font-semibold rounded-xl px-4 py-3';
+        const mensaje = error instanceof Error &&
+          error.message === 'Demasiados intentos. Esperá y volvé a probar.'
+          ? error.message
+          : 'No pudimos conectarnos al servicio de acceso. Probá de nuevo en un rato.';
+        err.textContent = `⚠️ ${mensaje}`;
       }
     } finally {
       if (!redirigiendo) {

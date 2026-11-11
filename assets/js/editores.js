@@ -1,23 +1,3 @@
-function preguntarConfirmacion(opciones){
-    $('#iconoConfirmar').textContent = opciones.icono || '❓';
-    $('#tituloConfirmar').textContent = opciones.titulo || '¿Estás seguro/a?';
-    $('#textoConfirmar').textContent = opciones.texto || '';
-    $('#btnConfirmarSi').textContent = opciones.textoSi || 'Sí, continuar';
-    const modal = $('#modalConfirmar');
-    modal.classList.remove('hidden'); modal.classList.add('flex');
- 
-    const btnSi = $('#btnConfirmarSi');
-    const btnNo = $('#btnConfirmarNo');
-    function limpiar(){
-      modal.classList.add('hidden'); modal.classList.remove('flex');
-      btnSi.removeEventListener('click', alConfirmar);
-      btnNo.removeEventListener('click', alCancelar);
-    }
-    function alConfirmar(){ limpiar(); if(opciones.onSi) opciones.onSi(); }
-    function alCancelar(){ limpiar(); }
-    btnSi.addEventListener('click', alConfirmar);
-    btnNo.addEventListener('click', alCancelar);
-  }
   function mostrarAviso(texto){
     $('#textoAviso').textContent = texto;
     const modal = $('#modalAviso');
@@ -29,9 +9,17 @@ function preguntarConfirmacion(opciones){
   });
  
   function abrirModal(id){ const m = $('#'+id); m.classList.remove('hidden'); m.classList.add('flex'); }
-  function cerrarModal(id){ const m = $('#'+id); m.classList.add('hidden'); m.classList.remove('flex'); }
+  function cerrarModal(id){
+    if(id === 'modalConfirmar'){
+      cancelarConfirmacion();
+      return;
+    }
+    if(id === 'modalNoticia') liberarPreviewPortada();
+    const m = $('#'+id);
+    if(m){ m.classList.add('hidden'); m.classList.remove('flex'); }
+  }
   $$('[data-cerrar-modal]').forEach(btn=> btn.addEventListener('click', ()=> cerrarModal(btn.dataset.cerrarModal)));
-  $$('.fixed.inset-0.bg-black\\/50').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo){ fondo.classList.add('hidden'); fondo.classList.remove('flex'); } }));
+  $$('.fixed.inset-0.bg-black\\/50').forEach(fondo=> fondo.addEventListener('click', (e)=>{ if(e.target === fondo) cerrarModal(fondo.id); }));
  
   async function cerrarSesion() {
   try {
@@ -134,9 +122,18 @@ function preguntarConfirmacion(opciones){
  
     $('#noticiaMedia')?.addEventListener('change', renderArchivosElegidos);
     $('#imagenPortada')?.addEventListener('change', ()=>{
+      liberarPreviewPortada();
       const archivo = $('#imagenPortada').files[0];
       const prev = $('#previewImagenPortada');
-      if (archivo && prev) { prev.src = URL.createObjectURL(archivo); prev.classList.remove('hidden'); }
+      if (!prev) return;
+      if (archivo) {
+        portadaPreviewUrl = URL.createObjectURL(archivo);
+        prev.src = portadaPreviewUrl;
+        prev.classList.remove('hidden');
+      } else {
+        prev.removeAttribute('src');
+        prev.classList.add('hidden');
+      }
     });
     $('#formNoticia')?.addEventListener('submit', publicarNoticia);
   }
@@ -150,6 +147,13 @@ function preguntarConfirmacion(opciones){
   ========================================================== */
   const MAX_FOTO_MB  = 10;
   const MAX_VIDEO_MB = 2048;
+  let portadaPreviewUrl = null;
+
+  function liberarPreviewPortada(){
+    if (!portadaPreviewUrl) return;
+    URL.revokeObjectURL(portadaPreviewUrl);
+    portadaPreviewUrl = null;
+  }
  
   function mostrarProgreso(texto, porcentaje){
     $('#bloqueProgreso').classList.remove('hidden');
@@ -292,16 +296,25 @@ function preguntarConfirmacion(opciones){
       const { data, error } = await supabaseClient.functions.invoke('crear-noticia', { body: formData });
       if (error) throw new Error(await mensajeDeErrorFuncion(error));
       if (!data?.ok) throw new Error('El servidor no confirmó la publicación.');
- 
+
       videosYaSubidos.clear();
-      mostrarToast(idNoticia ? '¡Cambios guardados!' : '¡Noticia publicada con éxito!', '✨');
- 
-      const drafts = DB.getDrafts();
-      if (draftKeyActual) delete drafts[draftKeyActual];
-      DB.setDrafts(drafts);
- 
+      const borradorPublicado = draftKeyActual;
+      if (borradorPublicado) {
+        const drafts = DB.getDrafts();
+        delete drafts[borradorPublicado];
+        DB.setDrafts(drafts);
+      }
+      clearTimeout(temporizadorGuardado);
+      draftKeyActual = null;
       cerrarModal('modalNoticia');
-      await renderPanelEditor();
+      mostrarToast(idNoticia ? '¡Cambios guardados!' : '¡Noticia publicada con éxito!', '✨');
+
+      try {
+        await renderPanelEditor();
+      } catch (error) {
+        console.error('La noticia se publicó, pero no se pudo actualizar el panel:', error);
+        mostrarToast('La noticia se publicó, pero no se pudo actualizar el listado. Recargá el panel.', '⚠️');
+      }
     } catch (err) {
       console.error(err);
       mostrarAviso(err.message || 'No se pudo publicar la noticia. Probá de nuevo.');
@@ -444,6 +457,7 @@ async function renderListaNoticiasEditor(){
  
 function continuarConDatos(usarBorrador){
     const datos = usarBorrador ? borradorExistente : (noticiaPublicada || { title:'', image:'', excerpt:'', body:'' });
+    liberarPreviewPortada();
     
     $('#tituloModalNoticia').textContent = idNoticia ? '✏️ Editar noticia' : '➕ Nueva noticia';
     $('#noticiaId').value = idNoticia || '';
@@ -479,13 +493,9 @@ function continuarConDatos(usarBorrador){
         icono:'📝', titulo:'Encontramos un borrador',
         texto:'Hay una versión sin publicar de esta noticia. ¿Querés seguir donde la dejaste?',
         textoSi:'Sí, continuar con el borrador',
-        onSi(){ continuarConDatos(true); }
+        onSi(){ continuarConDatos(true); },
+        onNo(){ continuarConDatos(false); }
       });
-      $('#btnConfirmarNo').onclick = function(){
-        const modal = $('#modalConfirmar');
-        modal.classList.add('hidden'); modal.classList.remove('flex');
-        continuarConDatos(false);
-      };
     } else {
       continuarConDatos(!!borradorForzado);
     }
@@ -504,20 +514,34 @@ function continuarConDatos(usarBorrador){
     const extracto = $('#noticiaExtracto').value.trim();
     const cuerpo = $('#noticiaCuerpo').value.trim();
  
-    const archivoInput = $('#imagenPortada').files[0];
-    if(!titulo && !extracto && !cuerpo && !archivoInput && !draftKeyActual) return;
- 
     const draftsActuales = DB.getDrafts();
-    const borradorViejo = draftsActuales[draftKeyActual] || {};
-    const imagenFinal = archivoInput ? URL.createObjectURL(archivoInput) : (borradorViejo.image || 'https://i.ibb.co/6X0Z3kM/portada-noticia-default.png');
- 
-    draftsActuales[draftKeyActual] = { title: titulo, excerpt: extracto, body: cuerpo, image: imagenFinal, updatedAt: new Date().toISOString() };
-    DB.setDrafts(draftsActuales);
+    if(!titulo && !extracto && !cuerpo){
+      if (draftsActuales[draftKeyActual]) {
+        delete draftsActuales[draftKeyActual];
+        DB.setDrafts(draftsActuales);
+      }
+      const estadoVacio = $('#estadoGuardado');
+      const textoVacio = $('#textoEstadoGuardado');
+      if (textoVacio) textoVacio.textContent = 'El borrador está vacío.';
+      estadoVacio?.classList.remove('activo');
+      return;
+    }
+
+    draftsActuales[draftKeyActual] = {
+      title: titulo,
+      excerpt: extracto,
+      body: cuerpo,
+      updatedAt: new Date().toISOString()
+    };
+    if (!DB.setDrafts(draftsActuales)) return;
  
     const estado = $('#estadoGuardado');
-    $('#textoEstadoGuardado').textContent = 'Guardado automático a las ' + new Date().toLocaleTimeString('es-AR');
-    estado.classList.add('activo');
+    const textoEstado = $('#textoEstadoGuardado');
+    if (textoEstado) textoEstado.textContent = 'Guardado automático a las ' + new Date().toLocaleTimeString('es-AR');
+    estado?.classList.add('activo');
   }
+
+  window.addEventListener('beforeunload', liberarPreviewPortada);
 document.addEventListener('DOMContentLoaded', verificarAccesoEditor);
  
 /* =========================================================
