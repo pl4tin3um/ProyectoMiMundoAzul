@@ -44,7 +44,7 @@ const PanelDB = {
           const respuesta = await error.context.json();
           if (typeof respuesta.error === 'string') mensaje = respuesta.error;
         } catch {
-          // Mantener el mensaje general.
+          let mensaje = 'Hubo un error en la creación de la cuenta. Actualizá el listado antes de reintentar.';
         }
       }
 
@@ -71,7 +71,7 @@ const PanelDB = {
           const respuesta = await error.context.json();
           if (typeof respuesta.error === 'string') mensaje = respuesta.error;
         } catch {
-          // Mantener el mensaje general.
+          let mensaje = 'Hubo un error en el cambio de estado. Actualizá el listado antes de reintentar.';
         }
       }
       throw new Error(mensaje);
@@ -97,7 +97,7 @@ const PanelDB = {
           const respuesta = await error.context.json();
           if (typeof respuesta.error === 'string') mensaje = respuesta.error;
         } catch {
-          // Mantener el mensaje general.
+        let mensaje = 'Hubo un error en la eliminación. Actualizá el listado antes de reintentar.';
         }
       }
       throw new Error(mensaje);
